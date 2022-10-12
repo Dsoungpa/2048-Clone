@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class Fill2048 : MonoBehaviour
@@ -10,10 +11,31 @@ public class Fill2048 : MonoBehaviour
     [SerializeField] float speed;
 
     bool hasCombine;
+
+    Image myImage;
+
     public void FillValueUpdate(int valueIn)
     {
         value = valueIn;
         valueDisplay.text = value.ToString();
+
+        int colorIndex = GetColorIndex(value);
+        Debug.Log(colorIndex + " color index");
+        myImage = GetComponent<Image>();
+        myImage.color = GameController2048.instance.fillColors[colorIndex];
+    }
+
+    int GetColorIndex(int valueIn)
+    {
+        int index = 0;
+        while(valueIn != 1)
+        {
+            index++;
+            valueIn /= 2;
+        }
+
+        index--;
+        return index;
     }
 
     private void Update()
@@ -33,9 +55,18 @@ public class Fill2048 : MonoBehaviour
         }
     }
 
-    public void Double()
+    public void Double()                                                // when 2 fill objects are combined
     {
         value *= 2;
+        GameController2048.instance.ScoreUpdate(value);
         valueDisplay.text = value.ToString();
+
+        int colorIndex = GetColorIndex(value);
+        Debug.Log(colorIndex + " color index");
+        
+        myImage.color = GameController2048.instance.fillColors[colorIndex];
+
+        GameController2048.instance.WinningCheck(value);
+
     }
 }
