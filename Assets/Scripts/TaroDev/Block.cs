@@ -18,6 +18,7 @@ public class Block : MonoBehaviour
     {
         Value = type.Value;
         renderer.color = type.Color;
+        text.color = (Value == 2 || Value == 4) ? new Color32(0, 0, 0, 150) : new Color32(255, 255, 255, 255);
         text.text = type.Value.ToString();
     }
 

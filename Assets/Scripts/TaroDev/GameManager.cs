@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+
         if(state != GameState.WaitingInput) return;
 
         if(Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
@@ -55,16 +56,18 @@ public class GameManager : MonoBehaviour
         switch(newState)
         {
             case GameState.GenerateLevel:
+                print("Generating...");
                 GenerateGrid();
                 break;
             case GameState.SpawningBlocks:
-                SpawnBlocks(round++ == 0 ? 2 : 1);
+                print("Spawning..");
+                SpawnBlocks(round++ == 0 ? 16 : 1);
                 break;
             case GameState.WaitingInput:
-
+                print("WaitingInput...");
                 break;
             case GameState.Moving:
-
+                print("Moving...");
                 break;
             case GameState.Win:
                 winScreen.SetActive(true);
@@ -112,8 +115,57 @@ public class GameManager : MonoBehaviour
             SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
         }
 
-        if(freeNodes.Count() == 1)
-        {
+        // if(freeNodes.Count() == 1)
+        // {
+        //     print("Free Nodes:" + freeNodes.Count());
+
+        //     foreach(var block in blocks)
+        //     {
+        //         print("IN HERE STILL");
+        //         var next = block.Node;
+
+        //         var possibleLeftNode = GetNodeAtPosition(next.Pos + Vector2.left);
+        //         var possibleRightNode = GetNodeAtPosition(next.Pos + Vector2.right);
+        //         var possibleUpNode = GetNodeAtPosition(next.Pos + Vector2.up);
+        //         var possibleDownNode = GetNodeAtPosition(next.Pos + Vector2.down);
+
+        //         var notNull = (possibleLeftNode != null && possibleRightNode  != null && possibleUpNode != null && possibleDownNode  != null) ? true : false;
+        //         print(block.Pos);
+        //         print(block.Value);
+
+        //         if(notNull)
+        //         {
+        //             print("Left Occupied Blocks's Value:" + possibleLeftNode.OccupiedBlock.Value);
+        //             print("Right Occupied Blocks's Value:" + possibleRightNode.OccupiedBlock.Value);
+        //             print("Up Occupied Blocks's Value:" + possibleUpNode.OccupiedBlock.Value);
+        //             print("Down Occupied Blocks's Value:" + possibleDownNode.OccupiedBlock.Value);
+
+        //             if(possibleLeftNode.OccupiedBlock.Value == block.Value)
+        //                 print("MATCH IN L");
+        //                 //ChangeState(GameState.WaitingInput);
+        //                 return;
+        //             if(possibleRightNode.OccupiedBlock.Value == block.Value)
+        //                 print("MATCH IN R");
+        //                 //ChangeState(GameState.WaitingInput);
+        //                 return;
+        //             if(possibleUpNode.OccupiedBlock.Value == block.Value)
+        //                 print("MATCH IN U");
+        //                 //ChangeState(GameState.WaitingInput);
+        //                 return;
+        //             if(possibleDownNode.OccupiedBlock.Value == block.Value)
+        //                 print("MATCH IN D");
+        //                 //ChangeState(GameState.WaitingInput);
+        //                 return;
+        //             print("Did not go into any ifs");
+        //         }
+        //     }
+
+        //     print("Out of the foreach");
+        //     ChangeState(GameState.Lose);
+        //     return;
+        // }
+
+        if (freeNodes.Count() == 1) {
             ChangeState(GameState.Lose);
             return;
         }
@@ -126,6 +178,7 @@ public class GameManager : MonoBehaviour
     {
         // Instantiate a block prefab at the chosen node location
         var block = Instantiate(blockPrefab, node.Pos, Quaternion.identity);    
+        block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
 
         // Take the block game object and initialize it as a BlockType
         block.Init(GetBlockTypeByValue(value));
