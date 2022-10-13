@@ -6,6 +6,8 @@ using DG.Tweening;
 using System.Security.Cryptography;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 
 public class GameManager : MonoBehaviour
@@ -19,8 +21,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float travelTime = 0.2f;
     [SerializeField] private int winCondition = 2048;
     [SerializeField] private bool gameOver;
+    [SerializeField] private int score = 0;
+    [SerializeField] private int possibleHighScore;
 
     [SerializeField] private GameObject winScreen, loseScreen;
+    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text highscoreText;
 
     private List<Node> nodes;
     private List<Block> blocks;
@@ -33,21 +39,23 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        highscoreText.text = PlayerPrefs.HasKey("myHighScore") ? PlayerPrefs.GetInt("myHighScore").ToString() : "0";
         ChangeState(GameState.GenerateLevel);
     }
 
     void Update()
     {
+        possibleHighScore = score;
 
         if(state != GameState.WaitingInput) return;
 
-        if(Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
 
-        if(Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
+        if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
 
-        if(Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+        if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
 
-        if(Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+        if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
     }
 
     private void ChangeState(GameState newState)
@@ -257,6 +265,8 @@ bool GameOverCheck(Vector2 dir)
 void MergeBlocks(Block baseBlock, Block mergingBlock)
 {
     SpawnBlock(baseBlock.Node, baseBlock.Value * 2);
+    score += baseBlock.Value * 2;
+    scoreText.text = score.ToString();
     RemoveBlock(baseBlock);
     RemoveBlock(mergingBlock);
 }
@@ -270,6 +280,16 @@ void RemoveBlock(Block block)
 Node GetNodeAtPosition(Vector2 pos)
 {
     return nodes.FirstOrDefault(n => n.Pos == pos);
+}
+
+public void RestartGame()
+{
+    SceneManager.LoadScene(0);
+    if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore")))
+    {
+        PlayerPrefs.SetInt("myHighScore", possibleHighScore);
+    }
+    
 }
 
 }
