@@ -292,6 +292,12 @@ public void RestartGame()
     
 }
 
+public void ContinueGame()
+{
+    winScreen.SetActive(false);
+    ChangeState(GameState.WaitingInput);
+}
+
 }
 
 [Serializable]
