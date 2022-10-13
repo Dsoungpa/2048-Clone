@@ -199,6 +199,8 @@ public class GameManager : MonoBehaviour
         var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); 
         if(dir == Vector2.right || dir == Vector2.up) orderedBlocks.Reverse();
 
+        bool blocksMoved = false;
+
         // Go through the ordered list of blocks
         foreach (var block in orderedBlocks)
         {
@@ -219,10 +221,15 @@ public class GameManager : MonoBehaviour
                     if(possibleNode.OccupiedBlock != null && possibleNode.OccupiedBlock.CanMerge(block.Value))
                     {
                         block.MergeBlock(possibleNode.OccupiedBlock);
+                        blocksMoved = true;
                     }
 
                     // Otherwise can we move to this spot?
-                    else if(possibleNode.OccupiedBlock == null) next = possibleNode;
+                    else if(possibleNode.OccupiedBlock == null){
+                        next = possibleNode;
+                        blocksMoved = true;
+                    } 
+                        
 
                     // None hit? End do while loop
                 }
@@ -230,23 +237,32 @@ public class GameManager : MonoBehaviour
                
         }
 
-        var sequence = DOTween.Sequence();
-
-        foreach(var block in orderedBlocks)
+        if(blocksMoved)
         {
-            var movePoint = block.MergingBlock != null ? block.MergingBlock.Node.Pos : block.Node.Pos;
+            var sequence = DOTween.Sequence();
 
-            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
-        }
-
-        sequence.OnComplete(() => {
-            foreach (var block in orderedBlocks.Where(b=>b.MergingBlock != null))
+            foreach(var block in orderedBlocks)
             {
-                MergeBlocks(block.MergingBlock, block);
+                var movePoint = block.MergingBlock != null ? block.MergingBlock.Node.Pos : block.Node.Pos;
+
+                sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
             }
 
-            ChangeState(GameState.SpawningBlocks);
-        });
+            sequence.OnComplete(() => {
+                foreach (var block in orderedBlocks.Where(b=>b.MergingBlock != null))
+                {
+                    MergeBlocks(block.MergingBlock, block);
+                }
+
+                ChangeState(GameState.SpawningBlocks);
+            });
+        }
+
+        else
+        {
+            ChangeState(GameState.WaitingInput);
+        }
+        
 
     }
 
