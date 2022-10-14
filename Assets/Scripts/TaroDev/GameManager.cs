@@ -24,9 +24,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int score = 0;
     [SerializeField] private int possibleHighScore;
 
+    [Header("UI")]
     [SerializeField] private GameObject winScreen, loseScreen;
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text highscoreText;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip swipe;
+    [SerializeField] private AudioClip merge;
+    [SerializeField] private AudioSource audioSource;
+
+
 
     private List<Node> nodes;
     private List<Block> blocks;
@@ -221,14 +229,22 @@ public class GameManager : MonoBehaviour
             }
 
             sequence.OnComplete(() => {
-                foreach (var block in orderedBlocks.Where(b=>b.MergingBlock != null))
+                var mergeBlocks = orderedBlocks.Where(b => b.MergingBlock != null).ToList();
+
+                foreach (var block in mergeBlocks)
                 {
                     MergeBlocks(block.MergingBlock, block);
                 }
 
+                if(mergeBlocks.Any()) audioSource.PlayOneShot(merge, 0.2f);
+                
                 ChangeState(GameState.SpawningBlocks);
             });
+
+            audioSource.PlayOneShot(swipe, 0.2f);
         }
+
+        
 
         ChangeState(GameState.WaitingInput);
     }
