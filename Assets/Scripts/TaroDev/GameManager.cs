@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        
+        
         possibleHighScore = score;
 
         if(state != GameState.WaitingInput) return;
@@ -64,6 +66,30 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
 
         if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+    }
+
+    public void TopRowLeftShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.y == 3)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        // then order them by lowest to highest x
+        orderedBlocks.OrderBy(b => b.Pos.x);
+
+        foreach(var block in orderedBlocks)
+        {
+            print(block.Pos.x);
+        }
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
     }
 
     private void ChangeState(GameState newState)
@@ -81,7 +107,7 @@ public class GameManager : MonoBehaviour
                 SpawnBlocks(round++ == 0 ? 2 : 1);
                 break;
             case GameState.WaitingInput:
-                print("WaitingInput...");
+                //print("WaitingInput...");
                 break;
             case GameState.Moving:
                 //print("Moving...");
@@ -134,11 +160,9 @@ public class GameManager : MonoBehaviour
 
         if (freeNodes.Count() == 1) {
             var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
-            print(GameOver);
             if(GameOver)
             {
                 ChangeState(GameState.Lose);
-                print("LOSE");
                 return;
             }
 
@@ -176,7 +200,7 @@ public class GameManager : MonoBehaviour
 
         // Order the block array by x then by y if it is moving left or down
         // Or change it to ordered by y then x if it is moving right or up
-        var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); 
+        var orderedBlocks = blocks.OrderBy(b => b.Pos.x ).ThenBy(b => b.Pos.y).ToList(); 
         if(dir == Vector2.right || dir == Vector2.up) orderedBlocks.Reverse();
 
         bool blocksMoved = false;
@@ -245,8 +269,11 @@ public class GameManager : MonoBehaviour
         }
 
         
-
-        ChangeState(GameState.WaitingInput);
+        else
+        {
+            ChangeState(GameState.WaitingInput);
+        }
+        
     }
 
 bool GameOverCheck(Vector2 dir)
@@ -258,7 +285,7 @@ bool GameOverCheck(Vector2 dir)
     {
         var next = block.Node;
         do {
-            block.SetBlock(next);
+            //block.SetBlock(next);
             var possibleNode = GetNodeAtPosition(next.Pos + dir);
 
             if(possibleNode != null)
