@@ -84,9 +84,25 @@ public class GameManager : MonoBehaviour
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
 
-        foreach(var block in orderedBlocks)
+        if(orderedBlocks[0].Pos.x == 0)
         {
-            print(block.Pos.x);
+            print("Means you have to cycle");
+        }
+        
+        else
+        {
+            print("Just Shift Left Once");
+            // Create and Play the animation
+            var sequence = DOTween.Sequence();
+            foreach(var block in orderedBlocks)
+            {
+                var possibleNode = GetNodeAtPosition(block.Pos + Vector2.left);
+                var movePoint = possibleNode.Pos;
+                block.SetBlock(possibleNode);
+                sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+            }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
         }
 
         print("OrderedBlocks:" + orderedBlocks.Count());
