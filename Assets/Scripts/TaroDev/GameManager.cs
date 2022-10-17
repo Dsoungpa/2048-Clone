@@ -23,11 +23,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool gameOver;
     [SerializeField] private int score = 0;
     [SerializeField] private int possibleHighScore;
+    [SerializeField] private int cycleMovesLeft = 5;
 
     [Header("UI")]
     [SerializeField] private GameObject winScreen, loseScreen;
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text highscoreText;
+    [SerializeField] private TMP_Text cycleMoves;
 
     [Header("Audio")]
     [SerializeField] private AudioClip swipe;
@@ -53,8 +55,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        
-        
+        cycleMoves.text = cycleMovesLeft.ToString();
         possibleHighScore = score;
 
         if(state != GameState.WaitingInput) return;
@@ -135,6 +136,9 @@ public class GameManager : MonoBehaviour
         }
 
         if (freeNodes.Count() == 1) {
+            if(cycleMovesLeft == 0)
+                return;
+            
             var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
             if(GameOver)
             {
@@ -273,6 +277,9 @@ public class GameManager : MonoBehaviour
     // TOP ROW
     public void TopRowLeftShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+    
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -288,7 +295,7 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-
+        cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
 
@@ -323,6 +330,9 @@ public class GameManager : MonoBehaviour
     // 2ND FROM TOP ROW
     public void SecondRowLeftShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -338,6 +348,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
 
@@ -372,6 +383,9 @@ public class GameManager : MonoBehaviour
     // 3RD FROM TOP ROW
     public void ThirdRowLeftShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -387,6 +401,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
 
@@ -421,6 +436,9 @@ public class GameManager : MonoBehaviour
     // 4TH FROM TOP ROW
     public void FourthRowLeftShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -436,6 +454,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
 
@@ -471,6 +490,9 @@ public class GameManager : MonoBehaviour
     // TOP ROW
     public void TopRowRightShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -486,6 +508,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
         orderedBlocks.Reverse();
@@ -521,6 +544,9 @@ public class GameManager : MonoBehaviour
     // 2ND FROM TOP ROW
     public void SecondRowRightShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -536,6 +562,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
         orderedBlocks.Reverse();
@@ -571,6 +598,9 @@ public class GameManager : MonoBehaviour
     // 3RD FROM TOP ROW
     public void ThirdRowRightShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -586,6 +616,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
         orderedBlocks.Reverse();
@@ -621,6 +652,9 @@ public class GameManager : MonoBehaviour
     // 4TH FROM TOP ROW
     public void FourthRowRightShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -636,6 +670,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
         orderedBlocks.Reverse();
@@ -671,6 +706,9 @@ public class GameManager : MonoBehaviour
     // 1ST COLUMN UP
     public void FirstColUpShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -687,6 +725,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
         orderedBlocks.Reverse();
@@ -722,6 +761,9 @@ public class GameManager : MonoBehaviour
     // 2ND COLUMN UP
     public void SecondColUpShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -738,6 +780,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
         orderedBlocks.Reverse();
@@ -773,6 +816,9 @@ public class GameManager : MonoBehaviour
     // 3RD COLUMN UP
     public void ThirdColUpShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -789,6 +835,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
         orderedBlocks.Reverse();
@@ -824,6 +871,9 @@ public class GameManager : MonoBehaviour
     // 4TH COLUMN UP
     public void FourthColUpShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -840,6 +890,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
         orderedBlocks.Reverse();
@@ -875,6 +926,9 @@ public class GameManager : MonoBehaviour
     // 1St COLUMN DOWN
     public void FirstColDownShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -891,6 +945,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
 
@@ -925,6 +980,9 @@ public class GameManager : MonoBehaviour
     // 2ND COLUMN DOWN
     public void SecondColDownShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -941,6 +999,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
 
@@ -975,6 +1034,9 @@ public class GameManager : MonoBehaviour
     // 3RD COLUMN DOWN
     public void ThirdColDownShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -991,6 +1053,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
 
@@ -1025,6 +1088,9 @@ public class GameManager : MonoBehaviour
     // 4TH COLUMN DOWN
     public void FourthColDownShiftTest()
     {
+        if(cycleMovesLeft == 0)
+            return;
+
         List<Block> orderedBlocks = new List<Block>();
 
         // fill the list with blocks on the top row
@@ -1041,6 +1107,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
 
