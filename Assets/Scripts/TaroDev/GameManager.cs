@@ -270,7 +270,6 @@ public class GameManager : MonoBehaviour
     }
 
     // ALL LEFT SHIFT BUTTONS
-
     // TOP ROW
     public void TopRowLeftShiftTest()
     {
@@ -283,6 +282,11 @@ public class GameManager : MonoBehaviour
             {
                 orderedBlocks.Add(block);
             }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
         }
 
         // then order them by lowest to highest x
@@ -329,6 +333,10 @@ public class GameManager : MonoBehaviour
                 orderedBlocks.Add(block);
             }
         }
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
 
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
@@ -340,11 +348,11 @@ public class GameManager : MonoBehaviour
             if(block.Pos.x == 0)
             {
                 print("Means you have to cycle");
-                var moveDestroyedBlock = new Vector2(-1f, 3f);
-                var moveTo = new Vector2(3f, 3f);
+                var moveDestroyedBlock = new Vector2(-1f, 2f);
+                var moveTo = new Vector2(3f, 2f);
                 var nodeMovingTo = GetNodeAtPosition(moveTo);
                 sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
-                var newBlock = SpawnBlockWithNoNode(new Vector2(4f, 3f), nodeMovingTo, block.Value);
+                var newBlock = SpawnBlockWithNoNode(new Vector2(4f, 2f), nodeMovingTo, block.Value);
                 sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
                 RemoveBlock(block);
                 continue;
@@ -361,6 +369,106 @@ public class GameManager : MonoBehaviour
         print("OrderedBlocks:" + orderedBlocks.Count());
     }
 
+    // 3RD FROM TOP ROW
+    public void ThirdRowLeftShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.y == 1)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest x
+        orderedBlocks.OrderBy(b => b.Pos.x);
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.x == 0)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(-1f, 1f);
+                var moveTo = new Vector2(3f, 1f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(4f, 1f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.left);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 4TH FROM TOP ROW
+    public void FourthRowLeftShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.y == 0)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest x
+        orderedBlocks.OrderBy(b => b.Pos.x);
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.x == 0)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(-1f, 0f);
+                var moveTo = new Vector2(3f, 0f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(4f, 0f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.left);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // ALL RIGHT SHIFT BUTTONS
+    // TOP ROW
     public void TopRowRightShiftTest()
     {
         List<Block> orderedBlocks = new List<Block>();
@@ -372,6 +480,10 @@ public class GameManager : MonoBehaviour
             {
                 orderedBlocks.Add(block);
             }
+        }
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
         }
 
         // then order them by lowest to highest x
@@ -396,6 +508,560 @@ public class GameManager : MonoBehaviour
             }
 
             var possibleNode = GetNodeAtPosition(block.Pos + Vector2.right);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 2ND FROM TOP ROW
+    public void SecondRowRightShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.y == 2)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest x
+        orderedBlocks.OrderBy(b => b.Pos.x);
+        orderedBlocks.Reverse();
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.x == 3)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(4f, 2f);
+                var moveTo = new Vector2(0f, 2f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(-1f, 2f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.right);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 3RD FROM TOP ROW
+    public void ThirdRowRightShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.y == 1)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest x
+        orderedBlocks.OrderBy(b => b.Pos.x);
+        orderedBlocks.Reverse();
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.x == 3)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(4f, 1f);
+                var moveTo = new Vector2(0f, 1f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(-1f, 1f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.right);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 4TH FROM TOP ROW
+    public void FourthRowRightShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.y == 0)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest x
+        orderedBlocks.OrderBy(b => b.Pos.x);
+        orderedBlocks.Reverse();
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.x == 3)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(4f, 0f);
+                var moveTo = new Vector2(0f, 0f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(-1f, 0f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.right);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 1ST COLUMN UP
+    public void FirstColUpShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.x == 0)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest y
+        orderedBlocks.OrderBy(b => b.Pos.y);
+        orderedBlocks.Reverse();
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.y == 3)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(0f, -1f);
+                var moveTo = new Vector2(0f, 0f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(0f, -1f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.up);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 2ND COLUMN UP
+    public void SecondColUpShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.x == 1)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest y
+        orderedBlocks.OrderBy(b => b.Pos.y);
+        orderedBlocks.Reverse();
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.y == 3)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(1f, -1f);
+                var moveTo = new Vector2(1f, 0f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(1f, -1f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.up);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 3RD COLUMN UP
+    public void ThirdColUpShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.x == 2)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest y
+        orderedBlocks.OrderBy(b => b.Pos.y);
+        orderedBlocks.Reverse();
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.y == 3)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(2f, -1f);
+                var moveTo = new Vector2(2f, 0f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(2f, -1f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.up);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 4TH COLUMN UP
+    public void FourthColUpShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.x == 3)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest y
+        orderedBlocks.OrderBy(b => b.Pos.y);
+        orderedBlocks.Reverse();
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.y == 3)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(3f, -1f);
+                var moveTo = new Vector2(3f, 0f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(3f, -1f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.up);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 1St COLUMN DOWN
+    public void FirstColDownShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.x == 0)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest y
+        orderedBlocks.OrderBy(b => b.Pos.y);
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.y == 0)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(0f, 4f);
+                var moveTo = new Vector2(0f, 3f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(0f, 4f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.down);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 2ND COLUMN DOWN
+    public void SecondColDownShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.x == 1)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest y
+        orderedBlocks.OrderBy(b => b.Pos.y);
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.y == 0)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(1f, 4f);
+                var moveTo = new Vector2(1f, 3f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(1f, 4f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.down);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 3RD COLUMN DOWN
+    public void ThirdColDownShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.x == 2)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest y
+        orderedBlocks.OrderBy(b => b.Pos.y);
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.y == 0)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(2f, 4f);
+                var moveTo = new Vector2(2f, 3f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(2f, 4f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.down);
+            var movePoint = possibleNode.Pos;
+            block.SetBlock(possibleNode);
+            sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+        }
+
+            audioSource.PlayOneShot(swipe, 0.2f);
+
+        print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    // 4TH COLUMN DOWN
+    public void FourthColDownShiftTest()
+    {
+        List<Block> orderedBlocks = new List<Block>();
+
+        // fill the list with blocks on the top row
+        foreach(var block in blocks)
+        {
+            if(block.Pos.x == 3)
+            {
+                orderedBlocks.Add(block);
+            }
+        }
+
+        if(orderedBlocks.Count() == 0)
+        {
+            return;
+        }
+
+        // then order them by lowest to highest y
+        orderedBlocks.OrderBy(b => b.Pos.y);
+
+        // Create and Play the animation
+        var sequence = DOTween.Sequence();
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Pos.y == 0)
+            {
+                print("Means you have to cycle");
+                var moveDestroyedBlock = new Vector2(3f, 4f);
+                var moveTo = new Vector2(3f, 3f);
+                var nodeMovingTo = GetNodeAtPosition(moveTo);
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                var newBlock = SpawnBlockWithNoNode(new Vector2(3f, 4f), nodeMovingTo, block.Value);
+                sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
+                RemoveBlock(block);
+                continue;
+            }
+
+            var possibleNode = GetNodeAtPosition(block.Pos + Vector2.down);
             var movePoint = possibleNode.Pos;
             block.SetBlock(possibleNode);
             sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
