@@ -20,7 +20,7 @@ public class Fill2048 : MonoBehaviour
         valueDisplay.text = value.ToString();
 
         int colorIndex = GetColorIndex(value);
-        Debug.Log(colorIndex + " color index");
+        //Debug.Log(colorIndex + " color index");
         myImage = GetComponent<Image>();
         myImage.color = GameController2048.instance.fillColors[colorIndex];
     }
@@ -44,6 +44,7 @@ public class Fill2048 : MonoBehaviour
         {
             hasCombine = false;
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, Vector3.zero, speed * Time.deltaTime);
+            
         }
         else if(hasCombine == false)
         {
@@ -52,6 +53,7 @@ public class Fill2048 : MonoBehaviour
                 Destroy(transform.parent.GetChild(0).gameObject);
             }
             hasCombine = true;
+            
         }
     }
 
@@ -62,7 +64,7 @@ public class Fill2048 : MonoBehaviour
         valueDisplay.text = value.ToString();
 
         int colorIndex = GetColorIndex(value);
-        Debug.Log(colorIndex + " color index");
+        //Debug.Log(colorIndex + " color index");
         
         myImage.color = GameController2048.instance.fillColors[colorIndex];
 

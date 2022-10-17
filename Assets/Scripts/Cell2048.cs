@@ -11,7 +11,6 @@ public class Cell2048 : MonoBehaviour
 
     public Fill2048 fill;
 
-
     private void OnEnable()
     {
         GameController2048.slide += OnSlide;    
@@ -26,15 +25,17 @@ public class Cell2048 : MonoBehaviour
     private void OnSlide(string whatWasSent)
     {
         CellCheck();
-        Debug.Log(whatWasSent);
+        //Debug.Log(whatWasSent);
         if(whatWasSent == "w")
         {
             if(up != null)
             {
                 return;
             }
-            Cell2048 currentCell = this;
+            Cell2048 currentCell = this;            // only cells 1-4 can be current cells
+            //print(currentCell);
             SlideUp(currentCell);
+            
         }
 
         if(whatWasSent == "d")
@@ -67,11 +68,16 @@ public class Cell2048 : MonoBehaviour
             SlideLeft(currentCell);
         }
 
-        GameController2048.ticker++;
-        if(GameController2048.ticker == 4)
-        {
-            GameController2048.instance.SpawnFill();
-        }
+        
+        //print("TickerCountBelow");
+        
+        //print(GameController2048.ticker);
+        // if(GameController2048.ticker == total)
+        // {
+        //     print("SPAWNED ONE");
+        //     GameController2048.instance.SpawnFill();
+        //     total = 0;
+        // }
     }
 
     void SlideUp(Cell2048 currentCell)
@@ -81,7 +87,7 @@ public class Cell2048 : MonoBehaviour
             return;
         }
 
-        Debug.Log(currentCell.gameObject);
+        //Debug.Log(currentCell.gameObject);
         if(currentCell.fill != null)
         {
             Cell2048 nextCell = currentCell.down;
@@ -94,16 +100,21 @@ public class Cell2048 : MonoBehaviour
                 if(currentCell.fill.value == nextCell.fill.value)
                 {
                     nextCell.fill.Double();
-                    nextCell.fill.transform.parent = currentCell.transform;
+                    nextCell.fill.transform.parent = currentCell.transform;                 //there was a double so a number got replaced
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
+                    GameController2048.ticker++;
+                    
                 }
                 else if (currentCell.down.fill != nextCell.fill)
                 {
-                    Debug.Log("!doubled");
-                    nextCell.fill.transform.parent = currentCell.down.transform;
+                    //Debug.Log("!doubled");
+                    nextCell.fill.transform.parent = currentCell.down.transform;            //there was no double so the number was sent under it
                     currentCell.down.fill = nextCell.fill;
                     nextCell.fill = null;
+                    GameController2048.ticker++;
+                    
+                    
                 }
             }
         }
@@ -119,8 +130,10 @@ public class Cell2048 : MonoBehaviour
                 nextCell.fill.transform.parent = currentCell.transform;
                 currentCell.fill = nextCell.fill;
                 nextCell.fill = null;
+                GameController2048.ticker++;
+                
                 SlideUp(currentCell);
-                Debug.Log("Slide to Empty");
+                //Debug.Log("Slide to Empty");
             }
         }
 
@@ -140,7 +153,7 @@ public class Cell2048 : MonoBehaviour
             return;
         }
 
-        Debug.Log(currentCell.gameObject);
+        //Debug.Log(currentCell.gameObject);
         if(currentCell.fill != null)
         {
             Cell2048 nextCell = currentCell.left;
@@ -156,13 +169,15 @@ public class Cell2048 : MonoBehaviour
                     nextCell.fill.transform.parent = currentCell.transform;
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
+                    GameController2048.ticker++;
                 }
                 else if (currentCell.left.fill != nextCell.fill)
                 {
-                    Debug.Log("!doubled");
+                    //Debug.Log("!doubled");
                     nextCell.fill.transform.parent = currentCell.left.transform;
                     currentCell.left.fill = nextCell.fill;
                     nextCell.fill = null;
+                    GameController2048.ticker++;
                 }
             }
         }
@@ -178,8 +193,9 @@ public class Cell2048 : MonoBehaviour
                 nextCell.fill.transform.parent = currentCell.transform;
                 currentCell.fill = nextCell.fill;
                 nextCell.fill = null;
+                GameController2048.ticker++;
                 SlideRight(currentCell);
-                Debug.Log("Slide to Empty");
+                //Debug.Log("Slide to Empty");
             }
         }
 
@@ -199,7 +215,7 @@ public class Cell2048 : MonoBehaviour
             return;
         }
 
-        Debug.Log(currentCell.gameObject);
+        //Debug.Log(currentCell.gameObject);
         if(currentCell.fill != null)
         {
             Cell2048 nextCell = currentCell.up;
@@ -215,13 +231,15 @@ public class Cell2048 : MonoBehaviour
                     nextCell.fill.transform.parent = currentCell.transform;
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
+                    GameController2048.ticker++;
                 }
                 else if (currentCell.up.fill != nextCell.fill)
                 {
-                    Debug.Log("!doubled");
+                    //Debug.Log("!doubled");
                     nextCell.fill.transform.parent = currentCell.up.transform;
                     currentCell.up.fill = nextCell.fill;
                     nextCell.fill = null;
+                    GameController2048.ticker++;
                 }
             }
         }
@@ -237,8 +255,9 @@ public class Cell2048 : MonoBehaviour
                 nextCell.fill.transform.parent = currentCell.transform;
                 currentCell.fill = nextCell.fill;
                 nextCell.fill = null;
+                GameController2048.ticker++;
                 SlideDown(currentCell);
-                Debug.Log("Slide to Empty");
+                //Debug.Log("Slide to Empty");
             }
         }
 
@@ -258,7 +277,7 @@ public class Cell2048 : MonoBehaviour
             return;
         }
 
-        Debug.Log(currentCell.gameObject);
+        //Debug.Log(currentCell.gameObject);
         if(currentCell.fill != null)
         {
             Cell2048 nextCell = currentCell.right;
@@ -274,13 +293,15 @@ public class Cell2048 : MonoBehaviour
                     nextCell.fill.transform.parent = currentCell.transform;
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
+                    GameController2048.ticker++;
                 }
                 else if (currentCell.right.fill != nextCell.fill)
                 {
-                    Debug.Log("!doubled");
+                    //Debug.Log("!doubled");
                     nextCell.fill.transform.parent = currentCell.right.transform;
                     currentCell.right.fill = nextCell.fill;
                     nextCell.fill = null;
+                    GameController2048.ticker++;
                 }
             }
         }
@@ -296,8 +317,9 @@ public class Cell2048 : MonoBehaviour
                 nextCell.fill.transform.parent = currentCell.transform;
                 currentCell.fill = nextCell.fill;
                 nextCell.fill = null;
+                GameController2048.ticker++;
                 SlideLeft(currentCell);
-                Debug.Log("Slide to Empty");
+                //Debug.Log("Slide to Empty");
             }
         }
 
