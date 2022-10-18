@@ -24,12 +24,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int score = 0;
     [SerializeField] private int possibleHighScore;
     [SerializeField] private int cycleMovesLeft = 5;
+    [SerializeField] private int countUntilObstacle = 5;
 
     [Header("UI")]
     [SerializeField] private GameObject winScreen, loseScreen;
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text highscoreText;
     [SerializeField] private TMP_Text cycleMoves;
+    [SerializeField] private GameObject cycleUI;
 
     [Header("Audio")]
     [SerializeField] private AudioClip swipe;
@@ -1202,6 +1204,19 @@ public class GameManager : MonoBehaviour
     {
         winScreen.SetActive(false);
         ChangeState(GameState.WaitingInput);
+    }
+
+    public void ToggleCycle()
+    {
+        if(cycleUI.activeSelf)
+        {
+            cycleUI.SetActive(false);
+        }
+
+        else
+        {
+            cycleUI.SetActive(true);
+        }
     }
 
 }

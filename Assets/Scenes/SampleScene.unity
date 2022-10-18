@@ -13583,7 +13583,7 @@ MonoBehaviour:
   gameOver: 0
   score: 0
   possibleHighScore: 0
-  cycleMovesLeft: 5
+  cycleMovesLeft: 100
   winScreen: {fileID: 0}
   loseScreen: {fileID: 2077852739}
   scoreText: {fileID: 1484964120}
