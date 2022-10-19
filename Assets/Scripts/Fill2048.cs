@@ -12,7 +12,9 @@ public class Fill2048 : MonoBehaviour
 
     bool hasCombine;
 
-    Image myImage;
+    public Image myImage;
+
+    public Color[] PrivateColors;
 
     public void FillValueUpdate(int valueIn)
     {
@@ -22,7 +24,8 @@ public class Fill2048 : MonoBehaviour
         int colorIndex = GetColorIndex(value);
         //Debug.Log(colorIndex + " color index");
         myImage = GetComponent<Image>();
-        myImage.color = GameController2048.instance.fillColors[colorIndex];
+        //myImage.color = GameController2048.instance.fillColors[colorIndex];
+        myImage.color = PrivateColors[colorIndex];
     }
 
     int GetColorIndex(int valueIn)
@@ -66,7 +69,11 @@ public class Fill2048 : MonoBehaviour
         int colorIndex = GetColorIndex(value);
         //Debug.Log(colorIndex + " color index");
         
-        myImage.color = GameController2048.instance.fillColors[colorIndex];
+        //myImage.color = GameController2048.instance.fillColors[colorIndex];
+        print("COLOR INDEX");
+        print(colorIndex);
+        print(PrivateColors[0]);
+        myImage.color = PrivateColors[colorIndex];
 
         GameController2048.instance.WinningCheck(value);
 

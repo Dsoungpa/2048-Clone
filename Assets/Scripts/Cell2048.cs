@@ -99,6 +99,7 @@ public class Cell2048 : MonoBehaviour
             {
                 if(currentCell.fill.value == nextCell.fill.value)
                 {
+
                     nextCell.fill.Double();
                     nextCell.fill.transform.parent = currentCell.transform;                 //there was a double so a number got replaced
                     currentCell.fill = nextCell.fill;
@@ -212,6 +213,7 @@ public class Cell2048 : MonoBehaviour
     {
         if(currentCell.up == null)
         {
+            //print(currentCell.name);
             return;
         }
 
@@ -227,7 +229,13 @@ public class Cell2048 : MonoBehaviour
             {
                 if(currentCell.fill.value == nextCell.fill.value)
                 {
+                    print("Current Cell Below");
+                    print(currentCell.name);    
+                    print("Next Cell Below");
+                    print(nextCell.name);
+                    print(nextCell.fill.myImage.color);       
                     nextCell.fill.Double();
+                    print("passed double");
                     nextCell.fill.transform.parent = currentCell.transform;
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
