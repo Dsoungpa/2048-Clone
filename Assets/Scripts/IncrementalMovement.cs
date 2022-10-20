@@ -15,6 +15,8 @@ public class IncrementalMovement : MonoBehaviour
 
     public void IncrementLeft(Cell2048 FirstCell)
     {
+        IncrementUI.current--;
+
         Cell2048 LastCell = FirstCell.right.right.right;        //Cell 4(last one at the right)                          
         Cell2048 SecondCell = FirstCell.right;                  //Cell 2
         Cell2048 ThirdCell = FirstCell.right.right;             //Cell 3
@@ -84,6 +86,8 @@ public class IncrementalMovement : MonoBehaviour
 
     public void IncrementRight(Cell2048 FirstCell)
     {
+        IncrementUI.current--;
+
         Cell2048 LastCell = FirstCell.right.right.right;        //Cell 4(last one at the right)                          
         Cell2048 SecondCell = FirstCell.right;                  //Cell 2
         Cell2048 ThirdCell = FirstCell.right.right;             //Cell 3
@@ -155,6 +159,8 @@ public class IncrementalMovement : MonoBehaviour
 
     public void IncrementUp(Cell2048 FirstCell)
     {
+        IncrementUI.current--;
+
         Cell2048 LastCell = FirstCell.down.down.down;
         Cell2048 SecondCell = FirstCell.down;
         Cell2048 ThirdCell = FirstCell.down.down;
@@ -224,6 +230,8 @@ public class IncrementalMovement : MonoBehaviour
 
     public void IncrementDown(Cell2048 FirstCell)
     {
+        IncrementUI.current--;
+        
         Cell2048 LastCell = FirstCell.down.down.down;
         Cell2048 SecondCell = FirstCell.down;
         Cell2048 ThirdCell = FirstCell.down.down;

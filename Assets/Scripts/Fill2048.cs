@@ -63,6 +63,13 @@ public class Fill2048 : MonoBehaviour
     public void Double()                                                // when 2 fill objects are combined
     {
         value *= 2;
+        if (value >= 32)
+        {
+            if (IncrementUI.current < 5){
+                IncrementUI.current++;
+            }
+            
+        }
         GameController2048.instance.ScoreUpdate(value);
         valueDisplay.text = value.ToString();
 
