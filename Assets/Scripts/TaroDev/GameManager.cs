@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int height = 4;
     [SerializeField] private Node nodePrefab;
     [SerializeField] private Block blockPrefab;
+    [SerializeField] private Block obstaclePrefab;
     [SerializeField] private SpriteRenderer boardPrefab;
     [SerializeField] private List<BlockType> types;
     [SerializeField] private float travelTime = 0.2f;
@@ -57,6 +58,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        print(round);
         cycleMoves.text = cycleMovesLeft.ToString();
         possibleHighScore = score;
 
@@ -130,30 +132,40 @@ public class GameManager : MonoBehaviour
         // Get a list of nodes that are not Occupied by a block from the list of nodes
         var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
 
-        // For each of the free nodes get a certain amount of Nodes that you want to use
-        // for spawning the blocks
-        foreach (var nodes in freeNodes.Take(amount))
+        if(round > 1 && Random.value > 0.9f)
         {
-            SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
+            foreach (var nodes in freeNodes.Take(amount))
+            {
+                SpawnObstacle(nodes);
+            }
         }
 
-        if (freeNodes.Count() == 1) {
-            if(cycleMovesLeft == 0)
-                return;
-            
-            var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
-            if(GameOver)
+        else
+        {
+            // For each of the free nodes get a certain amount of Nodes that you want to use
+            // for spawning the blocks
+            foreach (var nodes in freeNodes.Take(amount))
             {
-                ChangeState(GameState.Lose);
-                return;
+                SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
             }
 
-            else
-            {
-                ChangeState(GameState.WaitingInput);
-                return;
-            }
-            
+            if (freeNodes.Count() == 1) {
+                if(cycleMovesLeft == 0)
+                    return;
+                
+                var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
+                if(GameOver)
+                {
+                    ChangeState(GameState.Lose);
+                    return;
+                }
+
+                else
+                {
+                    ChangeState(GameState.WaitingInput);
+                    return;
+                }
+            }     
         }
 
         // "b=>b" - "Is there any..."
@@ -176,14 +188,37 @@ public class GameManager : MonoBehaviour
         blocks.Add(block);
     }
 
+    void SpawnObstacle(Node node)
+    {
+        // Instantiate a block prefab at the chosen node location
+        var block = Instantiate(obstaclePrefab, node.Pos, Quaternion.identity);    
+        block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
+        node.Obstacle = true;
+        block.Obstacle = true;
+
+        // Assign the node to the Block and visa versa
+        block.SetBlock(node);
+
+        // Add block to the list
+        blocks.Add(block);
+    }
+
     private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value)
     {
         // Instantiate a block prefab at the chosen node location
         var block = Instantiate(blockPrefab, spawn, Quaternion.identity);    
         block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
 
-        // Take the block game object and initialize it as a BlockType
-        block.Init(GetBlockTypeByValue(value));
+        if(node.Obstacle)
+        {
+            block.Obstacle = true;
+        }
+        else
+        {
+            // Take the block game object and initialize it as a BlockType
+            block.Init(GetBlockTypeByValue(value));
+        }
+        
 
         // Assign the node to the Block and visa versa
         block.SetBlock(node);
@@ -207,6 +242,8 @@ public class GameManager : MonoBehaviour
         // Go through the ordered list of blocks
         foreach (var block in orderedBlocks)
         {
+            if(block.Obstacle)
+                continue;
             // I think of "next" like current node that the block is on
             var next = block.Node;
             do {
@@ -219,21 +256,23 @@ public class GameManager : MonoBehaviour
                 //If there is a possible node in that direction
                 if(possibleNode != null)
                 {
-                    // We know a node is present
-                    // If its possible to merge, set merge
-                    if(possibleNode.OccupiedBlock != null && possibleNode.OccupiedBlock.CanMerge(block.Value))
+                    if(possibleNode.Obstacle == false)
                     {
-                        block.MergeBlock(possibleNode.OccupiedBlock);
-                        blocksMoved = true;
+                        // We know a node is present
+                        // If its possible to merge, set merge
+                        if(possibleNode.OccupiedBlock != null && possibleNode.OccupiedBlock.CanMerge(block.Value))
+                        {
+                            block.MergeBlock(possibleNode.OccupiedBlock);
+                            blocksMoved = true;
+                        }
+
+                        // Otherwise can we move to this spot?
+                        else if(possibleNode.OccupiedBlock == null){
+                            next = possibleNode;
+                            blocksMoved = true;
+                        }
                     }
-
-                    // Otherwise can we move to this spot?
-                    else if(possibleNode.OccupiedBlock == null){
-                        next = possibleNode;
-                        blocksMoved = true;
-                    } 
-                        
-
+                    
                     // None hit? End do while loop
                 }
             } while (next != block.Node);
@@ -297,10 +336,18 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
         cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
 
+        
         // Create and Play the animation
         var sequence = DOTween.Sequence();
         foreach(var block in orderedBlocks)
@@ -345,10 +392,18 @@ public class GameManager : MonoBehaviour
                 orderedBlocks.Add(block);
             }
         }
+
         if(orderedBlocks.Count() == 0)
         {
             return;
         }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
 
         cycleMovesLeft--;
         // then order them by lowest to highest x
@@ -401,6 +456,12 @@ public class GameManager : MonoBehaviour
         if(orderedBlocks.Count() == 0)
         {
             return;
+        }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
         }
 
         cycleMovesLeft--;
@@ -456,6 +517,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
+
         cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
@@ -509,6 +577,13 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
 
         cycleMovesLeft--;
         // then order them by lowest to highest x
@@ -564,6 +639,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
+
         cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
@@ -618,6 +700,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
+
         cycleMovesLeft--;
         // then order them by lowest to highest x
         orderedBlocks.OrderBy(b => b.Pos.x);
@@ -671,6 +760,13 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
 
         cycleMovesLeft--;
         // then order them by lowest to highest x
@@ -727,6 +823,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
+
         cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
@@ -781,6 +884,13 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
 
         cycleMovesLeft--;
         // then order them by lowest to highest y
@@ -837,6 +947,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
+
         cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
@@ -891,6 +1008,13 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
 
         cycleMovesLeft--;
         // then order them by lowest to highest y
@@ -947,6 +1071,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
+
         cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
@@ -1000,6 +1131,13 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
 
         cycleMovesLeft--;
         // then order them by lowest to highest y
@@ -1055,6 +1193,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
+
         cycleMovesLeft--;
         // then order them by lowest to highest y
         orderedBlocks.OrderBy(b => b.Pos.y);
@@ -1108,6 +1253,13 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        foreach(var block in orderedBlocks)
+        {
+            if(block.Obstacle)
+                return;
+        }
+
 
         cycleMovesLeft--;
         // then order them by lowest to highest y

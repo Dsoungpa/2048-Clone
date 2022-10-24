@@ -9,6 +9,7 @@ public class Block : MonoBehaviour
     public Node Node;
     public Block MergingBlock;
     public bool Merging;
+    public bool Obstacle = false;
 
     public Vector2 Pos => transform.position;
     [SerializeField] private SpriteRenderer renderer;
@@ -41,5 +42,5 @@ public class Block : MonoBehaviour
         blockToMergeWith.Merging = true;
     }
 
-    public bool CanMerge(int value) => value == Value && !Merging && MergingBlock == null;
+    public bool CanMerge(int value) => Obstacle == false && value == Value && !Merging && MergingBlock == null;
 }
