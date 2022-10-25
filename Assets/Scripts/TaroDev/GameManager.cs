@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     private List<Node> nodes;
     private List<Block> blocks;
+    private List<Block> obstacles;
     private GameState state;
     private int round;
 
@@ -58,7 +59,6 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        print(round);
         cycleMoves.text = cycleMovesLeft.ToString();
         possibleHighScore = score;
 
@@ -109,6 +109,7 @@ public class GameManager : MonoBehaviour
         round = 0;
         nodes = new List<Node>();
         blocks = new List<Block>();
+        obstacles = new List<Block>();
 
         for(int x = 0; x < width; x++)
         {
@@ -295,7 +296,57 @@ public class GameManager : MonoBehaviour
 
                 foreach (var block in mergeBlocks)
                 {
+                    // foreach(var obstacle in obstacles)
+                    //     {
+                            
+                    //         var nodeUp = GetNodeAtPosition(obstacle.Pos + Vector2.up);
+                    //         print(nodeUp.Pos);
+                    //         var nodeDown = GetNodeAtPosition(obstacle.Pos + Vector2.down);
+                    //         print(nodeDown.Pos);
+                    //         var nodeLeft = GetNodeAtPosition(obstacle.Pos + Vector2.left);
+                    //         print(nodeLeft.Pos);
+                    //         var nodeRight = GetNodeAtPosition(obstacle.Pos + Vector2.right);
+                    //         print(nodeRight.Pos);
+
+                    //         if((nodeUp && block.Node == nodeUp) || (nodeDown && block.Node == nodeDown) || (nodeLeft && block.Node == nodeLeft) || (nodeRight && block.Node == nodeRight))
+                    //         {
+                    //             //obstacles.Remove(obstacle);
+                    //             print(obstacle.Pos);
+                    //         }
+                            
+                    //     }
+                    var nodeUp = GetNodeAtPosition(block.Pos + Vector2.up);
+                    var nodeDown = GetNodeAtPosition(block.Pos + Vector2.down);
+                    var nodeLeft = GetNodeAtPosition(block.Pos + Vector2.left);
+                    var nodeRight = GetNodeAtPosition(block.Pos + Vector2.right);
+
+                    if(nodeUp && nodeUp.Obstacle)
+                    {
+                        nodeUp.Obstacle = false;
+                        RemoveBlock(nodeUp.OccupiedBlock);
+                    }
+
+                    if(nodeDown && nodeDown.Obstacle)
+                    {
+                        nodeDown.Obstacle = false;
+                        RemoveBlock(nodeDown.OccupiedBlock);
+                    }
+
+                    if(nodeLeft && nodeLeft.Obstacle)
+                    {
+                        nodeLeft.Obstacle = false;
+                        RemoveBlock(nodeLeft.OccupiedBlock);
+                    }
+
+                    if(nodeRight && nodeRight.Obstacle)
+                    {
+                        nodeRight.Obstacle = false;
+                        RemoveBlock(nodeRight.OccupiedBlock);
+                    }
+
                     MergeBlocks(block.MergingBlock, block);
+                    
+                    
                 }
 
                 if(mergeBlocks.Any()) audioSource.PlayOneShot(merge, 0.2f);
