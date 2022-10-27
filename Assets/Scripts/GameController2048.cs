@@ -11,6 +11,7 @@ public class GameController2048 : MonoBehaviour
     public static int ticker;
 
     [SerializeField] GameObject fillPrefab;
+    [SerializeField] GameObject brickPrefab;
     [SerializeField] public Cell2048[] allCells;
 
     public static Action<string> slide;
@@ -113,20 +114,24 @@ public class GameController2048 : MonoBehaviour
 
         if(allCells[whichSpawn].transform.childCount != 0)                            //checks if that cell is already taken
         {
-            Debug.Log(allCells[whichSpawn].name + " is already filled");
+            //Debug.Log(allCells[whichSpawn].name + " is already filled");
             SpawnFill();
             return;
         }
 
         float chance = UnityEngine.Random.Range(0f, 1f);
         //Debug.Log(chance);
-        if(chance < .8f)                                               // spawns a number 2 
+        if (chance < .1f)
+        {
+            GameObject tempFill = Instantiate(brickPrefab, allCells[whichSpawn].transform);
+            Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
+            allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
+            tempFillComp.FillValueUpdate(2);
+        }
+        else if(chance < .8f)                                               // spawns a number 2 
         {
             
             GameObject tempFill = Instantiate(fillPrefab, allCells[whichSpawn].transform);
-            //print("HERE");
-            //print(allCells[whichSpawn].name);
-            //Debug.Log(2);
             Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
             allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
             tempFillComp.FillValueUpdate(2);
@@ -136,9 +141,6 @@ public class GameController2048 : MonoBehaviour
         {
             
             GameObject tempFill = Instantiate(fillPrefab, allCells[whichSpawn].transform);
-            //print("HERE");
-            //print(allCells[whichSpawn].name);
-            //Debug.Log(4);
             Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
             allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
             tempFillComp.FillValueUpdate(4);

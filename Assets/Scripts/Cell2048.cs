@@ -95,8 +95,9 @@ public class Cell2048 : MonoBehaviour
             {
                 nextCell = nextCell.down;
             }
-            if(nextCell.fill != null)
+            if(nextCell.fill != null && nextCell.fill.brick == false && currentCell.fill.brick == false)                                       // HERE YOU WILL CHECK IF ITS A BRICK
             {
+                //print(nextCell.fill.brick);
                 if(currentCell.fill.value == nextCell.fill.value)
                 {
 
@@ -105,6 +106,15 @@ public class Cell2048 : MonoBehaviour
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
                     GameController2048.ticker++;
+
+                    if(currentCell.up != null)
+                    {
+                        if(currentCell.up.fill.brick == true)
+                        {
+                            Destroy(currentCell.up.transform.GetChild(0).gameObject);
+                            currentCell.up.fill = null;
+                        }
+                    }
                     
                 }
                 else if (currentCell.down.fill != nextCell.fill)
@@ -126,8 +136,9 @@ public class Cell2048 : MonoBehaviour
             {
                 nextCell = nextCell.down;
             }
-            if(nextCell.fill != null)
+            if(nextCell.fill != null && nextCell.fill.brick == false)       // CHECK FOR BRICK
             {
+                //print(nextCell.fill.brick);
                 nextCell.fill.transform.parent = currentCell.transform;
                 currentCell.fill = nextCell.fill;
                 nextCell.fill = null;
@@ -162,7 +173,7 @@ public class Cell2048 : MonoBehaviour
             {
                 nextCell = nextCell.left;
             }
-            if(nextCell.fill != null)
+            if(nextCell.fill != null && nextCell.fill.brick == false && currentCell.fill.brick == false)
             {
                 if(currentCell.fill.value == nextCell.fill.value)
                 {
@@ -171,6 +182,15 @@ public class Cell2048 : MonoBehaviour
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
                     GameController2048.ticker++;
+
+                    if(currentCell.right != null)
+                    {
+                        if(currentCell.right.fill.brick == true)
+                        {
+                            Destroy(currentCell.right.transform.GetChild(0).gameObject);
+                            currentCell.right.fill = null;
+                        }
+                    }
                 }
                 else if (currentCell.left.fill != nextCell.fill)
                 {
@@ -189,7 +209,7 @@ public class Cell2048 : MonoBehaviour
             {
                 nextCell = nextCell.left;
             }
-            if(nextCell.fill != null)
+            if(nextCell.fill != null && nextCell.fill.brick == false)
             {
                 nextCell.fill.transform.parent = currentCell.transform;
                 currentCell.fill = nextCell.fill;
@@ -225,21 +245,30 @@ public class Cell2048 : MonoBehaviour
             {
                 nextCell = nextCell.up;
             }
-            if(nextCell.fill != null)
+            if(nextCell.fill != null && nextCell.fill.brick == false && currentCell.fill.brick == false)
             {
                 if(currentCell.fill.value == nextCell.fill.value)
                 {
-                    print("Current Cell Below");
-                    print(currentCell.name);    
-                    print("Next Cell Below");
-                    print(nextCell.name);
-                    print(nextCell.fill.myImage.color);       
+                    //print("Current Cell Below");
+                    //print(currentCell.name);    
+                    //print("Next Cell Below");
+                    //print(nextCell.name);
+                    //print(nextCell.fill.myImage.color);       
                     nextCell.fill.Double();
-                    print("passed double");
+                    //print("passed double");
                     nextCell.fill.transform.parent = currentCell.transform;
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
                     GameController2048.ticker++;
+
+                    if(currentCell.down != null)
+                    {
+                        if(currentCell.down.fill.brick == true)
+                        {
+                            Destroy(currentCell.down.transform.GetChild(0).gameObject);
+                            currentCell.down.fill = null;
+                        }
+                    }
                 }
                 else if (currentCell.up.fill != nextCell.fill)
                 {
@@ -258,7 +287,7 @@ public class Cell2048 : MonoBehaviour
             {
                 nextCell = nextCell.up;
             }
-            if(nextCell.fill != null)
+            if(nextCell.fill != null && nextCell.fill.brick == false)
             {
                 nextCell.fill.transform.parent = currentCell.transform;
                 currentCell.fill = nextCell.fill;
@@ -293,7 +322,7 @@ public class Cell2048 : MonoBehaviour
             {
                 nextCell = nextCell.right;
             }
-            if(nextCell.fill != null)
+            if(nextCell.fill != null && nextCell.fill.brick == false && currentCell.fill.brick == false)
             {
                 if(currentCell.fill.value == nextCell.fill.value)
                 {
@@ -302,6 +331,15 @@ public class Cell2048 : MonoBehaviour
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
                     GameController2048.ticker++;
+
+                    if(currentCell.left != null)
+                    {
+                        if(currentCell.left.fill.brick == true)
+                        {
+                            Destroy(currentCell.left.transform.GetChild(0).gameObject);
+                            currentCell.left.fill = null;
+                        }
+                    }
                 }
                 else if (currentCell.right.fill != nextCell.fill)
                 {
@@ -320,7 +358,7 @@ public class Cell2048 : MonoBehaviour
             {
                 nextCell = nextCell.right;
             }
-            if(nextCell.fill != null)
+            if(nextCell.fill != null && nextCell.fill.brick == false)
             {
                 nextCell.fill.transform.parent = currentCell.transform;
                 currentCell.fill = nextCell.fill;
@@ -352,7 +390,7 @@ public class Cell2048 : MonoBehaviour
             {
                 return;
             }
-            if(up.fill.value == fill.value)
+            if(up.fill.value == fill.value && up.fill.brick == false && fill.brick == false)
             {
                 return;
             }
@@ -365,7 +403,7 @@ public class Cell2048 : MonoBehaviour
             {
                 return;
             }
-            if(right.fill.value == fill.value)
+            if(right.fill.value == fill.value && right.fill.brick == false && fill.brick == false)
             {
                 return;
             }
@@ -378,7 +416,7 @@ public class Cell2048 : MonoBehaviour
             {
                 return;
             }
-            if(down.fill.value == fill.value)
+            if(down.fill.value == fill.value && down.fill.brick == false && fill.brick == false)
             {
                 return;
             }
@@ -391,7 +429,7 @@ public class Cell2048 : MonoBehaviour
             {
                 return;
             }
-            if(left.fill.value == fill.value)
+            if(left.fill.value == fill.value && left.fill.brick == false && fill.brick == false)
             {
                 return;
             }

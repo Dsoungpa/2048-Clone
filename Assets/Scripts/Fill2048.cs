@@ -16,6 +16,8 @@ public class Fill2048 : MonoBehaviour
 
     public Color[] PrivateColors;
 
+    public bool brick;
+
     public void FillValueUpdate(int valueIn)
     {
         value = valueIn;
@@ -24,6 +26,14 @@ public class Fill2048 : MonoBehaviour
         int colorIndex = GetColorIndex(value);
         //Debug.Log(colorIndex + " color index");
         myImage = GetComponent<Image>();
+        if (myImage.sprite.name == "Brick")
+        {
+            brick = true;
+        }
+        else{
+            brick = false;
+        }
+        //print(myImage.sprite.name);
         //myImage.color = GameController2048.instance.fillColors[colorIndex];
         myImage.color = PrivateColors[colorIndex];
     }
@@ -77,12 +87,13 @@ public class Fill2048 : MonoBehaviour
         //Debug.Log(colorIndex + " color index");
         
         //myImage.color = GameController2048.instance.fillColors[colorIndex];
-        print("COLOR INDEX");
-        print(colorIndex);
-        print(PrivateColors[0]);
+        //print("COLOR INDEX");
+        //print(colorIndex);
+        //print(PrivateColors[0]);
         myImage.color = PrivateColors[colorIndex];
 
         GameController2048.instance.WinningCheck(value);
 
     }
+
 }
