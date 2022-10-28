@@ -27,6 +27,11 @@ public class GameController2048 : MonoBehaviour
     [SerializeField] GameObject WinningPanel;
     bool hasWon;
 
+    List<int> fivePercents = new List<int>(new int[] {16, 32, 64});
+    List<int> twoPercents = new List<int>(new int[] {128, 256, 512, 1024});
+
+    public static int brickcount = 0;
+
     private void OnEnable()
     {
         if(instance == null)
@@ -121,12 +126,49 @@ public class GameController2048 : MonoBehaviour
 
         float chance = UnityEngine.Random.Range(0f, 1f);
         //Debug.Log(chance);
-        if (chance < .1f)
+        if (chance < .1f)                                                       //spawns a brick
         {
-            GameObject tempFill = Instantiate(brickPrefab, allCells[whichSpawn].transform);
-            Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
-            allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
-            tempFillComp.FillValueUpdate(2);
+            if (brickcount < 3)
+            {
+                float bricknumchance = UnityEngine.Random.Range(0f, 1f);
+                if(bricknumchance <= 0.4f){
+                    GameObject tempFill = Instantiate(brickPrefab, allCells[whichSpawn].transform);
+                    Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
+                    allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
+                    tempFillComp.FillValueUpdate(4);
+                    brickcount++;
+                }
+                else if(bricknumchance <= 0.6f){
+                    GameObject tempFill = Instantiate(brickPrefab, allCells[whichSpawn].transform);
+                    Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
+                    allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
+                    tempFillComp.FillValueUpdate(8);
+                    brickcount++;
+                }
+                else if(bricknumchance <= 0.85f){
+                    GameObject tempFill = Instantiate(brickPrefab, allCells[whichSpawn].transform);
+                    Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
+                    allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
+                    tempFillComp.FillValueUpdate(16);
+                    brickcount++;
+                }
+                else if (bricknumchance <= 0.96f){
+                    GameObject tempFill = Instantiate(brickPrefab, allCells[whichSpawn].transform);
+                    Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
+                    allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
+                    tempFillComp.FillValueUpdate(fivePercents[UnityEngine.Random.Range(0,3)]);
+                    brickcount++;
+                }
+                else if (bricknumchance <= 1f){
+                    GameObject tempFill = Instantiate(brickPrefab, allCells[whichSpawn].transform);
+                    Fill2048 tempFillComp = tempFill.GetComponent<Fill2048>();          // pulls number from Fill2048 Script
+                    allCells[whichSpawn].GetComponent<Cell2048>().fill = tempFillComp;
+                    tempFillComp.FillValueUpdate(twoPercents[UnityEngine.Random.Range(0,4)]);
+                    brickcount++;
+                }
+                
+            }
+            
         }
         else if(chance < .8f)                                               // spawns a number 2 
         {
@@ -175,7 +217,7 @@ public class GameController2048 : MonoBehaviour
     public void GameOverCheck()
     {
         isGameOver++;
-        if(isGameOver >= 16)
+        if(isGameOver >= 16 && IncrementUI.current == 0)
         {
             gameOverPanel.SetActive(true);
         }
@@ -184,6 +226,7 @@ public class GameController2048 : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(0);
+        IncrementUI.current = 5;
     }
 
     public void WinningCheck(int highestFill)

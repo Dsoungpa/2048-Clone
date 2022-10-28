@@ -67,17 +67,6 @@ public class Cell2048 : MonoBehaviour
             Cell2048 currentCell = this;
             SlideLeft(currentCell);
         }
-
-        
-        //print("TickerCountBelow");
-        
-        //print(GameController2048.ticker);
-        // if(GameController2048.ticker == total)
-        // {
-        //     print("SPAWNED ONE");
-        //     GameController2048.instance.SpawnFill();
-        //     total = 0;
-        // }
     }
 
     void SlideUp(Cell2048 currentCell)
@@ -107,15 +96,8 @@ public class Cell2048 : MonoBehaviour
                     nextCell.fill = null;
                     GameController2048.ticker++;
 
-                    if(currentCell.up != null)
-                    {
-                        if(currentCell.up.fill.brick == true)
-                        {
-                            Destroy(currentCell.up.transform.GetChild(0).gameObject);
-                            currentCell.up.fill = null;
-                        }
-                    }
-                    
+                    BreakNearBricks(currentCell);
+
                 }
                 else if (currentCell.down.fill != nextCell.fill)
                 {
@@ -123,9 +105,7 @@ public class Cell2048 : MonoBehaviour
                     nextCell.fill.transform.parent = currentCell.down.transform;            //there was no double so the number was sent under it
                     currentCell.down.fill = nextCell.fill;
                     nextCell.fill = null;
-                    GameController2048.ticker++;
-                    
-                    
+                    GameController2048.ticker++; 
                 }
             }
         }
@@ -148,8 +128,6 @@ public class Cell2048 : MonoBehaviour
                 //Debug.Log("Slide to Empty");
             }
         }
-
-
         if(currentCell.down == null)
         {
             return;
@@ -182,15 +160,8 @@ public class Cell2048 : MonoBehaviour
                     currentCell.fill = nextCell.fill;
                     nextCell.fill = null;
                     GameController2048.ticker++;
-
-                    if(currentCell.right != null)
-                    {
-                        if(currentCell.right.fill.brick == true)
-                        {
-                            Destroy(currentCell.right.transform.GetChild(0).gameObject);
-                            currentCell.right.fill = null;
-                        }
-                    }
+                    BreakNearBricks(currentCell);
+                    
                 }
                 else if (currentCell.left.fill != nextCell.fill)
                 {
@@ -248,12 +219,7 @@ public class Cell2048 : MonoBehaviour
             if(nextCell.fill != null && nextCell.fill.brick == false && currentCell.fill.brick == false)
             {
                 if(currentCell.fill.value == nextCell.fill.value)
-                {
-                    //print("Current Cell Below");
-                    //print(currentCell.name);    
-                    //print("Next Cell Below");
-                    //print(nextCell.name);
-                    //print(nextCell.fill.myImage.color);       
+                {     
                     nextCell.fill.Double();
                     //print("passed double");
                     nextCell.fill.transform.parent = currentCell.transform;
@@ -261,14 +227,7 @@ public class Cell2048 : MonoBehaviour
                     nextCell.fill = null;
                     GameController2048.ticker++;
 
-                    if(currentCell.down != null)
-                    {
-                        if(currentCell.down.fill.brick == true)
-                        {
-                            Destroy(currentCell.down.transform.GetChild(0).gameObject);
-                            currentCell.down.fill = null;
-                        }
-                    }
+                    BreakNearBricks(currentCell);
                 }
                 else if (currentCell.up.fill != nextCell.fill)
                 {
@@ -297,8 +256,6 @@ public class Cell2048 : MonoBehaviour
                 //Debug.Log("Slide to Empty");
             }
         }
-
-
         if(currentCell.up == null)
         {
             return;
@@ -332,14 +289,7 @@ public class Cell2048 : MonoBehaviour
                     nextCell.fill = null;
                     GameController2048.ticker++;
 
-                    if(currentCell.left != null)
-                    {
-                        if(currentCell.left.fill.brick == true)
-                        {
-                            Destroy(currentCell.left.transform.GetChild(0).gameObject);
-                            currentCell.left.fill = null;
-                        }
-                    }
+                    BreakNearBricks(currentCell);
                 }
                 else if (currentCell.right.fill != nextCell.fill)
                 {
@@ -368,8 +318,6 @@ public class Cell2048 : MonoBehaviour
                 //Debug.Log("Slide to Empty");
             }
         }
-
-
         if(currentCell.right == null)
         {
             return;
@@ -435,5 +383,54 @@ public class Cell2048 : MonoBehaviour
             }
         }
         GameController2048.instance.GameOverCheck();
+    }
+
+    void BreakNearBricks(Cell2048 currentCell)
+    {
+        if(currentCell.right != null && currentCell.right.fill != null)
+        {
+            if(currentCell.right.fill.brick == true)
+                {
+                    if(currentCell.right.fill.value == currentCell.fill.value){
+                        currentCell.right.fill.ReplaceBrick();
+                        currentCell.right.fill.brick = false;
+                        GameController2048.brickcount--;
+                    }
+                    
+                }
+        }
+        if(currentCell.up != null && currentCell.up.fill != null)
+        {
+            if(currentCell.up.fill.brick == true)
+            {
+                if(currentCell.up.fill.value == currentCell.fill.value){
+                    currentCell.up.fill.ReplaceBrick();
+                    currentCell.up.fill.brick = false;
+                    GameController2048.brickcount--;
+                }
+            }
+        }
+        if(currentCell.down != null && currentCell.down.fill != null)
+        {
+            if(currentCell.down.fill.brick == true)
+            {
+                if(currentCell.down.fill.value == currentCell.fill.value){
+                    currentCell.down.fill.ReplaceBrick();
+                    currentCell.down.fill.brick = false;
+                    GameController2048.brickcount--;
+                }
+            }
+        }
+        if(currentCell.left != null && currentCell.left.fill != null)
+        {
+            if(currentCell.left.fill.brick == true)
+            {
+                if(currentCell.left.fill.value == currentCell.fill.value){
+                    currentCell.left.fill.ReplaceBrick();
+                    currentCell.left.fill.brick = false;
+                    GameController2048.brickcount--;
+                }
+            }
+        }
     }
 }

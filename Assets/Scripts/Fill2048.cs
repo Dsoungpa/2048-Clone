@@ -13,6 +13,7 @@ public class Fill2048 : MonoBehaviour
     bool hasCombine;
 
     public Image myImage;
+    public Sprite holdOriginal;
 
     public Color[] PrivateColors;
 
@@ -28,6 +29,7 @@ public class Fill2048 : MonoBehaviour
         myImage = GetComponent<Image>();
         if (myImage.sprite.name == "Brick")
         {
+            
             brick = true;
         }
         else{
@@ -96,4 +98,8 @@ public class Fill2048 : MonoBehaviour
 
     }
 
+    public void ReplaceBrick()
+    {
+        myImage.sprite = holdOriginal;
+    }
 }
