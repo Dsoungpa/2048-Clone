@@ -13,7 +13,7 @@ public class Block : MonoBehaviour
 
     public Vector2 Pos => transform.position;
     [SerializeField] private SpriteRenderer renderer;
-    [SerializeField] private TextMeshPro text;
+    public TextMeshPro text;
 
     public void Init(BlockType type)
     {

@@ -13958,7 +13958,7 @@ MonoBehaviour:
     Color: {r: 0.9294118, g: 0.7725491, b: 0.24705884, a: 1}
   - Value: 2048
     Color: {r: 0.9294118, g: 0.7607844, b: 0.18039216, a: 1}
-  travelTime: 0.02
+  travelTime: 0.1
   winCondition: 2048
   gameOver: 0
   score: 0

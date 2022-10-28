@@ -197,6 +197,29 @@ public class GameManager : MonoBehaviour
         node.Obstacle = true;
         block.Obstacle = true;
 
+        List<int> fivePercents = new List<int>(new int[] {16, 32, 64}) ;
+        List<int> twoPercents = new List<int>(new int[] {128, 256, 512, 1024});
+        int value = 0;
+
+        if(Random.value <= 0.4f){
+            value = 2;
+        }
+        else if(Random.value <= 0.6f){
+            value = 4;
+        }
+        else if(Random.value <= 0.75f){
+            value = 16;
+        }
+        else if(Random.value <= 0.90f){
+            value = fivePercents[Random.Range(0, 3)];
+        }
+        else if(Random.value <= 1f){
+            value = twoPercents[Random.Range(0, 4)];
+        }
+
+        block.Value = value;
+        block.text.text = block.Value.ToString();
+
         // Assign the node to the Block and visa versa
         block.SetBlock(node);
 
@@ -320,25 +343,25 @@ public class GameManager : MonoBehaviour
                     var nodeLeft = GetNodeAtPosition(block.Pos + Vector2.left);
                     var nodeRight = GetNodeAtPosition(block.Pos + Vector2.right);
 
-                    if(nodeUp && nodeUp.Obstacle)
+                    if(nodeUp && nodeUp.Obstacle && nodeUp.OccupiedBlock.Value == block.Value)
                     {
                         nodeUp.Obstacle = false;
                         RemoveBlock(nodeUp.OccupiedBlock);
                     }
 
-                    if(nodeDown && nodeDown.Obstacle)
+                    if(nodeDown && nodeDown.Obstacle && nodeDown.OccupiedBlock.Value == block.Value)
                     {
                         nodeDown.Obstacle = false;
                         RemoveBlock(nodeDown.OccupiedBlock);
                     }
 
-                    if(nodeLeft && nodeLeft.Obstacle)
+                    if(nodeLeft && nodeLeft.Obstacle && nodeLeft.OccupiedBlock.Value == block.Value)
                     {
                         nodeLeft.Obstacle = false;
                         RemoveBlock(nodeLeft.OccupiedBlock);
                     }
 
-                    if(nodeRight && nodeRight.Obstacle)
+                    if(nodeRight && nodeRight.Obstacle && nodeRight.OccupiedBlock.Value == block.Value)
                     {
                         nodeRight.Obstacle = false;
                         RemoveBlock(nodeRight.OccupiedBlock);
