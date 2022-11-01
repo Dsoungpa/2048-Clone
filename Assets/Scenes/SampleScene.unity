@@ -13933,7 +13933,7 @@ MonoBehaviour:
   height: 4
   nodePrefab: {fileID: 4579705457272916841, guid: 8bc3dd3111235814683dc4edd2cb0f31, type: 3}
   blockPrefab: {fileID: 4126497331364990716, guid: b750ed981a47c7c4e9f684f28534a4e7, type: 3}
-  obstaclePrefab: {fileID: 4126497331364990716, guid: 8ab308ce1ce5cdf47b7207a77c2beb0c, type: 3}
+  obstaclePrefab: {fileID: 4126497331364990716, guid: 9475d5d41f70da444b02639ff434ee76, type: 3}
   boardPrefab: {fileID: 3644512723096684909, guid: 493485be7b7c79341a614ad5214134fa, type: 3}
   types:
   - Value: 2
