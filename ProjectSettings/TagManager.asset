@@ -3,7 +3,23 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - FirstRowLeft
+  - FirstRowRight
+  - SecRowLeft
+  - SecRowRight
+  - ThirdRowLeft
+  - ThirdRowRight
+  - FourthRowLeft
+  - FourthRowRight
+  - FirstColUp
+  - FirstColDown
+  - SecColUp
+  - SecColDown
+  - ThirdColUp
+  - ThirdColDown
+  - FourthColUp
+  - FourthColDown
   layers:
   - Default
   - TransparentFX

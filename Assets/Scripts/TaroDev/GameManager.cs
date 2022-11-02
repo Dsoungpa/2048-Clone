@@ -80,18 +80,18 @@ public class GameManager : MonoBehaviour
         switch(newState)
         {
             case GameState.GenerateLevel:
-                //print("Generating...");
+                print("Generating...");
                 GenerateGrid();
                 break;
             case GameState.SpawningBlocks:
-                //print("Spawning..");
+                print("Spawning..");
                 SpawnBlocks(round++ == 0 ? 2 : 1);
                 break;
             case GameState.WaitingInput:
-                //print("WaitingInput...");
+                print("WaitingInput...");
                 break;
             case GameState.Moving:
-                //print("Moving...");
+                print("Moving...");
                 break;
             case GameState.Win:
                 winScreen.SetActive(true);
@@ -227,28 +227,42 @@ public class GameManager : MonoBehaviour
         blocks.Add(block);
     }
 
-    private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value)
+    private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value, bool obstacle)
     {
+        Block block;
         // Instantiate a block prefab at the chosen node location
-        var block = Instantiate(blockPrefab, spawn, Quaternion.identity);    
-        block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
-
-        if(node.Obstacle)
+        if(obstacle)
         {
+            block = Instantiate(obstaclePrefab, spawn, Quaternion.identity);    
+            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
             block.Obstacle = true;
+            node.Obstacle = true;
+
+            block.Value = value;
+            block.text.text = block.Value.ToString();
+
+            // Assign the node to the Block and visa versa
+            block.SetBlock(node);
+
+            // Add block to the list
+            blocks.Add(block);
         }
         else
         {
             // Take the block game object and initialize it as a BlockType
+            block = Instantiate(blockPrefab, spawn, Quaternion.identity);    
+            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
             block.Init(GetBlockTypeByValue(value));
+
+            // Assign the node to the Block and visa versa
+            block.SetBlock(node);
+
+            // Add block to the list
+            blocks.Add(block);
         }
         
 
-        // Assign the node to the Block and visa versa
-        block.SetBlock(node);
-
-        // Add block to the list
-        blocks.Add(block);
+        
         return block;
     }
 
@@ -638,10 +652,10 @@ public class GameManager : MonoBehaviour
         {
                 if(!xAxis && block.Pos.x == loopCoordinateCheck)
                 {
-                    print("Means you have to cycle");
+                    //print("Means you have to cycle");
                     var nodeMovingTo = GetNodeAtPosition(moveTo);
                     sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
-                    var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value);
+                    var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value, block.Obstacle);
                     sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
                     RemoveBlock(block);
                     continue;
@@ -649,10 +663,10 @@ public class GameManager : MonoBehaviour
 
                 else if(!yAxis && block.Pos.y == loopCoordinateCheck)
                 {
-                    print("Means you have to cycle");
+                    //print("Means you have to cycle");
                     var nodeMovingTo = GetNodeAtPosition(moveTo);
                     sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
-                    var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value);
+                    var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value, block.Obstacle);
                     sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
                     RemoveBlock(block);
                     continue;
@@ -660,18 +674,19 @@ public class GameManager : MonoBehaviour
 
             var possibleNode = GetNodeAtPosition(block.Pos + directionOfCycle);
             var movePoint = possibleNode.Pos;
+            var currentNode = GetNodeAtPosition(block.Pos);
+            
             block.SetBlock(possibleNode);
+            if(block.Obstacle){
+                currentNode.Obstacle = false;
+                possibleNode.Obstacle = true;
+            }
             sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
         }
 
             audioSource.PlayOneShot(swipe, 0.2f);
 
-        print("OrderedBlocks:" + orderedBlocks.Count());
-    }
-
-            audioSource.PlayOneShot(swipe, 0.2f);
-
-        print("OrderedBlocks:" + orderedBlocks.Count());
+        //print("OrderedBlocks:" + orderedBlocks.Count());
     }
 
     bool GameOverCheck(Vector2 dir)
