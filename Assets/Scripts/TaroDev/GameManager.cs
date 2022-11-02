@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int possibleHighScore;
     [SerializeField] private int cycleMovesLeft = 5;
     [SerializeField] private int countUntilObstacle = 5;
+    [SerializeField] private int obstacleCount = 0;
 
     [Header("UI")]
     [SerializeField] private GameObject winScreen, loseScreen;
@@ -133,7 +134,7 @@ public class GameManager : MonoBehaviour
         // Get a list of nodes that are not Occupied by a block from the list of nodes
         var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
 
-        if(round > 1 && Random.value > 0.9f)
+        if(round > 1 && Random.value > 0.9f && obstacleCount < 3)
         {
             foreach (var nodes in freeNodes.Take(amount))
             {
@@ -192,41 +193,39 @@ public class GameManager : MonoBehaviour
     }
 
     void SpawnObstacle(Node node)
-    {
-        // Instantiate a block prefab at the chosen node location
-        var block = Instantiate(obstaclePrefab, node.Pos, Quaternion.identity);    
-        block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
-        node.Obstacle = true;
-        block.Obstacle = true;
+    {   
+            // Instantiate a block prefab at the chosen node location
+            var block = Instantiate(obstaclePrefab, node.Pos, Quaternion.identity);    
+            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
+            node.Obstacle = true;
+            block.Obstacle = true;
 
-        List<int> fivePercents = new List<int>(new int[] {16, 32, 64}) ;
-        List<int> twoPercents = new List<int>(new int[] {128, 256, 512, 1024});
-        int value = 0;
+            List<int> fivePercents = new List<int>(new int[] {16, 32, 64}) ;
+            List<int> twoPercents = new List<int>(new int[] {128, 256, 512, 1024});
+            int value = 0;
 
-        if(Random.value <= 0.4f){
-            value = 2;
-        }
-        else if(Random.value <= 0.6f){
-            value = 4;
-        }
-        else if(Random.value <= 0.75f){
-            value = 16;
-        }
-        else if(Random.value <= 0.90f){
-            value = fivePercents[Random.Range(0, 3)];
-        }
-        else if(Random.value <= 1f){
-            value = twoPercents[Random.Range(0, 4)];
-        }
+            if(Random.value <= 0.6f){
+                value = 4;
+            }
+            else if(Random.value <= 0.75f){
+                value = 16;
+            }
+            else if(Random.value <= 0.90f){
+                value = fivePercents[Random.Range(0, 3)];
+            }
+            else if(Random.value <= 1f){
+                value = twoPercents[Random.Range(0, 4)];
+            }
 
-        block.Value = value;
-        block.text.text = block.Value.ToString();
+            block.Value = value;
+            block.text.text = block.Value.ToString();
 
-        // Assign the node to the Block and visa versa
-        block.SetBlock(node);
+            // Assign the node to the Block and visa versa
+            block.SetBlock(node);
 
-        // Add block to the list
-        blocks.Add(block);
+            // Add block to the list
+            blocks.Add(block);
+            obstacleCount++;
     }
 
     private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value, bool obstacle)
@@ -359,25 +358,25 @@ public class GameManager : MonoBehaviour
                     var nodeLeft = GetNodeAtPosition(block.Pos + Vector2.left);
                     var nodeRight = GetNodeAtPosition(block.Pos + Vector2.right);
 
-                    if(nodeUp && nodeUp.Obstacle && nodeUp.OccupiedBlock.Value == block.Value)
+                    if(nodeUp && nodeUp.Obstacle && nodeUp.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeUp.Obstacle = false;
                         RemoveBlock(nodeUp.OccupiedBlock);
                     }
 
-                    if(nodeDown && nodeDown.Obstacle && nodeDown.OccupiedBlock.Value == block.Value)
+                    if(nodeDown && nodeDown.Obstacle && nodeDown.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeDown.Obstacle = false;
                         RemoveBlock(nodeDown.OccupiedBlock);
                     }
 
-                    if(nodeLeft && nodeLeft.Obstacle && nodeLeft.OccupiedBlock.Value == block.Value)
+                    if(nodeLeft && nodeLeft.Obstacle && nodeLeft.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeLeft.Obstacle = false;
                         RemoveBlock(nodeLeft.OccupiedBlock);
                     }
 
-                    if(nodeRight && nodeRight.Obstacle && nodeRight.OccupiedBlock.Value == block.Value)
+                    if(nodeRight && nodeRight.Obstacle && nodeRight.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeRight.Obstacle = false;
                         RemoveBlock(nodeRight.OccupiedBlock);
@@ -740,10 +739,15 @@ public class GameManager : MonoBehaviour
     }
 
     void RemoveBlock(Block block)
-    {
+    {   
+        if(block.Obstacle){
+            SpawnBlock(block.Node, block.Value);
+            obstacleCount--;
+        }
         blocks.Remove(block);
         Destroy(block.gameObject);
     }
+
 
     Node GetNodeAtPosition(Vector2 pos)
     {
