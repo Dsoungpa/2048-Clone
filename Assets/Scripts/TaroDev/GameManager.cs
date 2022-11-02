@@ -80,18 +80,18 @@ public class GameManager : MonoBehaviour
         switch(newState)
         {
             case GameState.GenerateLevel:
-                print("Generating...");
+                //dprint("Generating...");
                 GenerateGrid();
                 break;
             case GameState.SpawningBlocks:
-                print("Spawning..");
+                //print("Spawning..");
                 SpawnBlocks(round++ == 0 ? 2 : 1);
                 break;
             case GameState.WaitingInput:
-                print("WaitingInput...");
+                //print("WaitingInput...");
                 break;
             case GameState.Moving:
-                print("Moving...");
+                //print("Moving...");
                 break;
             case GameState.Win:
                 winScreen.SetActive(true);
@@ -151,11 +151,13 @@ public class GameManager : MonoBehaviour
             }
 
             if (freeNodes.Count() == 1) {
-                if(cycleMovesLeft == 0)
-                    return;
+                //print("FN: " + freeNodes.Count());
+                // if(cycleMovesLeft == 0)
+                //     return;
                 
                 var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
-                if(GameOver)
+                //print("Game Over: " + GameOver);
+                if(GameOver && cycleMovesLeft <= 0)
                 {
                     ChangeState(GameState.Lose);
                     return;
@@ -692,10 +694,15 @@ public class GameManager : MonoBehaviour
     bool GameOverCheck(Vector2 dir)
     {
         var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); 
-        if(dir == Vector2.right || dir == Vector2.up) orderedBlocks.Reverse();
+        if(dir == Vector2.right || dir == Vector2.up) 
+            //print("right or up");
+            orderedBlocks.Reverse();
 
         foreach (var block in orderedBlocks)
         {
+            if(block.Obstacle){
+                continue;
+            }
             var next = block.Node;
             do {
                 //block.SetBlock(next);
@@ -705,6 +712,11 @@ public class GameManager : MonoBehaviour
                 {
                     if(possibleNode.OccupiedBlock != null && possibleNode.OccupiedBlock.CanMerge(block.Value))
                     {
+                        // print("First");
+                        // print("Block Pos: " + block.Pos);
+                        // print("Value: " + block.Value);
+                        // print("Not Null: " + possibleNode.OccupiedBlock != null);
+                        // print("Can Merge: " + possibleNode.OccupiedBlock.CanMerge(block.Value));
                         return true;
                     }
 
