@@ -40,7 +40,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioClip merge;
     [SerializeField] private AudioSource audioSource;
 
-
+    [Header("Mobile")]
+    private Vector3 startTouchPosition;
+    private Vector3 currentPosition;
+    private Vector3 endTouchPosition;
+    [SerializeField] private bool stopTouch = false;
+    [SerializeField] private float swipeRange;
 
     private List<Node> nodes;
     private List<Block> blocks;
@@ -65,13 +70,42 @@ public class GameManager : MonoBehaviour
 
         if(state != GameState.WaitingInput) return;
 
-        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+        // if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+        // if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
+        // if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+        // if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
 
-        if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
+        if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
+            startTouchPosition = Input.GetTouch(0).position;
+        }
 
-        if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+        if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
+            currentPosition = Input.GetTouch(0).position;
+            Vector3 Distance = currentPosition - startTouchPosition;
 
-        if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+            //if (Input.GetKeyDown(KeyCode.W)) {
+            if(Distance.y > swipeRange){
+                Shift(Vector2.up);
+                stopTouch = true;
+            } 
+
+            else if (Distance.y < -swipeRange){
+            //else if (Input.GetKeyDown(KeyCode.S)) {
+                Shift(Vector2.down);
+                stopTouch = true;
+            }
+
+            //if (Input.GetKeyDown(KeyCode.A)) {
+            else if(Distance.x < -swipeRange){
+                Shift(Vector2.left);
+                stopTouch = true;
+            } 
+            else if (Distance.x > swipeRange){
+            //else if (Input.GetKeyDown(KeyCode.D)) {
+                Shift(Vector2.right);
+                stopTouch = true;
+            }
+        }
     }
 
     private void ChangeState(GameState newState)

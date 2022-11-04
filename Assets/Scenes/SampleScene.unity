@@ -13963,8 +13963,9 @@ MonoBehaviour:
   gameOver: 0
   score: 0
   possibleHighScore: 0
-  cycleMovesLeft: 100
+  cycleMovesLeft: 2
   countUntilObstacle: 5
+  obstacleCount: 0
   winScreen: {fileID: 525824128}
   loseScreen: {fileID: 2077852739}
   scoreText: {fileID: 1484964120}
