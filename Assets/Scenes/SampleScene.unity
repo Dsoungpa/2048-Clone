@@ -6585,7 +6585,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -13966,6 +13965,9 @@ MonoBehaviour:
   cycleMovesLeft: 2
   countUntilObstacle: 5
   obstacleCount: 0
+  brickValues: 040000000800000010000000
+  weightedBrickValues: 
+  currentHighestValue: 0
   winScreen: {fileID: 525824128}
   loseScreen: {fileID: 2077852739}
   scoreText: {fileID: 1484964120}
@@ -13975,6 +13977,8 @@ MonoBehaviour:
   swipe: {fileID: 8300000, guid: 5a908b97e7daa854694c7a338c14d140, type: 3}
   merge: {fileID: 8300000, guid: 25b3688ce5650e94ab7dd915eef4e661, type: 3}
   audioSource: {fileID: 2016963119}
+  stopTouch: 0
+  swipeRange: 0
 --- !u!82 &2016963119
 AudioSource:
   m_ObjectHideFlags: 0

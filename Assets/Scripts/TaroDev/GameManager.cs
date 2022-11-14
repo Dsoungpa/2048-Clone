@@ -28,6 +28,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int countUntilObstacle = 5;
     [SerializeField] private int obstacleCount = 0;
 
+    [Header("Brick Values")]
+    [SerializeField] private int[] brickValues = new int[0];
+    [SerializeField] private int[] weightedBrickValues;
+    [SerializeField] private int currentHighestValue;
+
     [Header("UI")]
     [SerializeField] private GameObject winScreen, loseScreen;
     [SerializeField] private TMP_Text scoreText;
@@ -61,6 +66,8 @@ public class GameManager : MonoBehaviour
     {
         highscoreText.text = PlayerPrefs.HasKey("myHighScore") ? PlayerPrefs.GetInt("myHighScore").ToString() : "0";
         ChangeState(GameState.GenerateLevel);
+        weightedBrickValues = brickValues;
+        currentHighestValue = brickValues[brickValues.Length - 1];
     }
 
     void Update()
@@ -70,42 +77,44 @@ public class GameManager : MonoBehaviour
 
         if(state != GameState.WaitingInput) return;
 
-        // if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
-        // if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
-        // if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
-        // if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+        // Keyboard Input
+        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+        if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
+        if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+        if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
 
-        if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
-            startTouchPosition = Input.GetTouch(0).position;
-        }
+        // Touch Input
+        // if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
+        //     startTouchPosition = Input.GetTouch(0).position;
+        // }
 
-        if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
-            currentPosition = Input.GetTouch(0).position;
-            Vector3 Distance = currentPosition - startTouchPosition;
+        // if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
+        //     currentPosition = Input.GetTouch(0).position;
+        //     Vector3 Distance = currentPosition - startTouchPosition;
 
-            //if (Input.GetKeyDown(KeyCode.W)) {
-            if(Distance.y > swipeRange){
-                Shift(Vector2.up);
-                stopTouch = true;
-            } 
+        //     //if (Input.GetKeyDown(KeyCode.W)) {
+        //     if(Distance.y > swipeRange){
+        //         Shift(Vector2.up);
+        //         stopTouch = true;
+        //     } 
 
-            else if (Distance.y < -swipeRange){
-            //else if (Input.GetKeyDown(KeyCode.S)) {
-                Shift(Vector2.down);
-                stopTouch = true;
-            }
+        //     else if (Distance.y < -swipeRange){
+        //     //else if (Input.GetKeyDown(KeyCode.S)) {
+        //         Shift(Vector2.down);
+        //         stopTouch = true;
+        //     }
 
-            //if (Input.GetKeyDown(KeyCode.A)) {
-            else if(Distance.x < -swipeRange){
-                Shift(Vector2.left);
-                stopTouch = true;
-            } 
-            else if (Distance.x > swipeRange){
-            //else if (Input.GetKeyDown(KeyCode.D)) {
-                Shift(Vector2.right);
-                stopTouch = true;
-            }
-        }
+        //     //if (Input.GetKeyDown(KeyCode.A)) {
+        //     else if(Distance.x < -swipeRange){
+        //         Shift(Vector2.left);
+        //         stopTouch = true;
+        //     } 
+        //     else if (Distance.x > swipeRange){
+        //     //else if (Input.GetKeyDown(KeyCode.D)) {
+        //         Shift(Vector2.right);
+        //         stopTouch = true;
+        //     }
+        // }
     }
 
     private void ChangeState(GameState newState)
@@ -161,6 +170,41 @@ public class GameManager : MonoBehaviour
         board.size = new Vector2(width, height);
 
         ChangeState(GameState.SpawningBlocks);
+    }
+
+    void UpdateBrickValue() {
+        int[] newBrickValues = new int[brickValues.Length + 1];
+        currentHighestValue *= 2; // double current highest value
+        brickValues.CopyTo(newBrickValues, 0);
+        newBrickValues[newBrickValues.Length - 1] = currentHighestValue;
+
+        brickValues = newBrickValues;
+    }
+
+    void UpdateWeightedBrickValues(int[] unweightedBrickValues) {
+        int[] tempWeightedBrickValues = new int[AdditionFactorial(unweightedBrickValues.Length)];
+        int index = 0;
+
+        int counter = unweightedBrickValues.Length;
+        int tempCounter = counter;
+        for (int i = 0; i < counter; i++) {
+            for (int k = tempCounter; k > 0; k--) {
+                tempWeightedBrickValues[index++] = unweightedBrickValues[i];
+            }
+            tempCounter--;
+        }
+
+        weightedBrickValues = tempWeightedBrickValues;
+    }
+
+    private int AdditionFactorial(int startNum) {
+        int total = 0;
+
+        for (int i = 1; i <= startNum; i++) {
+            total += i;
+        }
+
+        return total;
     }
 
     void SpawnBlocks(int amount)
@@ -234,22 +278,23 @@ public class GameManager : MonoBehaviour
             node.Obstacle = true;
             block.Obstacle = true;
 
-            List<int> fivePercents = new List<int>(new int[] {16, 32, 64}) ;
-            List<int> twoPercents = new List<int>(new int[] {128, 256, 512, 1024});
-            int value = 0;
+            // List<int> fivePercents = new List<int>(new int[] {16, 32, 64}) ;
+            // List<int> twoPercents = new List<int>(new int[] {128, 256, 512, 1024});
+            UpdateWeightedBrickValues(brickValues);
+            int value = weightedBrickValues[Random.Range(0, weightedBrickValues.Length)];
 
-            if(Random.value <= 0.6f){
-                value = 4;
-            }
-            else if(Random.value <= 0.75f){
-                value = 16;
-            }
-            else if(Random.value <= 0.90f){
-                value = fivePercents[Random.Range(0, 3)];
-            }
-            else if(Random.value <= 1f){
-                value = twoPercents[Random.Range(0, 4)];
-            }
+            // if(Random.value <= 0.6f){
+            //     value = 4;
+            // }
+            // else if(Random.value <= 0.75f){
+            //     value = 16;
+            // }
+            // else if(Random.value <= 0.90f){
+            //     value = fivePercents[Random.Range(0, 3)];
+            // }
+            // else if(Random.value <= 1f){
+            //     value = twoPercents[Random.Range(0, 4)];
+            // }
 
             block.Value = value;
             block.text.text = block.Value.ToString();
@@ -767,6 +812,9 @@ public class GameManager : MonoBehaviour
     {
         SpawnBlock(baseBlock.Node, baseBlock.Value * 2);
         score += baseBlock.Value * 2;
+
+        if (baseBlock.Value * 2 > currentHighestValue) UpdateBrickValue();
+
         scoreText.text = score.ToString();
         RemoveBlock(baseBlock);
         RemoveBlock(mergingBlock);
@@ -816,7 +864,6 @@ public class GameManager : MonoBehaviour
             cycleUI.SetActive(true);
         }
     }
-
 }
 
 [Serializable]
