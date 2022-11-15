@@ -12,6 +12,9 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+
+    [SerializeField] public Leaderboard leaderboard;
+
     [SerializeField] private int width = 4;
     [SerializeField] private int height = 4;
     [SerializeField] private Node nodePrefab;
@@ -239,6 +242,8 @@ public class GameManager : MonoBehaviour
                 if(GameOver && cycleMovesLeft <= 0)
                 {
                     ChangeState(GameState.Lose);
+                    //here
+                    StartCoroutine(SubmitScore(score));
                     return;
                 }
 
@@ -252,6 +257,10 @@ public class GameManager : MonoBehaviour
 
         // "b=>b" - "Is there any..."
         ChangeState(blocks.Any(b=>b.Value == winCondition) ? GameState.Win : GameState.WaitingInput);
+    }
+
+    IEnumerator SubmitScore(int score){
+        yield return leaderboard.SubmitScoreRoutine(score);
     }
 
     void SpawnBlock(Node node, int value)

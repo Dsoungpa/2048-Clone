@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class GameController2048 : MonoBehaviour
 {
+    public Leaderboard leaderboard;
+
     public static GameController2048 instance;
     public static int ticker;
 
@@ -159,8 +161,14 @@ public class GameController2048 : MonoBehaviour
         isGameOver++;
         if(isGameOver >= 16)
         {
+            print("Game Over");
             gameOverPanel.SetActive(true);
+            StartCoroutine(SubmitScore(myScore));
         }
+    }
+
+    IEnumerator SubmitScore(int score){
+        yield return leaderboard.SubmitScoreRoutine(score);
     }
 
     public void Restart()
