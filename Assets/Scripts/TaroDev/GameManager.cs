@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
 {
 
     [SerializeField] public Leaderboard leaderboard;
-    //bruh
+
     [SerializeField] private int width = 4;
     [SerializeField] private int height = 4;
     [SerializeField] private Node nodePrefab;
@@ -45,8 +45,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject cycleUI;
 
     [Header("Audio")]
-    [SerializeField] private AudioClip swipe;
-    [SerializeField] private AudioClip merge;
+    [SerializeField] private List<AudioClip> merges = new List<AudioClip>();
+    [SerializeField] private AudioClip blockBreak;
+    [SerializeField] private AudioClip buttonPress;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private bool muted = false;
     [SerializeField] private AudioListener audioListener;
@@ -478,12 +479,12 @@ public class GameManager : MonoBehaviour
                     
                 }
 
-                if(mergeBlocks.Any()) audioSource.PlayOneShot(merge, 0.2f);
+                if(mergeBlocks.Any()) audioSource.PlayOneShot(merges[Random.Range(0, merges.Count - 1)], 0.2f);
                 
                 ChangeState(GameState.SpawningBlocks);
             });
 
-            audioSource.PlayOneShot(swipe, 0.2f);
+            //audioSource.PlayOneShot(swipe, 0.2f);
         }
 
         
@@ -797,7 +798,7 @@ public class GameManager : MonoBehaviour
 
         }
 
-            audioSource.PlayOneShot(swipe, 0.2f);
+            //audioSource.PlayOneShot(swipe, 0.2f);
 
         //print("OrderedBlocks:" + orderedBlocks.Count());
     }
