@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
 {
 
     [SerializeField] public Leaderboard leaderboard;
-
+    //bruh
     [SerializeField] private int width = 4;
     [SerializeField] private int height = 4;
     [SerializeField] private Node nodePrefab;
