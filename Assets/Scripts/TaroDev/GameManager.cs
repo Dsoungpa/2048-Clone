@@ -59,6 +59,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool stopTouch = false;
     [SerializeField] private float swipeRange;
 
+    [Header("Script Reference")]
+    [SerializeField] private ColorTheme colorThemeScript;
+    private SpriteRenderer gameBoard;
+
     private List<Node> nodes;
     private List<Block> blocks;
     private List<Block> obstacles;
@@ -173,10 +177,19 @@ public class GameManager : MonoBehaviour
 
         var center = new Vector2((float) width / 2 - 0.5f, (float) height / 2 - 0.5f);
 
-        var board = Instantiate(boardPrefab, center, Quaternion.identity);
-        board.size = new Vector2(width, height);
+        gameBoard = Instantiate(boardPrefab, center, Quaternion.identity);
+        gameBoard.size = new Vector2(width, height);
+        colorThemeScript.boardReady = true;
 
         ChangeState(GameState.SpawningBlocks);
+    }
+
+    public SpriteRenderer GetBoard() {
+        if (gameBoard != null) {
+            return gameBoard;
+        }else {
+            return null;
+        }
     }
 
     void UpdateBrickValue() {
@@ -318,45 +331,6 @@ public class GameManager : MonoBehaviour
             // Add block to the list
             blocks.Add(block);
             obstacleCount++;
-    }
-
-    private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value, bool obstacle)
-    {
-        Block block;
-        // Instantiate a block prefab at the chosen node location
-        if(obstacle)
-        {
-            block = Instantiate(obstaclePrefab, spawn, Quaternion.identity);    
-            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
-            block.Obstacle = true;
-            node.Obstacle = true;
-
-            block.Value = value;
-            block.text.text = block.Value.ToString();
-
-            // Assign the node to the Block and visa versa
-            block.SetBlock(node);
-
-            // Add block to the list
-            blocks.Add(block);
-        }
-        else
-        {
-            // Take the block game object and initialize it as a BlockType
-            block = Instantiate(blockPrefab, spawn, Quaternion.identity);    
-            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
-            block.Init(GetBlockTypeByValue(value));
-
-            // Assign the node to the Block and visa versa
-            block.SetBlock(node);
-
-            // Add block to the list
-            blocks.Add(block);
-        }
-        
-
-        
-        return block;
     }
 
     void Shift(Vector2 dir)
@@ -508,6 +482,8 @@ public class GameManager : MonoBehaviour
         Vector2 moveTo = new Vector2(0f, 0f);
         Vector2 noNodeBlockLocation = new Vector2(0f, 0f);
         Vector2 directionOfCycle = new Vector2(0f, 0f);
+    
+        Block tempBlock = null;
 
         bool xAxis = false;
         bool yAxis = false;
@@ -714,17 +690,29 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        foreach(var block in blocks)
-        {
-            if(xAxis){
-                if(block.Pos.x == blockCoordinate){
-                    orderedBlocks.Add(block);
-                }
-            }
+        // foreach(var block in blocks)
+        // {
+        //     if(xAxis){
+        //         if(block.Pos.x == blockCoordinate){
+        //             orderedBlocks.Add(block);
+        //         }
+        //     }
 
-            else if(yAxis){
-                if(block.Pos.y == blockCoordinate){
-                    orderedBlocks.Add(block);
+        //     else if(yAxis){
+        //         if(block.Pos.y == blockCoordinate){
+        //             orderedBlocks.Add(block);
+        //         }
+        //     }
+        // }
+
+        foreach(var node in nodes) {
+            if (xAxis) {
+                if (node.Pos.x == blockCoordinate && node.OccupiedBlock != null) {
+                    orderedBlocks.Add(node.OccupiedBlock);
+                }
+            }else if (yAxis) {
+                if (node.Pos.y == blockCoordinate && node.OccupiedBlock != null) {
+                    orderedBlocks.Add(node.OccupiedBlock);
                 }
             }
         }
@@ -735,73 +723,98 @@ public class GameManager : MonoBehaviour
         }
         cycleMovesLeft--;
 
-        orderedBlocks.OrderBy(b => b.Pos.x ).ThenBy(b => b.Pos.y).ToList();
-        if(reverse){
-            orderedBlocks.Reverse();
+        orderedBlocks.OrderBy(b => (xAxis ? b.Pos.x : b.Pos.y)).ToList();
+        foreach(var block in orderedBlocks) {
+            print("Pos: " + block.Pos);
         }
 
-        foreach(var block in orderedBlocks){
-            print("ORDER: " + block.Pos);
-        }
+        // if (xAxis) orderedBlocks.OrderBy(b => b.Pos.x).ToList();
+        // if (yAxis) orderedBlocks.OrderBy(b => b.Pos.y).ToList();
+        if (reverse) orderedBlocks.Reverse();
+
+
         // Create and Play the animation
         var sequence = DOTween.Sequence();
+        var nodeMovingTo = GetNodeAtPosition(moveTo);
         foreach(var block in orderedBlocks)
         {
-                var currentNode = GetNodeAtPosition(block.Pos);
-                if(!xAxis && block.Pos.x == loopCoordinateCheck)
-                {
-                    //print("Means you have to cycle");
-                    var nodeMovingTo = GetNodeAtPosition(moveTo);
-                    //sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
-                    //var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value, block.Obstacle);
-                    sequence.Insert(0, block.transform.DOMove(moveTo, travelTime));
-                    block.SetBlock(nodeMovingTo);
-                    if(block.Obstacle){
-                        currentNode.Obstacle = false;
-                        nodeMovingTo.Obstacle = true;
-                    }
-                    //RemoveBlock(block);
-                    if(nodeMovingTo.OccupiedBlock == null){
-                        nodeMovingTo.OccupiedBlock = block;
-                    }
-                    continue;
-                }
+            print("Block Pos: " + block.Pos);
+            if(!xAxis && block.Pos.x == loopCoordinateCheck)
+            {
+                //print("Means you have to cycle");
+                tempBlock = block;
+                block.ClearBlock();
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                sequence.Insert(0, tempBlock.transform.DOMove(nodeMovingTo.Pos, travelTime));
+                // RemoveBlock(block);
+                continue;
+            }
 
-                else if(!yAxis && block.Pos.y == loopCoordinateCheck)
-                {
-                    //print("Means you have to cycle");
-                    var nodeMovingTo = GetNodeAtPosition(moveTo);
-                    //sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
-                    //var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value, block.Obstacle);
-                    sequence.Insert(0, block.transform.DOMove(moveTo, travelTime));
-                    block.SetBlock(nodeMovingTo);
-                    if(block.Obstacle){
-                        currentNode.Obstacle = false;
-                        nodeMovingTo.Obstacle = true;
-                    }
-                    //RemoveBlock(block);
-                    if(nodeMovingTo.OccupiedBlock == null){
-                        nodeMovingTo.OccupiedBlock = block;
-                    }
-                    continue;
-                }
+            else if(!yAxis && block.Pos.y == loopCoordinateCheck)
+            {
+                //print("Means you have to cycle");
+                tempBlock = block;
+                block.ClearBlock();
+                sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                sequence.Insert(0, tempBlock.transform.DOMove(nodeMovingTo.Pos, travelTime));
+                continue;
+            }
 
             var possibleNode = GetNodeAtPosition(block.Pos + directionOfCycle);
             var movePoint = possibleNode.Pos;
+            var currentNode = GetNodeAtPosition(block.Pos);
             
-            print("Block: " + block.Pos +"," + "Node: " + possibleNode.Pos);
             block.SetBlock(possibleNode);
             if(block.Obstacle){
                 currentNode.Obstacle = false;
                 possibleNode.Obstacle = true;
             }
             sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
-
         }
 
-            //audioSource.PlayOneShot(swipe, 0.2f);
+        if (tempBlock != null) {
+            tempBlock.SetBlock(nodeMovingTo);
+        }
 
-        //print("OrderedBlocks:" + orderedBlocks.Count());
+        // audioSource.PlayOneShot(swipe, 0.2f);
+        // print("OrderedBlocks:" + orderedBlocks.Count());
+    }
+
+    private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value, bool obstacle)
+    {
+        Block block;
+        // Instantiate a block prefab at the chosen node location
+        if(obstacle)
+        {
+            block = Instantiate(obstaclePrefab, spawn, Quaternion.identity);    
+            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
+            block.Obstacle = true;
+            node.Obstacle = true;
+
+            block.Value = value;
+            block.text.text = block.Value.ToString();
+
+            // Assign the node to the Block and visa versa
+            block.SetBlock(node);
+
+            // Add block to the list
+            blocks.Add(block);
+        }
+        else
+        {
+            // Take the block game object and initialize it as a BlockType
+            block = Instantiate(blockPrefab, spawn, Quaternion.identity);    
+            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
+            block.Init(GetBlockTypeByValue(value));
+
+            // Assign the node to the Block and visa versa
+            block.SetBlock(node);
+
+            // Add block to the list
+            blocks.Add(block);
+        }
+    
+        return block;
     }
 
     bool GameOverCheck(Vector2 dir)

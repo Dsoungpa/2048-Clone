@@ -30,6 +30,11 @@ public class Block : MonoBehaviour
         Node.OccupiedBlock = this;
     }
 
+    public void ClearBlock() {
+        Node.OccupiedBlock = null;
+        Node = null;
+    }
+
     public void MergeBlock(Block blockToMergeWith)
     {
         // Set the block we are merging with

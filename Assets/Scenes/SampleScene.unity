@@ -15202,6 +15202,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2016963117}
   - component: {fileID: 2016963118}
+  - component: {fileID: 2016963120}
   - component: {fileID: 2016963119}
   m_Layer: 0
   m_Name: GameManager
@@ -15272,7 +15273,7 @@ MonoBehaviour:
   gameOver: 0
   score: 0
   possibleHighScore: 0
-  cycleMovesLeft: 2
+  cycleMovesLeft: 5
   countUntilObstacle: 5
   obstacleCount: 0
   brickValues: 040000000800000010000000
@@ -15284,13 +15285,21 @@ MonoBehaviour:
   highscoreText: {fileID: 568491107}
   cycleMoves: {fileID: 1666193417}
   cycleUI: {fileID: 282868580}
-  swipe: {fileID: 8300000, guid: 5a908b97e7daa854694c7a338c14d140, type: 3}
-  merge: {fileID: 8300000, guid: 25b3688ce5650e94ab7dd915eef4e661, type: 3}
+  merges:
+  - {fileID: 8300000, guid: 636137c7e3585ec4ba651ed0f19a087b, type: 3}
+  - {fileID: 8300000, guid: 8713046fc40633f408318a469ccd7bdf, type: 3}
+  - {fileID: 8300000, guid: 261c4d3b050b2014b917ac4bfd273446, type: 3}
+  - {fileID: 8300000, guid: e5697f0539d676d42be70693b39559c8, type: 3}
+  - {fileID: 8300000, guid: 407d13fac1e4f0c4c81b2d6df75724f1, type: 3}
+  - {fileID: 8300000, guid: 3a139f2e2766b2142af872bc7e047f15, type: 3}
+  blockBreak: {fileID: 8300000, guid: 6874899694f20764d8fd028a22f54da6, type: 3}
+  buttonPress: {fileID: 8300000, guid: 02020a3dc1202c946bd6a474a2526e20, type: 3}
   audioSource: {fileID: 2016963119}
   muted: 0
   audioListener: {fileID: 519420029}
   stopTouch: 0
   swipeRange: 0
+  colorThemeScript: {fileID: 2016963120}
 --- !u!82 &2016963119
 AudioSource:
   m_ObjectHideFlags: 0
@@ -15387,6 +15396,61 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2016963120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016963116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7da65aa25acc9af4f984e96e5f76f78e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  theme1:
+  - {r: 0.8207547, g: 0.44974312, b: 0.36004803, a: 1}
+  - {r: 0.81143457, g: 0.9245283, b: 0.44045925, a: 1}
+  - {r: 0.754717, g: 0.5602725, b: 0.4805981, a: 1}
+  - {r: 0.92016333, g: 0.9716981, b: 0.8204432, a: 1}
+  theme2:
+  - {r: 0.4141153, g: 0.85882354, b: 0.8867924, a: 1}
+  - {r: 0.09892311, g: 0.5377358, b: 0.5114071, a: 1}
+  - {r: 0.9056604, g: 0.55268437, b: 0.3972944, a: 1}
+  - {r: 0.9339623, g: 0.8659298, b: 0.6123621, a: 1}
+  theme3:
+  - {r: 0.8679245, g: 0.47080812, b: 0.8045848, a: 1}
+  - {r: 0.40506557, g: 0.3571111, b: 0.7075472, a: 1}
+  - {r: 0.41963333, g: 0.7396443, b: 0.7735849, a: 1}
+  - {r: 0.70598966, g: 0.8007266, b: 0.8962264, a: 0}
+  cam: {fileID: 519420031}
+  buttons:
+  - {fileID: 974078340}
+  - {fileID: 1269447828}
+  - {fileID: 301701665}
+  - {fileID: 459510389}
+  - {fileID: 1922725190}
+  - {fileID: 1227568030}
+  - {fileID: 786028449}
+  - {fileID: 448327868}
+  - {fileID: 853933590}
+  - {fileID: 1952451069}
+  - {fileID: 15345251}
+  - {fileID: 2018545274}
+  - {fileID: 534170348}
+  - {fileID: 460882004}
+  - {fileID: 967147146}
+  - {fileID: 2142938631}
+  textBoards:
+  - {fileID: 294163595}
+  - {fileID: 675059689}
+  - {fileID: 55154466}
+  newGameButton: {fileID: 1659646097}
+  toggleCycleButton: {fileID: 62847257}
+  gameBoard: {fileID: 0}
+  initialTheme: []
+  GMScript: {fileID: 2016963118}
+  boardReady: 0
 --- !u!1 &2018545271
 GameObject:
   m_ObjectHideFlags: 0
