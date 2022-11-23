@@ -497,6 +497,7 @@ public class GameManager : MonoBehaviour
 
     public void Cycle(GameObject locationCheck)
     {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
         if(cycleMovesLeft == 0)
             return; 
 
@@ -875,6 +876,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
         SceneManager.LoadScene(0);
         if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore")))
         {
@@ -885,12 +887,14 @@ public class GameManager : MonoBehaviour
 
     public void ContinueGame()
     {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
         winScreen.SetActive(false);
         ChangeState(GameState.WaitingInput);
     }
 
     public void ToggleCycle()
     {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
         if(cycleUI.activeSelf)
         {
             cycleUI.SetActive(false);
@@ -904,6 +908,7 @@ public class GameManager : MonoBehaviour
 
     public void ToggleAudio()
     {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
         if(!muted){
             audioListener.enabled = false;
             muted = true;
