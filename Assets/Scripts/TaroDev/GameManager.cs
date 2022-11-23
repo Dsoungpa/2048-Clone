@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int cycleMovesLeft = 5;
     [SerializeField] private int countUntilObstacle = 5;
     [SerializeField] private int obstacleCount = 0;
+   
 
     [Header("Brick Values")]
     [SerializeField] private int[] brickValues = new int[0];
@@ -47,6 +48,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioClip swipe;
     [SerializeField] private AudioClip merge;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private bool muted = false;
+    [SerializeField] private AudioListener audioListener;
 
     [Header("Mobile")]
     private Vector3 startTouchPosition;
@@ -730,23 +733,35 @@ public class GameManager : MonoBehaviour
         }
         cycleMovesLeft--;
 
-        orderedBlocks.OrderBy(b => b.Pos.x);
+        orderedBlocks.OrderBy(b => b.Pos.x ).ThenBy(b => b.Pos.y).ToList();
         if(reverse){
             orderedBlocks.Reverse();
         }
 
+        foreach(var block in orderedBlocks){
+            print("ORDER: " + block.Pos);
+        }
         // Create and Play the animation
         var sequence = DOTween.Sequence();
         foreach(var block in orderedBlocks)
         {
+                var currentNode = GetNodeAtPosition(block.Pos);
                 if(!xAxis && block.Pos.x == loopCoordinateCheck)
                 {
                     //print("Means you have to cycle");
                     var nodeMovingTo = GetNodeAtPosition(moveTo);
-                    sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
-                    var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value, block.Obstacle);
-                    sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
-                    RemoveBlock(block);
+                    //sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                    //var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value, block.Obstacle);
+                    sequence.Insert(0, block.transform.DOMove(moveTo, travelTime));
+                    block.SetBlock(nodeMovingTo);
+                    if(block.Obstacle){
+                        currentNode.Obstacle = false;
+                        nodeMovingTo.Obstacle = true;
+                    }
+                    //RemoveBlock(block);
+                    if(nodeMovingTo.OccupiedBlock == null){
+                        nodeMovingTo.OccupiedBlock = block;
+                    }
                     continue;
                 }
 
@@ -754,23 +769,32 @@ public class GameManager : MonoBehaviour
                 {
                     //print("Means you have to cycle");
                     var nodeMovingTo = GetNodeAtPosition(moveTo);
-                    sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
-                    var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value, block.Obstacle);
-                    sequence.Insert(0, newBlock.transform.DOMove(moveTo, travelTime));
-                    RemoveBlock(block);
+                    //sequence.Insert(0, block.transform.DOMove(moveDestroyedBlock, travelTime));
+                    //var newBlock = SpawnBlockWithNoNode(noNodeBlockLocation, nodeMovingTo, block.Value, block.Obstacle);
+                    sequence.Insert(0, block.transform.DOMove(moveTo, travelTime));
+                    block.SetBlock(nodeMovingTo);
+                    if(block.Obstacle){
+                        currentNode.Obstacle = false;
+                        nodeMovingTo.Obstacle = true;
+                    }
+                    //RemoveBlock(block);
+                    if(nodeMovingTo.OccupiedBlock == null){
+                        nodeMovingTo.OccupiedBlock = block;
+                    }
                     continue;
                 }
 
             var possibleNode = GetNodeAtPosition(block.Pos + directionOfCycle);
             var movePoint = possibleNode.Pos;
-            var currentNode = GetNodeAtPosition(block.Pos);
             
+            print("Block: " + block.Pos +"," + "Node: " + possibleNode.Pos);
             block.SetBlock(possibleNode);
             if(block.Obstacle){
                 currentNode.Obstacle = false;
                 possibleNode.Obstacle = true;
             }
             sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
+
         }
 
             audioSource.PlayOneShot(swipe, 0.2f);
@@ -784,6 +808,8 @@ public class GameManager : MonoBehaviour
         if(dir == Vector2.right || dir == Vector2.up) 
             //print("right or up");
             orderedBlocks.Reverse();
+
+        
 
         foreach (var block in orderedBlocks)
         {
@@ -871,6 +897,19 @@ public class GameManager : MonoBehaviour
         else
         {
             cycleUI.SetActive(true);
+        }
+    }
+
+    public void ToggleAudio()
+    {
+        if(!muted){
+            audioListener.enabled = false;
+            muted = true;
+        }
+
+        else if(muted){
+            audioListener.enabled = true;
+            muted = false;
         }
     }
 }
