@@ -859,6 +859,7 @@ public class GameManager : MonoBehaviour
     void RemoveBlock(Block block)
     {   
         if(block.Obstacle){
+            audioSource.PlayOneShot(blockBreak, 0.2f);
             SpawnBlock(block.Node, block.Value);
             obstacleCount--;
         }
