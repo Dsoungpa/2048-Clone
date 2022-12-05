@@ -12144,6 +12144,8 @@ MonoBehaviour:
   androidId: 5022313
   iosgameId: 5022312
   testmode: 1
+  timer: 15
+  LoseScreen: {fileID: 2077852739}
 --- !u!1 &1581228878
 GameObject:
   m_ObjectHideFlags: 0

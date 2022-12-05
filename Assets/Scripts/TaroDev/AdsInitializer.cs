@@ -9,19 +9,41 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener, IU
     [SerializeField] string iosgameId;
     string gameId;
     [SerializeField] bool testmode = true;
+    [SerializeField] float timer;
+    [SerializeField] public GameObject LoseScreen;
+
 
     private void Awake() {
-        if(Advertisement.isInitialized)
-        {
-            Debug.Log("Advertisement is initialized");
-            LoadInerstitialAd();
-        }
-        else{
-            InitializeAds();
+        // if(Advertisement.isInitialized)
+        // {
+        //     Debug.Log("Advertisement is initialized");
+        //     LoadInerstitialAd();
+        // }
+        // else{
+        //     InitializeAds();
+        // }
+        timer = PlayerPrefs.HasKey("Currenttimer") ? PlayerPrefs.GetFloat("Currenttimer") : 600;
+        InitializeAds();
+    }
+
+    void Update()
+    {
+        if (!LoseScreen.activeSelf){
+            timer -= Time.deltaTime;
+            PlayerPrefs.SetFloat("Currenttimer", timer);
+            if(timer <= 0 && Advertisement.isInitialized)
+            {
+                Debug.Log("Advertisement is initialized");
+                LoadInerstitialAd();
+                timer = 600;
+            }else{
+                if(timer <= 0){
+                    InitializeAds();
+                }
+            }
         }
         
     }
-
 
     public void InitializeAds()
     {
@@ -32,7 +54,7 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener, IU
     public void OnInitializationComplete()
     {
         Debug.Log("Unity Ads initialization complete.");
-        LoadInerstitialAd();
+        //LoadInerstitialAd();
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
