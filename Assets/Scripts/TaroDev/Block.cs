@@ -32,6 +32,7 @@ public class Block : MonoBehaviour
 
     public void ClearBlock() {
         Node.OccupiedBlock = null;
+        Node.Obstacle = false;
         Node = null;
     }
 

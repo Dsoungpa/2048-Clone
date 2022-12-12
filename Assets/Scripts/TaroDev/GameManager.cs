@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text highscoreText;
     [SerializeField] private TMP_Text cycleMoves;
     [SerializeField] private GameObject cycleUI;
+    [SerializeField] private GameObject audioOnIcon;
+    [SerializeField] private GameObject audioOffIcon;
 
     [Header("Audio")]
     [SerializeField] private List<AudioClip> merges = new List<AudioClip>();
@@ -131,7 +133,6 @@ public class GameManager : MonoBehaviour
     private void ChangeState(GameState newState)
     {
         state = newState;
-
         switch(newState)
         {
             case GameState.GenerateLevel:
@@ -253,22 +254,7 @@ public class GameManager : MonoBehaviour
                 //print("FN: " + freeNodes.Count());
                 // if(cycleMovesLeft == 0)
                 //     return;
-                
-                var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
-                //print("Game Over: " + GameOver);
-                if(GameOver && cycleMovesLeft <= 0)
-                {
-                    ChangeState(GameState.Lose);
-                    //here
-                    StartCoroutine(SubmitScore(score));
-                    return;
-                }
-
-                else
-                {
-                    ChangeState(GameState.WaitingInput);
-                    return;
-                }
+                GameOverCase();
             }     
         }
 
@@ -428,24 +414,28 @@ public class GameManager : MonoBehaviour
                     {
                         nodeUp.Obstacle = false;
                         RemoveBlock(nodeUp.OccupiedBlock);
+                        cycleMovesLeft++;
                     }
 
                     if(nodeDown && nodeDown.Obstacle && nodeDown.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeDown.Obstacle = false;
                         RemoveBlock(nodeDown.OccupiedBlock);
+                        cycleMovesLeft++;
                     }
 
                     if(nodeLeft && nodeLeft.Obstacle && nodeLeft.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeLeft.Obstacle = false;
                         RemoveBlock(nodeLeft.OccupiedBlock);
+                        cycleMovesLeft++;
                     }
 
                     if(nodeRight && nodeRight.Obstacle && nodeRight.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeRight.Obstacle = false;
                         RemoveBlock(nodeRight.OccupiedBlock);
+                        cycleMovesLeft++;
                     }
 
                     MergeBlocks(block.MergingBlock, block);
@@ -460,13 +450,30 @@ public class GameManager : MonoBehaviour
 
             //audioSource.PlayOneShot(swipe, 0.2f);
         }
-
         
         else
         {
             ChangeState(GameState.WaitingInput);
         }
         
+    }
+
+    private void GameOverCase() {
+        var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
+        //print("Game Over: " + GameOver);
+        if(GameOver && cycleMovesLeft <= 0)
+        {
+            ChangeState(GameState.Lose);
+            //here
+            StartCoroutine(SubmitScore(score));
+            return;
+        }
+
+        else
+        {
+            ChangeState(GameState.WaitingInput);
+            return;
+        }
     }
 
     public void Cycle(GameObject locationCheck)
@@ -690,21 +697,6 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        // foreach(var block in blocks)
-        // {
-        //     if(xAxis){
-        //         if(block.Pos.x == blockCoordinate){
-        //             orderedBlocks.Add(block);
-        //         }
-        //     }
-
-        //     else if(yAxis){
-        //         if(block.Pos.y == blockCoordinate){
-        //             orderedBlocks.Add(block);
-        //         }
-        //     }
-        // }
-
         foreach(var node in nodes) {
             if (xAxis) {
                 if (node.Pos.x == blockCoordinate && node.OccupiedBlock != null) {
@@ -728,8 +720,6 @@ public class GameManager : MonoBehaviour
             print("Pos: " + block.Pos);
         }
 
-        // if (xAxis) orderedBlocks.OrderBy(b => b.Pos.x).ToList();
-        // if (yAxis) orderedBlocks.OrderBy(b => b.Pos.y).ToList();
         if (reverse) orderedBlocks.Reverse();
 
 
@@ -775,6 +765,8 @@ public class GameManager : MonoBehaviour
         if (tempBlock != null) {
             tempBlock.SetBlock(nodeMovingTo);
         }
+
+        if (cycleMovesLeft == 0) GameOverCase();
 
         // audioSource.PlayOneShot(swipe, 0.2f);
         // print("OrderedBlocks:" + orderedBlocks.Count());
@@ -924,11 +916,15 @@ public class GameManager : MonoBehaviour
         audioSource.PlayOneShot(buttonPress, 0.2f);
         if(!muted){
             audioListener.enabled = false;
+            audioOnIcon.SetActive(false);
+            audioOffIcon.SetActive(true);
             muted = true;
         }
 
         else if(muted){
             audioListener.enabled = true;
+            audioOnIcon.SetActive(true);
+            audioOffIcon.SetActive(false);
             muted = false;
         }
     }
