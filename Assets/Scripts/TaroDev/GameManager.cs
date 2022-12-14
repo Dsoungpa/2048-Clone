@@ -40,11 +40,13 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject winScreen, loseScreen;
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text gameoverscore;
     [SerializeField] private TMP_Text highscoreText;
     [SerializeField] private TMP_Text cycleMoves;
     [SerializeField] private GameObject cycleUI;
     [SerializeField] private GameObject audioOnIcon;
     [SerializeField] private GameObject audioOffIcon;
+    [SerializeField] public UIShake shakeScript;
 
     [Header("Audio")]
     [SerializeField] private List<AudioClip> merges = new List<AudioClip>();
@@ -450,9 +452,14 @@ public class GameManager : MonoBehaviour
 
             //audioSource.PlayOneShot(swipe, 0.2f);
         }
-        
+
         else
         {
+            //var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
+            if (orderedBlocks.Count() == 16) {
+                shakeScript.TriggerShake();
+            }
+
             ChangeState(GameState.WaitingInput);
         }
         
@@ -471,6 +478,7 @@ public class GameManager : MonoBehaviour
 
         else
         {
+            
             ChangeState(GameState.WaitingInput);
             return;
         }
@@ -858,6 +866,7 @@ public class GameManager : MonoBehaviour
         if (baseBlock.Value * 2 > currentHighestValue) UpdateBrickValue();
 
         scoreText.text = score.ToString();
+        gameoverscore.text = score.ToString();
         RemoveBlock(baseBlock);
         RemoveBlock(mergingBlock);
     }
