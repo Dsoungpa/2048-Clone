@@ -28,6 +28,7 @@ public class Block : MonoBehaviour
         if(Node != null) Node.OccupiedBlock = null;
         Node = node;
         Node.OccupiedBlock = this;
+        if (Obstacle) Node.Obstacle = true;
     }
 
     public void ClearBlock() {
