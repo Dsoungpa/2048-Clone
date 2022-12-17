@@ -4,75 +4,53 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[System.Serializable]
+public class ColorArray
+{
+    public string themeName;
+    public Color[] colors;
+}
+
 public class ColorTheme : MonoBehaviour
 {
-    // Index 0 = primary
-    // Index 1 = secondary
-    // Index 2 = background
-    // Index 3 = text primary
-    // Index 4 = text secondary
+    [Header("Themes")]
+    [SerializeField] private ColorArray[] colorThemes;
 
-    [Header("Color Themes")]
-    [SerializeField] private Color[] theme1 = new Color[3]; // spring
-    [SerializeField] private Color[] theme2 = new Color[3]; // summer
-    [SerializeField] private Color[] theme3 = new Color[3]; // fall
-    [SerializeField] private Color[] theme4 = new Color[3]; // winter
-    //[SerializeField] private Color[] theme5 = new Color[3]; // christmas
-    [SerializeField] private Color[][] allThemes = new Color[4][];
-
-    [Header("UI Separations")]
+    [Header("Color Separations")]
+    [SerializeField] private Image[] primaryColors;
+    [SerializeField] private Image[] secondaryColors;
+    [SerializeField] private Image[] tertiaryColors;
+    [SerializeField] private Image[] buttons;
     [SerializeField] private Camera cam;
-    [SerializeField] private Image[] buttons = new Image[16];
-
-    // Index 0 = score
-    // Index 1 = best
-    // Index 2 = cycles left
-    [SerializeField] private Image[] textBoards = new Image[3];
-    [SerializeField] private Image newGameButton;
-    [SerializeField] private Image toggleCycleButton;
-    [SerializeField] private Image leaderboard;
-    [SerializeField] private Image audioButton;
-    [SerializeField] private Image themeDropdown;
-    [SerializeField] private TMP_Dropdown themeOptions;
-
 
     [Header("Theme Art")]
-    [SerializeField] private GameObject[] themeArtPrefabs = new GameObject[4];
+    [SerializeField] private GameObject[] themeArtPrefabs;
+
+    [Header("General")]
+    [SerializeField] private TMP_Dropdown themeOptions;
+    [SerializeField] private GameManager GMScript;
 
     [HideInInspector] public SpriteRenderer gameBoard;
-    public Color[] initialTheme;
-    [SerializeField] private GameManager GMScript;
-    public bool boardReady = false;
-    private TextMeshPro text1;
+    [HideInInspector] public bool boardReady = false;
 
-    // Start is called before the first frame update
+    private ColorArray initialTheme;
+    private List<string> themeOptionNames = new List<string>();
+
     void Start()
     {
-        allThemes[0] = theme1;
-        allThemes[1] = theme2;
-        allThemes[2] = theme3;
-        allThemes[3] = theme4;
-        //allThemes[4] = theme5;
-
-        // int randomNum = Random.Range(0, allThemes.Length);
-        //initialTheme = allThemes[randomNum];
-
-        initialTheme = allThemes[0];
-
+        int prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", 0);
+        initialTheme = colorThemes[prefThemeValue];
         StartCoroutine(SetBoard(initialTheme, 0));
+
+        SetDropdownOptions(prefThemeValue);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z)) ChangeTheme(allThemes[0], 0);
-        if (Input.GetKeyDown(KeyCode.X)) ChangeTheme(allThemes[1], 1);
-        if (Input.GetKeyDown(KeyCode.C)) ChangeTheme(allThemes[2], 2);
-        if (Input.GetKeyDown(KeyCode.V)) ChangeTheme(allThemes[3], 3);
-        //if (Input.GetKeyDown(KeyCode.B)) ChangeTheme(allThemes[4], 4);
+
     }
 
-    private IEnumerator SetBoard(Color[] initialTheme, int themeIndex) {
+    private IEnumerator SetBoard(ColorArray initialTheme, int themeIndex) {
         yield return new WaitUntil(() => boardReady == true);
         gameBoard = GMScript.GetBoard();
         ChangeTheme(initialTheme, themeIndex);
@@ -89,20 +67,29 @@ public class ColorTheme : MonoBehaviour
     }
 
     public void UpdateThemeFromDropdown() {
-        Color[] theme = allThemes[themeOptions.value];
-        ChangeTheme(theme, themeOptions.value);
+        ColorArray dropdownTheme = colorThemes[themeOptions.value];
+        ChangeTheme(dropdownTheme, themeOptions.value);
     }
 
-    public void ChangeTheme(Color[] theme, int themeIndex) {
+    void SetDropdownOptions(int currentOption) {
+        foreach(ColorArray theme in colorThemes) {
+            themeOptionNames.Add(theme.themeName);
+        }
+        themeOptions.AddOptions(themeOptionNames);
+        themeOptions.value = currentOption;
+    }
+
+    public void ChangeTheme(ColorArray theme, int themeIndex) {
+        print("Test");
+        PlayerPrefs.SetInt("SelectedTheme", themeIndex);
+
+        foreach (Image image in primaryColors) { image.color = theme.colors[0]; }
+        foreach (Image image in secondaryColors) { image.color = theme.colors[1]; }
+        foreach (Image image in tertiaryColors) { image.color = theme.colors[2]; }
+        foreach (Image button in buttons) { button.color = theme.colors[0]; }
+        
+        cam.backgroundColor = theme.colors[2];
+
         ToggleThemeArt(themeIndex);
-        cam.backgroundColor = theme[2];
-        newGameButton.color = theme[0];
-        toggleCycleButton.color = theme[0];
-        foreach (var button in buttons) { button.color = theme[0]; }
-        foreach (var board in textBoards) { board.color = theme[1]; }
-        gameBoard.color = theme[1];
-        leaderboard.color = theme[0];
-        audioButton.color = theme[1];
-        themeDropdown.color = theme[2];
     }
 }

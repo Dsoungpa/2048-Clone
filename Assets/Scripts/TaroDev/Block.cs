@@ -15,16 +15,14 @@ public class Block : MonoBehaviour
     [SerializeField] private SpriteRenderer renderer;
     public TextMeshPro text;
 
-    public void Init(BlockType type)
-    {
+    public void Init(BlockType type) {
         Value = type.Value;
         renderer.color = type.Color;
         text.color = (Value == 2 || Value == 4) ? new Color32(0, 0, 0, 150) : new Color32(255, 255, 255, 255);
         text.text = type.Value.ToString();
     }
 
-    public void SetBlock(Node node)
-    {
+    public void SetBlock(Node node) {
         if(Node != null) Node.OccupiedBlock = null;
         Node = node;
         Node.OccupiedBlock = this;
@@ -37,8 +35,7 @@ public class Block : MonoBehaviour
         Node = null;
     }
 
-    public void MergeBlock(Block blockToMergeWith)
-    {
+    public void MergeBlock(Block blockToMergeWith) {
         // Set the block we are merging with
         MergingBlock = blockToMergeWith;
 
