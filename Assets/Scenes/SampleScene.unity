@@ -2312,21 +2312,13 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: Spring
-      m_Image: {fileID: 0}
-    - m_Text: Summer
-      m_Image: {fileID: 0}
-    - m_Text: Fall
-      m_Image: {fileID: 0}
-    - m_Text: Winter
-      m_Image: {fileID: 0}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2016963120}
         m_TargetAssemblyTypeName: ColorTheme, Assembly-CSharp
-        m_MethodName: UpdateThemeFromDropdown
+        m_MethodName: OldUpdateThemeFromDropdown
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2899,7 +2891,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Spring
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c15c81aa82045f04d8bb3a35e9878fff, type: 2}
   m_sharedMaterial: {fileID: 8311910087866534304, guid: c15c81aa82045f04d8bb3a35e9878fff, type: 2}
@@ -16843,6 +16835,14 @@ MonoBehaviour:
     Color: {r: 0.9294118, g: 0.7725491, b: 0.24705884, a: 1}
   - Value: 2048
     Color: {r: 0.9294118, g: 0.7607844, b: 0.18039216, a: 1}
+  - Value: 4096
+    Color: {r: 0.9294118, g: 0.7607844, b: 0.18039216, a: 1}
+  - Value: 8192
+    Color: {r: 0.9294118, g: 0.7607844, b: 0.18039216, a: 1}
+  - Value: 16384
+    Color: {r: 0.9294118, g: 0.7607844, b: 0.18039216, a: 1}
+  - Value: 32768
+    Color: {r: 0.9294118, g: 0.7607844, b: 0.18039216, a: 1}
   travelTime: 0.1
   winCondition: 2048
   gameOver: 0
@@ -16987,23 +16987,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7da65aa25acc9af4f984e96e5f76f78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  theme1:
-  - {r: 0.3484336, g: 0.8490566, b: 0.502476, a: 1}
-  - {r: 0.93333334, g: 0.45490196, b: 0.45490196, a: 1}
-  - {r: 0.7603842, g: 0.8584906, b: 0.4818886, a: 1}
-  theme2:
-  - {r: 0.16634032, g: 0.3962264, b: 0.38316467, a: 1}
-  - {r: 0.9058824, g: 0.5529412, b: 0.39607847, a: 1}
-  - {r: 0.49942148, g: 0.80201024, b: 0.8207547, a: 1}
-  theme3:
-  - {r: 0.2291476, g: 0.3018868, b: 0.10964756, a: 1}
-  - {r: 0.50980395, g: 0.32941177, b: 0.1764706, a: 1}
-  - {r: 0.41176474, g: 0.5019608, b: 0.32156864, a: 1}
-  theme4:
-  - {r: 0.15859737, g: 0.28936046, b: 0.41509432, a: 1}
-  - {r: 0.18115878, g: 0.53733534, b: 0.6509434, a: 1}
-  - {r: 0.44313726, g: 0.7647059, b: 0.85882354, a: 1}
-  cam: {fileID: 519420031}
+  colorThemes:
+  - themeName: Spring
+    colors:
+    - {r: 0.34901962, g: 0.8509804, b: 0.5019608, a: 1}
+    - {r: 0.93333334, g: 0.45490196, b: 0.45490196, a: 1}
+    - {r: 0.7607843, g: 0.85882354, b: 0.48235294, a: 1}
+  - themeName: Summer
+    colors:
+    - {r: 0.16470589, g: 0.39607844, b: 0.38431373, a: 1}
+    - {r: 0.90588236, g: 0.5529412, b: 0.39607844, a: 1}
+    - {r: 0.49803922, g: 0.8039216, b: 0.81960785, a: 1}
+  - themeName: Fall
+    colors:
+    - {r: 0.29411766, g: 0.39607844, b: 0.13333334, a: 1}
+    - {r: 0.6039216, g: 0.3882353, b: 0.20784314, a: 1}
+    - {r: 0.57254905, g: 0.67058825, b: 0.47843137, a: 1}
+  - themeName: Winter
+    colors:
+    - {r: 0.15686275, g: 0.2901961, b: 0.41568628, a: 1}
+    - {r: 0.18039216, g: 0.5372549, b: 0.6509804, a: 1}
+    - {r: 0.44313726, g: 0.7647059, b: 0.85882354, a: 1}
+  primaryColors:
+  - {fileID: 1659646097}
+  - {fileID: 62847257}
+  - {fileID: 1195562772}
+  secondaryColors:
+  - {fileID: 294163595}
+  - {fileID: 675059689}
+  - {fileID: 55154466}
+  - {fileID: 1126990263}
+  - {fileID: 2003494472}
+  tertiaryColors:
+  - {fileID: 184113849}
   buttons:
   - {fileID: 974078340}
   - {fileID: 1269447828}
@@ -17021,24 +17037,38 @@ MonoBehaviour:
   - {fileID: 460882004}
   - {fileID: 967147146}
   - {fileID: 2142938631}
-  textBoards:
-  - {fileID: 294163595}
-  - {fileID: 675059689}
-  - {fileID: 55154466}
-  newGameButton: {fileID: 1659646097}
-  toggleCycleButton: {fileID: 62847257}
-  leaderboard: {fileID: 1195562772}
-  audioButton: {fileID: 1126990263}
-  themeDropdown: {fileID: 184113849}
-  themeOptions: {fileID: 184113848}
+  cam: {fileID: 519420031}
   themeArtPrefabs:
   - {fileID: 569429925}
   - {fileID: 71817947}
   - {fileID: 1781107164}
   - {fileID: 1121755665}
-  gameBoard: {fileID: 0}
-  initialTheme: []
+  colorValueDisplay:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  colorKeyDisplay: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  colorStep: 0.1
+  numPerColor: 5
+  colorVariance: 1
+  colorShift: 0.25
+  themeOptions: {fileID: 184113848}
   GMScript: {fileID: 2016963118}
+  gameBoard: {fileID: 0}
+  nodes: []
+  blocks: []
   boardReady: 0
 --- !u!1 &2018545271
 GameObject:

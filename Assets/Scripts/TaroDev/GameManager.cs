@@ -73,6 +73,9 @@ public class GameManager : MonoBehaviour
     private GameState state;
     private int round;
 
+    [Header("Block Color Manager")]
+    public Dictionary<int, Color> blockColors;
+
     // Get a Blocktype by the int value you pass
     // It takes from the list of types that already has a color attached to the value
     private BlockType GetBlockTypeByValue(int value) => types.First(t=>t.Value == value);
@@ -83,7 +86,23 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.GenerateLevel);
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
+
+        UpdateBlockColors();
     }
+
+    void UpdateBlockColors() {
+        for (int i = 0; i < types.Count(); i++) {
+            if (colorThemeScript.colorRange.ContainsKey(types[i].Value)) {
+                types[i].Color = colorThemeScript.colorRange[types[i].Value];
+            }
+        }
+    }
+
+    // void SetBlockColors() {
+    //     foreach (var block in blocks) {
+    //         if (block.Value )
+    //     }
+    // }
 
     void Update()
     {
@@ -195,6 +214,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public List<Node> GetNodes() {
+        return nodes;
+    }
+
+    public List<Block> GetBlocks() {
+        return blocks;
+    }
+
     void UpdateBrickValue() {
         int[] newBrickValues = new int[brickValues.Length + 1];
         currentHighestValue *= 2; // double current highest value
@@ -271,11 +298,12 @@ public class GameManager : MonoBehaviour
     void SpawnBlock(Node node, int value)
     {
         // Instantiate a block prefab at the chosen node location
-        var block = Instantiate(blockPrefab, node.Pos, Quaternion.identity);    
+        var block = Instantiate(blockPrefab, node.Pos, Quaternion.identity);
         block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
 
         // Take the block game object and initialize it as a BlockType
         block.Init(GetBlockTypeByValue(value));
+        // block.renderer.color = Color.cyan;
 
         // Assign the node to the Block and visa versa
         block.SetBlock(node);
@@ -940,7 +968,7 @@ public class GameManager : MonoBehaviour
 }
 
 [Serializable]
-public struct BlockType 
+public class BlockType 
 {
     public int Value;
     public Color Color;

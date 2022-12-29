@@ -306,6 +306,7 @@ MonoBehaviour:
   Node: {fileID: 0}
   MergingBlock: {fileID: 0}
   Merging: 0
+  Obstacle: 0
   renderer: {fileID: 7711311694843364475}
   text: {fileID: 670052451}
 --- !u!1 &8932540821034333374
@@ -383,7 +384,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: f5f51eb9bf5ede84f9560ba4afba4fe0, type: 3}
-  m_Color: {r: 0.6431373, g: 0.23137257, b: 0.23137257, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

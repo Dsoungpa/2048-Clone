@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -26,34 +28,97 @@ public class ColorTheme : MonoBehaviour
     [Header("Theme Art")]
     [SerializeField] private GameObject[] themeArtPrefabs;
 
+    [Header("Block Colors")]
+    public Dictionary<int, Color> colorRange;
+    [SerializeField] private Color[] colorValueDisplay;
+    [SerializeField] private int[] colorKeyDisplay;
+    [SerializeField] private float colorStep;
+    [SerializeField] private int numPerColor;
+    [Range(0f, 01)] [SerializeField] private float colorVariance; // 1 = no variance
+    [Range(0f, 01)] [SerializeField] private float colorShift;
+    private Color startColor;
+
     [Header("General")]
     [SerializeField] private TMP_Dropdown themeOptions;
     [SerializeField] private GameManager GMScript;
 
-    [HideInInspector] public SpriteRenderer gameBoard;
+    public SpriteRenderer gameBoard;
+    [HideInInspector] public List<Node> nodes;
+    [HideInInspector] public List<Block> blocks;
     [HideInInspector] public bool boardReady = false;
 
-    private ColorArray initialTheme;
+    private ColorArray currentTheme;
     private List<string> themeOptionNames = new List<string>();
+    private int prefThemeValue;
+
+    void Awake() {
+        prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", 0);
+        currentTheme = colorThemes[prefThemeValue];
+        CreateBlockColors();
+    }
 
     void Start()
     {
-        int prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", 0);
-        initialTheme = colorThemes[prefThemeValue];
-        StartCoroutine(SetBoard(initialTheme, 0));
-
+        StartCoroutine(SetBoard(currentTheme, prefThemeValue));
         SetDropdownOptions(prefThemeValue);
     }
 
-    void Update()
-    {
+    void CreateBlockColors() {
+        int startKey = 1;
+        int colorIndex; 
+        int previousStart;
+        colorRange = new Dictionary<int, Color>();
+        for (int i = 0; i < currentTheme.colors.Length; i++) {
+            previousStart = startKey;
+            startKey = (int)Mathf.Pow(2, (i + 1) * numPerColor);
+            colorIndex = (i + 1) % currentTheme.colors.Length;
+            AddDictionary(colorRange, CreateDict(currentTheme.colors[i], currentTheme.colors[colorIndex], startKey, numPerColor, previousStart));
+        }
 
+        int count = 0;
+        foreach (var pair in colorRange) {
+            colorValueDisplay[count] = pair.Value;
+            colorKeyDisplay[count++] = pair.Key;
+        }
     }
 
-    private IEnumerator SetBoard(ColorArray initialTheme, int themeIndex) {
+    private Dictionary<int, Color> CreateDict(Color baseColor, Color targetColor, int startKey, int dictSize, int endKey = 2) {
+        Dictionary<int, Color> colorDict = new Dictionary<int, Color>();
+
+        int dictKey = startKey;
+        int stepMultiplier = 1;
+        // for (int i = dictKey; i > endKey; i /= 2) {
+        //     float r = Mathf.Clamp01(baseColor.r * colorVariance + (colorStep * (stepMultiplier)));
+        //     float g = Mathf.Clamp01(baseColor.g * colorVariance + (colorStep * (stepMultiplier)));
+        //     float b = Mathf.Clamp01(baseColor.b * colorVariance + (colorStep * (stepMultiplier)));
+
+        //     colorDict[i] = new Color(r, g, b);
+        //     stepMultiplier++;
+        // }
+        int count = 0;
+        for (int i = dictKey; i > endKey; i /= 2) {
+            float t = (float)count / 5;
+            Color newColor = Color.Lerp(baseColor, targetColor, t);
+            newColor.a = 1f;
+            colorDict[i] = newColor;
+            stepMultiplier++;
+            count++;
+        }
+        return colorDict;
+    }
+
+    void AddDictionary(Dictionary<int, Color> mainDict, Dictionary<int, Color> dictToAdd) {
+        foreach(var pair in dictToAdd) {
+            mainDict.Add(pair.Key, pair.Value);
+        }
+    }
+
+    private IEnumerator SetBoard(ColorArray currentTheme, int themeIndex) {
         yield return new WaitUntil(() => boardReady == true);
         gameBoard = GMScript.GetBoard();
-        ChangeTheme(initialTheme, themeIndex);
+        nodes = GMScript.GetNodes();
+        blocks = GMScript.GetBlocks();
+        ChangeTheme(currentTheme, themeIndex);
     }
 
     public void ToggleThemeArt(int themeIndex) {
@@ -66,9 +131,14 @@ public class ColorTheme : MonoBehaviour
         }
     }
 
-    public void UpdateThemeFromDropdown() {
+    public void OldUpdateThemeFromDropdown() {
         ColorArray dropdownTheme = colorThemes[themeOptions.value];
-        ChangeTheme(dropdownTheme, themeOptions.value);
+        StartCoroutine(DelayedChangeTheme(dropdownTheme, themeOptions.value));
+    }
+
+    private IEnumerator DelayedChangeTheme(ColorArray dropdownTheme, int colorThemeIndex) {
+        yield return new WaitUntil(() => boardReady == true);
+        ChangeTheme(dropdownTheme, colorThemeIndex);
     }
 
     void SetDropdownOptions(int currentOption) {
@@ -80,16 +150,32 @@ public class ColorTheme : MonoBehaviour
     }
 
     public void ChangeTheme(ColorArray theme, int themeIndex) {
-        print("Test");
         PlayerPrefs.SetInt("SelectedTheme", themeIndex);
+        currentTheme = theme;
 
         foreach (Image image in primaryColors) { image.color = theme.colors[0]; }
         foreach (Image image in secondaryColors) { image.color = theme.colors[1]; }
         foreach (Image image in tertiaryColors) { image.color = theme.colors[2]; }
+
         foreach (Image button in buttons) { button.color = theme.colors[0]; }
+        foreach (Node node in nodes) { node.visualRenderer.color = ShiftColor(theme.colors[2]); }
+        foreach (Block block in blocks) {
+            if (colorRange.ContainsKey(block.Value)) {
+                if (!block.Obstacle) block.renderer.color = colorRange[block.Value];
+            }
+        }
         
         cam.backgroundColor = theme.colors[2];
+        gameBoard.color = theme.colors[1];
 
         ToggleThemeArt(themeIndex);
+    }
+
+    public Color ShiftColor(Color color) {
+        float r = Mathf.Clamp01(color.r * colorShift);
+        float g = Mathf.Clamp01(color.g * colorShift);
+        float b = Mathf.Clamp01(color.b * colorShift);
+
+        return new Color(r, g, b);
     }
 }

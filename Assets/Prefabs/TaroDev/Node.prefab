@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OccupiedBlock: {fileID: 0}
   Obstacle: 0
+  visualRenderer: {fileID: 8648076562408193204}
 --- !u!1 &4238132208656879700
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,4 +8,5 @@ public class Node : MonoBehaviour
     
     public Block OccupiedBlock;
     public bool Obstacle = false;
+    public SpriteRenderer visualRenderer;
 }

@@ -12,7 +12,7 @@ public class Block : MonoBehaviour
     public bool Obstacle = false;
 
     public Vector2 Pos => transform.position;
-    [SerializeField] private SpriteRenderer renderer;
+    public SpriteRenderer renderer;
     public TextMeshPro text;
 
     public void Init(BlockType type) {
