@@ -12,6 +12,8 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+    private void Awake() => instance = this;
 
     [SerializeField] public Leaderboard leaderboard;
 
@@ -30,7 +32,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int cycleMovesLeft = 5;
     [SerializeField] private int countUntilObstacle = 5;
     [SerializeField] private int obstacleCount = 0;
-   
+    public bool cyclesMode;
+    public Block clickedBlock;
 
     [Header("Brick Values")]
     [SerializeField] private int[] brickValues = new int[0];
@@ -86,7 +89,7 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.GenerateLevel);
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
-
+        cyclesMode = false;
         UpdateBlockColors();
     }
 
@@ -104,6 +107,43 @@ public class GameManager : MonoBehaviour
     //     }
     // }
 
+    public void SetCycleTrue(){
+        cyclesMode = true;
+    }
+
+    public void SetCycleFalse(){
+        cyclesMode = false;
+    }
+
+    public void ResetClickedPosition(){
+        clickedBlock = null;
+    }
+
+    public void clearClickedIndicator(){
+        foreach(var block in blocks){
+            if(block.clicked){
+                block.clickedIndicator.SetActive(false);
+                block.clicked = false;
+            }
+        }  
+        SetCycleFalse();
+        ResetClickedPosition();
+    }
+
+    IEnumerator CheckCyclesModeDelay(){
+        yield return new WaitForSeconds(.1f);
+        if(Input.GetMouseButtonDown(0)){
+            clearClickedIndicator();
+        }
+    }
+
+    // void OnMouseDown()
+    // {
+    //     if(cyclesMode){
+    //         clearClickedIndicator();
+    //     }
+    // }
+
     void Update()
     {
         cycleMoves.text = cycleMovesLeft.ToString();
@@ -112,11 +152,102 @@ public class GameManager : MonoBehaviour
         if(state != GameState.WaitingInput) return;
 
         // Keyboard Input
-        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
-        if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
-        if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
-        if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+        if(!cyclesMode){
+            if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+            if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
+            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+        }
 
+        // Cycle Instead of Shift
+        
+        if(cyclesMode){
+            
+            
+            StartCoroutine(CheckCyclesModeDelay());
+
+            if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
+            {
+                print(clickedBlock.Pos.y);
+                if(clickedBlock.Pos.y == 0){
+                    Cycle("FourthRowLeft");
+                }
+
+                else if(clickedBlock.Pos.y == 1){
+                    Cycle("ThirdRowLeft");
+                }
+
+                else if(clickedBlock.Pos.y == 2){
+                    Cycle("SecRowLeft");
+                }
+
+                else if(clickedBlock.Pos.y == 3){
+                    Cycle("FirstRowLeft");
+                }
+            }
+
+            if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) 
+            {
+                print(clickedBlock.Pos.y);
+                if(clickedBlock.Pos.y == 0){
+                    Cycle("FourthRowRight");
+                }
+
+                else if(clickedBlock.Pos.y == 1){
+                    Cycle("ThirdRowRight");
+                }
+
+                else if(clickedBlock.Pos.y == 2){
+                    Cycle("SecRowRight");
+                }
+
+                else if(clickedBlock.Pos.y == 3){
+                    Cycle("FirstRowRight");
+                }
+            }
+
+            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                print(clickedBlock.Pos.x);
+                if(clickedBlock.Pos.x == 0){
+                    Cycle("FirstColUp");
+                }
+
+                else if(clickedBlock.Pos.x == 1){
+                    Cycle("SecColUp");
+                }
+
+                else if(clickedBlock.Pos.x == 2){
+                    Cycle("ThirdColUp");
+                }
+
+                else if(clickedBlock.Pos.x == 3){
+                    Cycle("FourthColUp");
+                }
+            }
+
+            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                print(clickedBlock.Pos.x);
+                if(clickedBlock.Pos.x == 0){
+                    Cycle("FirstColDown");
+                }
+
+                else if(clickedBlock.Pos.x == 1){
+                    Cycle("SecColDown");
+                }
+
+                else if(clickedBlock.Pos.x == 2){
+                    Cycle("ThirdColDown");
+                }
+
+                else if(clickedBlock.Pos.x == 3){
+                    Cycle("FourthColDown");
+                }
+            }
+        }
+        
+        
         // Touch Input
         // if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
         //     startTouchPosition = Input.GetTouch(0).position;
@@ -512,9 +643,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Cycle(GameObject locationCheck)
+    public void Cycle(String locationCheck)
     {
-        audioSource.PlayOneShot(buttonPress, 0.2f);
+        if(cycleMovesLeft >= 0){
+            audioSource.PlayOneShot(buttonPress, 0.2f);
+        }
+        
         if(cycleMovesLeft == 0)
             return; 
 
@@ -533,8 +667,8 @@ public class GameManager : MonoBehaviour
         bool reverse = false;
 
         List<Block> orderedBlocks = new List<Block>();
-        var tag = locationCheck.tag;
-        switch(tag){
+        //var tag = locationCheck.tag;
+        switch(locationCheck){
             case "FirstRowLeft":
                 blockCoordinate = 3;
 

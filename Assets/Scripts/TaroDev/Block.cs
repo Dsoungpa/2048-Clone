@@ -10,10 +10,47 @@ public class Block : MonoBehaviour
     public Block MergingBlock;
     public bool Merging;
     public bool Obstacle = false;
+    public bool clicked = false;
+    private GameManager gameManagerScript;
+    public GameObject clickedIndicator;
 
     public Vector2 Pos => transform.position;
     public SpriteRenderer renderer;
     public TextMeshPro text;
+
+    void Awake()
+    {
+        // Enable the collider component
+        GetComponent<Collider2D>().enabled = true;
+    }
+
+     void Start()
+    {
+        // Find the game object with the tag "GameManager"
+        GameObject gameManagerObject = GameObject.FindWithTag("GameManager");
+
+        // Get the GameManager script component
+        gameManagerScript = gameManagerObject.GetComponent<GameManager>();
+    }
+
+    void Update(){
+        // if(!clicked){
+        //     clickedIndicator.SetActive(false);
+        // }
+
+        // Create a ray from the mouse position to the world
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        // Create a RaycastHit2D object to store the result of the raycast
+        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+
+        // Check if the raycast hit a collider
+        if (hit.collider != null)
+        {
+            // Print the name of the game object that was hit
+            Debug.Log(hit.collider.gameObject.name);
+        }
+    }
 
     public void Init(BlockType type) {
         Value = type.Value;
@@ -47,4 +84,21 @@ public class Block : MonoBehaviour
     }
 
     public bool CanMerge(int value) => Obstacle == false && value == Value && !Merging && MergingBlock == null;
+
+    void OnMouseDown()
+    {
+        if(!gameManagerScript.cyclesMode){
+            clickedIndicator.SetActive(true);
+            clicked = true;
+            gameManagerScript.clickedBlock = this;
+            gameManagerScript.SetCycleTrue();
+            Debug.Log(this.gameObject.name + " clicked!");
+        }
+
+        else{
+            print("else");
+            gameManagerScript.clearClickedIndicator();
+        } 
+        
+    }
 }

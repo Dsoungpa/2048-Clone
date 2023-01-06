@@ -20,6 +20,7 @@ TagManager:
   - ThirdColDown
   - FourthColUp
   - FourthColDown
+  - GameManager
   layers:
   - Default
   - TransparentFX
