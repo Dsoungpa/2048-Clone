@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -30,13 +31,17 @@ public class ColorTheme : MonoBehaviour
 
     [Header("Block Colors")]
     public Dictionary<int, Color> colorRange;
-    [SerializeField] private Color[] colorValueDisplay;
-    [SerializeField] private int[] colorKeyDisplay;
+    [SerializeField] public Color[] colorValueDisplay; // was private
+    // [SerializeField] private int[] colorKeyDisplay;
     [SerializeField] private float colorStep;
     [SerializeField] private int numPerColor;
     [Range(0f, 01)] [SerializeField] private float colorVariance; // 1 = no variance
     [Range(0f, 01)] [SerializeField] private float colorShift;
     private Color startColor;
+    [SerializeField] int[] intValues = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
+
+    // [SerializeField] TextAsset[] files;
+    [SerializeField] string[] files;
 
     [Header("General")]
     [SerializeField] private TMP_Dropdown themeOptions;
@@ -54,13 +59,37 @@ public class ColorTheme : MonoBehaviour
     void Awake() {
         prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", 0);
         currentTheme = colorThemes[prefThemeValue];
-        CreateBlockColors();
+        TextToColor(prefThemeValue);
+        // CreateBlockColors();
     }
 
     void Start()
     {
         StartCoroutine(SetBoard(currentTheme, prefThemeValue));
         SetDropdownOptions(prefThemeValue);
+    }
+
+    void TextToColor(int themeValue) {
+        String[] lines = File.ReadAllLines(files[themeValue]);
+        int index = 0;
+        int valueTracker = 0;
+        colorRange = new Dictionary<int, Color>();
+        for(int i = 0; i < lines.Length; i++) {
+            if (!string.IsNullOrEmpty(lines[i])) {
+                Color color;
+                if (ColorUtility.TryParseHtmlString(lines[i], out color)) {
+                    colorRange.Add(valueTracker, color);
+                }else {
+                    Debug.LogError("Invalid Color String: " + lines);
+                }
+            }
+            valueTracker = intValues[index++];
+        }
+
+        int count = 0;
+        foreach (var pair in colorRange) {
+            colorValueDisplay[count++] = pair.Value;
+        }
     }
 
     void CreateBlockColors() {
@@ -77,8 +106,7 @@ public class ColorTheme : MonoBehaviour
 
         int count = 0;
         foreach (var pair in colorRange) {
-            colorValueDisplay[count] = pair.Value;
-            colorKeyDisplay[count++] = pair.Key;
+            colorValueDisplay[count++] = pair.Value;
         }
     }
 
@@ -87,14 +115,6 @@ public class ColorTheme : MonoBehaviour
 
         int dictKey = startKey;
         int stepMultiplier = 1;
-        // for (int i = dictKey; i > endKey; i /= 2) {
-        //     float r = Mathf.Clamp01(baseColor.r * colorVariance + (colorStep * (stepMultiplier)));
-        //     float g = Mathf.Clamp01(baseColor.g * colorVariance + (colorStep * (stepMultiplier)));
-        //     float b = Mathf.Clamp01(baseColor.b * colorVariance + (colorStep * (stepMultiplier)));
-
-        //     colorDict[i] = new Color(r, g, b);
-        //     stepMultiplier++;
-        // }
         int count = 0;
         for (int i = dictKey; i > endKey; i /= 2) {
             float t = (float)count / 5;
@@ -150,6 +170,8 @@ public class ColorTheme : MonoBehaviour
     }
 
     public void ChangeTheme(ColorArray theme, int themeIndex) {
+        TextToColor(themeIndex);
+        GMScript.SetBlockColors();
         PlayerPrefs.SetInt("SelectedTheme", themeIndex);
         currentTheme = theme;
 
@@ -159,11 +181,11 @@ public class ColorTheme : MonoBehaviour
 
         foreach (Image button in buttons) { button.color = theme.colors[0]; }
         foreach (Node node in nodes) { node.visualRenderer.color = ShiftColor(theme.colors[2]); }
-        foreach (Block block in blocks) {
-            if (colorRange.ContainsKey(block.Value)) {
-                if (!block.Obstacle) block.renderer.color = colorRange[block.Value];
-            }
-        }
+        // foreach (Block block in blocks) {
+            // if (colorRange.ContainsKey(block.Value)) {
+            //     if (!block.Obstacle) block.renderer.color = colorRange[block.Value];
+            // }
+        // }
         
         cam.backgroundColor = theme.colors[2];
         gameBoard.color = theme.colors[1];

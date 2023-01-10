@@ -7735,7 +7735,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -17082,25 +17081,21 @@ MonoBehaviour:
     - {r: 0.34901962, g: 0.8509804, b: 0.5019608, a: 1}
     - {r: 0.93333334, g: 0.45490196, b: 0.45490196, a: 1}
     - {r: 0.7607843, g: 0.85882354, b: 0.48235294, a: 1}
-    fullColorRange: []
   - themeName: Summer
     colors:
     - {r: 0.16470589, g: 0.39607844, b: 0.38431373, a: 1}
     - {r: 0.90588236, g: 0.5529412, b: 0.39607844, a: 1}
     - {r: 0.49803922, g: 0.8039216, b: 0.81960785, a: 1}
-    fullColorRange: []
   - themeName: Fall
     colors:
     - {r: 0.29411766, g: 0.39607844, b: 0.13333334, a: 1}
     - {r: 0.6039216, g: 0.3882353, b: 0.20784314, a: 1}
     - {r: 0.57254905, g: 0.67058825, b: 0.47843137, a: 1}
-    fullColorRange: []
   - themeName: Winter
     colors:
     - {r: 0.15686275, g: 0.2901961, b: 0.41568628, a: 1}
     - {r: 0.18039216, g: 0.5372549, b: 0.6509804, a: 1}
     - {r: 0.44313726, g: 0.7647059, b: 0.85882354, a: 1}
-    fullColorRange: []
   primaryColors:
   - {fileID: 1659646097}
   - {fileID: 62847257}
@@ -17152,11 +17147,16 @@ MonoBehaviour:
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
-  colorKeyDisplay: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   colorStep: 0.1
   numPerColor: 5
   colorVariance: 1
   colorShift: 0.25
+  intValues: 020000000400000008000000100000002000000040000000800000000001000000020000000400000008000000100000002000000040000000800000
+  files:
+  - Assets/Art/Colors/Hexes/springHex.txt
+  - Assets/Art/Colors/Hexes/summerHex.txt
+  - Assets/Art/Colors/Hexes/fallHex.txt
+  - Assets/Art/Colors/Hexes/winterHex.txt
   themeOptions: {fileID: 184113848}
   GMScript: {fileID: 2016963118}
   gameBoard: {fileID: 0}

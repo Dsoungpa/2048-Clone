@@ -90,22 +90,33 @@ public class GameManager : MonoBehaviour
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
-        UpdateBlockColors();
+        NewUpdateBlockColors();
+        //UpdateBlockColors();
     }
 
-    void UpdateBlockColors() {
+    // void UpdateBlockColors() {
+    //     for (int i = 0; i < types.Count(); i++) {
+    //         if (colorThemeScript.colorRange.ContainsKey(types[i].Value)) {
+    //             types[i].Color = colorThemeScript.colorRange[types[i].Value];
+    //         }
+    //     }
+    // }
+
+    void NewUpdateBlockColors() {
         for (int i = 0; i < types.Count(); i++) {
-            if (colorThemeScript.colorRange.ContainsKey(types[i].Value)) {
-                types[i].Color = colorThemeScript.colorRange[types[i].Value];
-            }
+            types[i].Color = colorThemeScript.colorValueDisplay[i];
         }
     }
 
-    // void SetBlockColors() {
-    //     foreach (var block in blocks) {
-    //         if (block.Value )
-    //     }
-    // }
+    public void SetBlockColors() {
+        foreach(KeyValuePair<int, Color> pair in colorThemeScript.colorRange) {
+            foreach (var block in blocks) {
+                if (block.Value == pair.Key) {
+                    block.renderer.color = pair.Value;
+                }
+            }
+        }
+    }
 
     public void SetCycleTrue(){
         cyclesMode = true;
