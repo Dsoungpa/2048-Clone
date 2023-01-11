@@ -48,7 +48,7 @@ public class Block : MonoBehaviour
         if (hit.collider != null)
         {
             // Print the name of the game object that was hit
-            Debug.Log(hit.collider.gameObject.name);
+            // Debug.Log(hit.collider.gameObject.name);
         }
     }
 

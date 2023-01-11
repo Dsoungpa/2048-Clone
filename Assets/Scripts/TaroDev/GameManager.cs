@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
     public void SetBlockColors() {
         foreach(KeyValuePair<int, Color> pair in colorThemeScript.colorRange) {
             foreach (var block in blocks) {
-                if (block.Value == pair.Key) {
+                if (block.Value == pair.Key && block.Obstacle != true) {
                     block.renderer.color = pair.Value;
                 }
             }

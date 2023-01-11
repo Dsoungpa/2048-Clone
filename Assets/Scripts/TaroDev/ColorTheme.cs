@@ -32,7 +32,6 @@ public class ColorTheme : MonoBehaviour
     [Header("Block Colors")]
     public Dictionary<int, Color> colorRange;
     [SerializeField] public Color[] colorValueDisplay; // was private
-    // [SerializeField] private int[] colorKeyDisplay;
     [SerializeField] private float colorStep;
     [SerializeField] private int numPerColor;
     [Range(0f, 01)] [SerializeField] private float colorVariance; // 1 = no variance
@@ -40,7 +39,6 @@ public class ColorTheme : MonoBehaviour
     private Color startColor;
     [SerializeField] int[] intValues = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
 
-    // [SerializeField] TextAsset[] files;
     [SerializeField] string[] files;
 
     [Header("General")]
