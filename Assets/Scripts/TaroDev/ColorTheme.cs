@@ -44,6 +44,7 @@ public class ColorTheme : MonoBehaviour
     [Header("General")]
     [SerializeField] private TMP_Dropdown themeOptions;
     [SerializeField] private GameManager GMScript;
+    private bool initialsetTheme = true;
 
     public SpriteRenderer gameBoard;
     [HideInInspector] public List<Node> nodes;
@@ -170,6 +171,7 @@ public class ColorTheme : MonoBehaviour
     public void ChangeTheme(ColorArray theme, int themeIndex) {
         TextToColor(themeIndex);
         GMScript.SetBlockColors();
+
         PlayerPrefs.SetInt("SelectedTheme", themeIndex);
         currentTheme = theme;
 
@@ -190,6 +192,10 @@ public class ColorTheme : MonoBehaviour
 
         ToggleThemeArt(themeIndex);
     }
+
+    // public void InitialSetTheme(ColorArray theme, int themeIndex, initialSetTheme) {
+    //     ChangeTheme(theme, themeIndex);
+    // }
 
     public Color ShiftColor(Color color) {
         float r = Mathf.Clamp01(color.r * colorShift);

@@ -12,6 +12,7 @@ public class Block : MonoBehaviour
     public bool Obstacle = false;
     public bool clicked = false;
     private GameManager gameManagerScript;
+    private ColorTheme colorThemeScript;
     public GameObject clickedIndicator;
 
     public Vector2 Pos => transform.position;

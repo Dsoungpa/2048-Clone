@@ -13,7 +13,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    private void Awake() => instance = this;
+    // private void Awake() => instance = this;
 
     [SerializeField] public Leaderboard leaderboard;
 
@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int cycleMovesLeft = 5;
     [SerializeField] private int countUntilObstacle = 5;
     [SerializeField] private int obstacleCount = 0;
+    [SerializeField] private float obstacleSpawnChance = 0.1f;
     public bool cyclesMode;
     public Block clickedBlock;
 
@@ -83,10 +84,14 @@ public class GameManager : MonoBehaviour
     // It takes from the list of types that already has a color attached to the value
     private BlockType GetBlockTypeByValue(int value) => types.First(t=>t.Value == value);
 
+    void Awake() {
+        instance = this;
+        NewUpdateBlockColors();
+    }
+
     void Start()
     {
         highscoreText.text = PlayerPrefs.HasKey("myHighScore") ? PlayerPrefs.GetInt("myHighScore").ToString() : "0";
-        NewUpdateBlockColors();
         ChangeState(GameState.GenerateLevel);
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
@@ -109,6 +114,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void SetBlockColors() {
+        NewUpdateBlockColors();
         foreach(KeyValuePair<int, Color> pair in colorThemeScript.colorRange) {
             foreach (var block in blocks) {
                 if (block.Value == pair.Key && block.Obstacle != true) {
@@ -404,7 +410,7 @@ public class GameManager : MonoBehaviour
         // Get a list of nodes that are not Occupied by a block from the list of nodes
         var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
 
-        if(round > 1 && Random.value > 0.9f && obstacleCount < 3)
+        if(round > 1 && Random.value > (1 - obstacleSpawnChance) && obstacleCount < 3)
         {
             foreach (var nodes in freeNodes.Take(amount))
             {

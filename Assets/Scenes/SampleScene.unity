@@ -16937,6 +16937,7 @@ MonoBehaviour:
   cycleMovesLeft: 5
   countUntilObstacle: 5
   obstacleCount: 0
+  obstacleSpawnChance: 0.07
   cyclesMode: 0
   clickedBlock: {fileID: 0}
   brickValues: 040000000800000010000000
