@@ -86,11 +86,11 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         highscoreText.text = PlayerPrefs.HasKey("myHighScore") ? PlayerPrefs.GetInt("myHighScore").ToString() : "0";
+        NewUpdateBlockColors();
         ChangeState(GameState.GenerateLevel);
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
-        NewUpdateBlockColors();
         //UpdateBlockColors();
     }
 
@@ -419,6 +419,9 @@ public class GameManager : MonoBehaviour
             foreach (var nodes in freeNodes.Take(amount))
             {
                 SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
+                foreach (var block in blocks) {
+                    print("Block Color: " + ColorUtility.ToHtmlStringRGBA(block.renderer.color));
+                }
             }
 
             if (freeNodes.Count() == 1) {
@@ -441,12 +444,14 @@ public class GameManager : MonoBehaviour
     {
         // Instantiate a block prefab at the chosen node location
         var block = Instantiate(blockPrefab, node.Pos, Quaternion.identity);
+        
         block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
 
+        print("VALUE BEFORE: " + value);
         // Take the block game object and initialize it as a BlockType
         block.Init(GetBlockTypeByValue(value));
         // block.renderer.color = Color.cyan;
-
+        print("Color: " + ColorUtility.ToHtmlStringRGBA(block.renderer.color) + " - Value: " + block.Value);
         // Assign the node to the Block and visa versa
         block.SetBlock(node);
 
