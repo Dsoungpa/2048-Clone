@@ -169,134 +169,232 @@ public class GameManager : MonoBehaviour
         if(state != GameState.WaitingInput) return;
 
         // Keyboard Input
-        if(!cyclesMode){
-            if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
-            if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
-            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
-            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
-        }
+        // if(!cyclesMode){
+        //     if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+        //     if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
+        //     if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+        //     if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+        // }
 
         // Cycle Instead of Shift
         
+        // if(cyclesMode){
+            
+            
+        //     StartCoroutine(CheckCyclesModeDelay());
+
+        //     if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
+        //     {
+        //         print(clickedBlock.Pos.y);
+        //         if(clickedBlock.Pos.y == 0){
+        //             Cycle("FourthRowLeft");
+        //         }
+
+        //         else if(clickedBlock.Pos.y == 1){
+        //             Cycle("ThirdRowLeft");
+        //         }
+
+        //         else if(clickedBlock.Pos.y == 2){
+        //             Cycle("SecRowLeft");
+        //         }
+
+        //         else if(clickedBlock.Pos.y == 3){
+        //             Cycle("FirstRowLeft");
+        //         }
+        //     }
+
+        //     if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) 
+        //     {
+        //         print(clickedBlock.Pos.y);
+        //         if(clickedBlock.Pos.y == 0){
+        //             Cycle("FourthRowRight");
+        //         }
+
+        //         else if(clickedBlock.Pos.y == 1){
+        //             Cycle("ThirdRowRight");
+        //         }
+
+        //         else if(clickedBlock.Pos.y == 2){
+        //             Cycle("SecRowRight");
+        //         }
+
+        //         else if(clickedBlock.Pos.y == 3){
+        //             Cycle("FirstRowRight");
+        //         }
+        //     }
+
+        //     if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        //     {
+        //         print(clickedBlock.Pos.x);
+        //         if(clickedBlock.Pos.x == 0){
+        //             Cycle("FirstColUp");
+        //         }
+
+        //         else if(clickedBlock.Pos.x == 1){
+        //             Cycle("SecColUp");
+        //         }
+
+        //         else if(clickedBlock.Pos.x == 2){
+        //             Cycle("ThirdColUp");
+        //         }
+
+        //         else if(clickedBlock.Pos.x == 3){
+        //             Cycle("FourthColUp");
+        //         }
+        //     }
+
+        //     if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        //     {
+        //         print(clickedBlock.Pos.x);
+        //         if(clickedBlock.Pos.x == 0){
+        //             Cycle("FirstColDown");
+        //         }
+
+        //         else if(clickedBlock.Pos.x == 1){
+        //             Cycle("SecColDown");
+        //         }
+
+        //         else if(clickedBlock.Pos.x == 2){
+        //             Cycle("ThirdColDown");
+        //         }
+
+        //         else if(clickedBlock.Pos.x == 3){
+        //             Cycle("FourthColDown");
+        //         }
+        //     }
+        // }
+        
+        
+        // Touch Input
+        if(!cyclesMode){
+
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
+                startTouchPosition = Input.GetTouch(0).position;
+            }
+
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
+                currentPosition = Input.GetTouch(0).position;
+                Vector3 Distance = currentPosition - startTouchPosition;
+
+                //if (Input.GetKeyDown(KeyCode.W)) {
+                if(Distance.y > swipeRange){
+                    Shift(Vector2.up);
+                    stopTouch = true;
+                } 
+
+                else if (Distance.y < -swipeRange){
+                //else if (Input.GetKeyDown(KeyCode.S)) {
+                    Shift(Vector2.down);
+                    stopTouch = true;
+                }
+
+                //if (Input.GetKeyDown(KeyCode.A)) {
+                else if(Distance.x < -swipeRange){
+                    Shift(Vector2.left);
+                    stopTouch = true;
+                } 
+                else if (Distance.x > swipeRange){
+                //else if (Input.GetKeyDown(KeyCode.D)) {
+                    Shift(Vector2.right);
+                    stopTouch = true;
+                }
+            }
+        }
+
         if(cyclesMode){
             
             
             StartCoroutine(CheckCyclesModeDelay());
 
-            if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
-            {
-                print(clickedBlock.Pos.y);
-                if(clickedBlock.Pos.y == 0){
-                    Cycle("FourthRowLeft");
-                }
-
-                else if(clickedBlock.Pos.y == 1){
-                    Cycle("ThirdRowLeft");
-                }
-
-                else if(clickedBlock.Pos.y == 2){
-                    Cycle("SecRowLeft");
-                }
-
-                else if(clickedBlock.Pos.y == 3){
-                    Cycle("FirstRowLeft");
-                }
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
+                startTouchPosition = Input.GetTouch(0).position;
             }
 
-            if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) 
-            {
-                print(clickedBlock.Pos.y);
-                if(clickedBlock.Pos.y == 0){
-                    Cycle("FourthRowRight");
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
+                currentPosition = Input.GetTouch(0).position;
+                Vector3 Distance = currentPosition - startTouchPosition;
+
+                if(Distance.x < -swipeRange) 
+                {
+                    print(clickedBlock.Pos.y);
+                    if(clickedBlock.Pos.y == 0){
+                        Cycle("FourthRowLeft");
+                    }
+
+                    else if(clickedBlock.Pos.y == 1){
+                        Cycle("ThirdRowLeft");
+                    }
+
+                    else if(clickedBlock.Pos.y == 2){
+                        Cycle("SecRowLeft");
+                    }
+
+                    else if(clickedBlock.Pos.y == 3){
+                        Cycle("FirstRowLeft");
+                    }
                 }
 
-                else if(clickedBlock.Pos.y == 1){
-                    Cycle("ThirdRowRight");
+                else if (Distance.x > swipeRange)
+                {
+                    print(clickedBlock.Pos.y);
+                    if(clickedBlock.Pos.y == 0){
+                        Cycle("FourthRowRight");
+                    }
+
+                    else if(clickedBlock.Pos.y == 1){
+                        Cycle("ThirdRowRight");
+                    }
+
+                    else if(clickedBlock.Pos.y == 2){
+                        Cycle("SecRowRight");
+                    }
+
+                    else if(clickedBlock.Pos.y == 3){
+                        Cycle("FirstRowRight");
+                    }
                 }
 
-                else if(clickedBlock.Pos.y == 2){
-                    Cycle("SecRowRight");
+                else if(Distance.y > swipeRange)
+                {
+                    print(clickedBlock.Pos.x);
+                    if(clickedBlock.Pos.x == 0){
+                        Cycle("FirstColUp");
+                    }
+
+                    else if(clickedBlock.Pos.x == 1){
+                        Cycle("SecColUp");
+                    }
+
+                    else if(clickedBlock.Pos.x == 2){
+                        Cycle("ThirdColUp");
+                    }
+
+                    else if(clickedBlock.Pos.x == 3){
+                        Cycle("FourthColUp");
+                    }
                 }
 
-                else if(clickedBlock.Pos.y == 3){
-                    Cycle("FirstRowRight");
-                }
-            }
+                else if(Distance.y < -swipeRange)
+                {
+                    print(clickedBlock.Pos.x);
+                    if(clickedBlock.Pos.x == 0){
+                        Cycle("FirstColDown");
+                    }
 
-            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                print(clickedBlock.Pos.x);
-                if(clickedBlock.Pos.x == 0){
-                    Cycle("FirstColUp");
-                }
+                    else if(clickedBlock.Pos.x == 1){
+                        Cycle("SecColDown");
+                    }
 
-                else if(clickedBlock.Pos.x == 1){
-                    Cycle("SecColUp");
-                }
+                    else if(clickedBlock.Pos.x == 2){
+                        Cycle("ThirdColDown");
+                    }
 
-                else if(clickedBlock.Pos.x == 2){
-                    Cycle("ThirdColUp");
-                }
-
-                else if(clickedBlock.Pos.x == 3){
-                    Cycle("FourthColUp");
-                }
-            }
-
-            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                print(clickedBlock.Pos.x);
-                if(clickedBlock.Pos.x == 0){
-                    Cycle("FirstColDown");
-                }
-
-                else if(clickedBlock.Pos.x == 1){
-                    Cycle("SecColDown");
-                }
-
-                else if(clickedBlock.Pos.x == 2){
-                    Cycle("ThirdColDown");
-                }
-
-                else if(clickedBlock.Pos.x == 3){
-                    Cycle("FourthColDown");
+                    else if(clickedBlock.Pos.x == 3){
+                        Cycle("FourthColDown");
+                    }
                 }
             }
         }
-        
-        
-        // Touch Input
-        // if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
-        //     startTouchPosition = Input.GetTouch(0).position;
-        // }
-
-        // if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
-        //     currentPosition = Input.GetTouch(0).position;
-        //     Vector3 Distance = currentPosition - startTouchPosition;
-
-        //     //if (Input.GetKeyDown(KeyCode.W)) {
-        //     if(Distance.y > swipeRange){
-        //         Shift(Vector2.up);
-        //         stopTouch = true;
-        //     } 
-
-        //     else if (Distance.y < -swipeRange){
-        //     //else if (Input.GetKeyDown(KeyCode.S)) {
-        //         Shift(Vector2.down);
-        //         stopTouch = true;
-        //     }
-
-        //     //if (Input.GetKeyDown(KeyCode.A)) {
-        //     else if(Distance.x < -swipeRange){
-        //         Shift(Vector2.left);
-        //         stopTouch = true;
-        //     } 
-        //     else if (Distance.x > swipeRange){
-        //     //else if (Input.GetKeyDown(KeyCode.D)) {
-        //         Shift(Vector2.right);
-        //         stopTouch = true;
-        //     }
-        // }
     }
 
     private void ChangeState(GameState newState)

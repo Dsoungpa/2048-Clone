@@ -86,6 +86,8 @@ public class Block : MonoBehaviour
 
     public bool CanMerge(int value) => Obstacle == false && value == Value && !Merging && MergingBlock == null;
 
+
+    // Keyboard Version
     void OnMouseDown()
     {
         if(!gameManagerScript.cyclesMode){
@@ -102,4 +104,25 @@ public class Block : MonoBehaviour
         } 
         
     }
+
+    // Mobile Version
+    void OnTouchDown()
+{
+    if(!gameManagerScript.cyclesMode){
+        if(Input.touchCount > 0) {
+            Touch touch = Input.GetTouch(0);
+            if(touch.phase == TouchPhase.Began) {
+                clickedIndicator.SetActive(true);
+                clicked = true;
+                gameManagerScript.clickedBlock = this;
+                gameManagerScript.SetCycleTrue();
+                Debug.Log(this.gameObject.name + " touched!");
+            }
+        }
+    }
+    else{
+        print("else");
+        gameManagerScript.clearClickedIndicator();
+    } 
+}
 }
