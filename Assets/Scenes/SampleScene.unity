@@ -16937,7 +16937,7 @@ MonoBehaviour:
   cycleMovesLeft: 5
   countUntilObstacle: 5
   obstacleCount: 0
-  obstacleSpawnChance: 0.07
+  obstacleSpawnChance: 0.05
   cyclesMode: 0
   clickedBlock: {fileID: 0}
   brickValues: 040000000800000010000000
@@ -17148,16 +17148,25 @@ MonoBehaviour:
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
+  colorKeyDisplay: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   colorStep: 0.1
   numPerColor: 5
   colorVariance: 1
   colorShift: 0.25
   intValues: 020000000400000008000000100000002000000040000000800000000001000000020000000400000008000000100000002000000040000000800000
-  files:
-  - Assets/Art/Colors/Hexes/springHex.txt
-  - Assets/Art/Colors/Hexes/summerHex.txt
-  - Assets/Art/Colors/Hexes/fallHex.txt
-  - Assets/Art/Colors/Hexes/winterHex.txt
+  colorHexes:
+  - 
+  - 
+  - 
+  - 
+  springHexes: '#59d980 #60edc0 #83c958 #c1ee23 #e1e40d #ee7474 #ec9c54 #eb7ba8 #c166cc
+    #6397d7 #c2db7b #68ab66 #52afa1 #296b8d #3651ab'
+  summerHexes: '#2a6562 #35a77b #60bec4 #6bafe9 #7e76f0 #e78d65 #f7b638 #ef9bc0 #e371e2
+    #a169cc #7fcdd1 #58b1e9 #56b9a0 #529672 #80a356'
+  fallHexes: '#4b6522 #397b2e #9fbf20 #c5be0c #e1b815 #9a6335 #cb9f6b #cc7c7c #ce7cc2
+    #cea7f9 #92ab7a #a5a66b #69a687 #4897a3 #5374ab'
+  winterHexes: '#284a6a #679cbb #a38cc9 #da9ce7 #e57695 #2e89a6 #447cd9 #60ccb6 #71e171
+    #4da43e #71c3db #459177 #5e863d #c1bd4f #c39650'
   themeOptions: {fileID: 184113848}
   GMScript: {fileID: 2016963118}
   gameBoard: {fileID: 0}

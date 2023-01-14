@@ -96,18 +96,18 @@ public class GameManager : MonoBehaviour
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
-        //UpdateBlockColors();
+        // UpdateBlockColors();
     }
 
-    // void UpdateBlockColors() {
-    //     for (int i = 0; i < types.Count(); i++) {
-    //         if (colorThemeScript.colorRange.ContainsKey(types[i].Value)) {
-    //             types[i].Color = colorThemeScript.colorRange[types[i].Value];
-    //         }
-    //     }
-    // }
+    void UpdateBlockColors() {
+        for (int i = 0; i < types.Count(); i++) {
+            if (colorThemeScript.colorRange.ContainsKey(types[i].Value)) {
+                types[i].Color = colorThemeScript.colorRange[types[i].Value];
+            }
+        }
+    }
 
-    void NewUpdateBlockColors() {
+    void NewUpdateBlockColors() { //this is just so we can see the color in the inspector
         for (int i = 0; i < types.Count(); i++) {
             types[i].Color = colorThemeScript.colorValueDisplay[i];
         }
@@ -169,100 +169,100 @@ public class GameManager : MonoBehaviour
         if(state != GameState.WaitingInput) return;
 
         // Keyboard Input
-        // if(!cyclesMode){
-        //     if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
-        //     if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
-        //     if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
-        //     if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
-        // }
+        if(!cyclesMode){
+            if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+            if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
+            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+        }
 
         // Cycle Instead of Shift
         
-        // if(cyclesMode){
+        if(cyclesMode){
             
             
-        //     StartCoroutine(CheckCyclesModeDelay());
+            StartCoroutine(CheckCyclesModeDelay());
 
-        //     if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
-        //     {
-        //         print(clickedBlock.Pos.y);
-        //         if(clickedBlock.Pos.y == 0){
-        //             Cycle("FourthRowLeft");
-        //         }
+            if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
+            {
+                print(clickedBlock.Pos.y);
+                if(clickedBlock.Pos.y == 0){
+                    Cycle("FourthRowLeft");
+                }
 
-        //         else if(clickedBlock.Pos.y == 1){
-        //             Cycle("ThirdRowLeft");
-        //         }
+                else if(clickedBlock.Pos.y == 1){
+                    Cycle("ThirdRowLeft");
+                }
 
-        //         else if(clickedBlock.Pos.y == 2){
-        //             Cycle("SecRowLeft");
-        //         }
+                else if(clickedBlock.Pos.y == 2){
+                    Cycle("SecRowLeft");
+                }
 
-        //         else if(clickedBlock.Pos.y == 3){
-        //             Cycle("FirstRowLeft");
-        //         }
-        //     }
+                else if(clickedBlock.Pos.y == 3){
+                    Cycle("FirstRowLeft");
+                }
+            }
 
-        //     if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) 
-        //     {
-        //         print(clickedBlock.Pos.y);
-        //         if(clickedBlock.Pos.y == 0){
-        //             Cycle("FourthRowRight");
-        //         }
+            if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) 
+            {
+                print(clickedBlock.Pos.y);
+                if(clickedBlock.Pos.y == 0){
+                    Cycle("FourthRowRight");
+                }
 
-        //         else if(clickedBlock.Pos.y == 1){
-        //             Cycle("ThirdRowRight");
-        //         }
+                else if(clickedBlock.Pos.y == 1){
+                    Cycle("ThirdRowRight");
+                }
 
-        //         else if(clickedBlock.Pos.y == 2){
-        //             Cycle("SecRowRight");
-        //         }
+                else if(clickedBlock.Pos.y == 2){
+                    Cycle("SecRowRight");
+                }
 
-        //         else if(clickedBlock.Pos.y == 3){
-        //             Cycle("FirstRowRight");
-        //         }
-        //     }
+                else if(clickedBlock.Pos.y == 3){
+                    Cycle("FirstRowRight");
+                }
+            }
 
-        //     if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-        //     {
-        //         print(clickedBlock.Pos.x);
-        //         if(clickedBlock.Pos.x == 0){
-        //             Cycle("FirstColUp");
-        //         }
+            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                print(clickedBlock.Pos.x);
+                if(clickedBlock.Pos.x == 0){
+                    Cycle("FirstColUp");
+                }
 
-        //         else if(clickedBlock.Pos.x == 1){
-        //             Cycle("SecColUp");
-        //         }
+                else if(clickedBlock.Pos.x == 1){
+                    Cycle("SecColUp");
+                }
 
-        //         else if(clickedBlock.Pos.x == 2){
-        //             Cycle("ThirdColUp");
-        //         }
+                else if(clickedBlock.Pos.x == 2){
+                    Cycle("ThirdColUp");
+                }
 
-        //         else if(clickedBlock.Pos.x == 3){
-        //             Cycle("FourthColUp");
-        //         }
-        //     }
+                else if(clickedBlock.Pos.x == 3){
+                    Cycle("FourthColUp");
+                }
+            }
 
-        //     if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-        //     {
-        //         print(clickedBlock.Pos.x);
-        //         if(clickedBlock.Pos.x == 0){
-        //             Cycle("FirstColDown");
-        //         }
+            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                print(clickedBlock.Pos.x);
+                if(clickedBlock.Pos.x == 0){
+                    Cycle("FirstColDown");
+                }
 
-        //         else if(clickedBlock.Pos.x == 1){
-        //             Cycle("SecColDown");
-        //         }
+                else if(clickedBlock.Pos.x == 1){
+                    Cycle("SecColDown");
+                }
 
-        //         else if(clickedBlock.Pos.x == 2){
-        //             Cycle("ThirdColDown");
-        //         }
+                else if(clickedBlock.Pos.x == 2){
+                    Cycle("ThirdColDown");
+                }
 
-        //         else if(clickedBlock.Pos.x == 3){
-        //             Cycle("FourthColDown");
-        //         }
-        //     }
-        // }
+                else if(clickedBlock.Pos.x == 3){
+                    Cycle("FourthColDown");
+                }
+            }
+        }
         
         
         // Touch Input
@@ -523,9 +523,6 @@ public class GameManager : MonoBehaviour
             foreach (var nodes in freeNodes.Take(amount))
             {
                 SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
-                foreach (var block in blocks) {
-                    print("Block Color: " + ColorUtility.ToHtmlStringRGBA(block.renderer.color));
-                }
             }
 
             if (freeNodes.Count() == 1) {
@@ -551,11 +548,9 @@ public class GameManager : MonoBehaviour
         
         block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
 
-        print("VALUE BEFORE: " + value);
         // Take the block game object and initialize it as a BlockType
         block.Init(GetBlockTypeByValue(value));
-        // block.renderer.color = Color.cyan;
-        print("Color: " + ColorUtility.ToHtmlStringRGBA(block.renderer.color) + " - Value: " + block.Value);
+        
         // Assign the node to the Block and visa versa
         block.SetBlock(node);
 
