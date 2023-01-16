@@ -97,32 +97,32 @@ public class Block : MonoBehaviour
             gameManagerScript.SetCycleTrue();
             Debug.Log(this.gameObject.name + " clicked!");
         }
-
-        else{
-            print("else");
+    
+        else if (clicked){
+            print("Deselected");
             gameManagerScript.clearClickedIndicator();
         } 
         
     }
 
-    // Mobile Version
-    void OnTouchDown()
-{
-    if(!gameManagerScript.cyclesMode){
-        if(Input.touchCount > 0) {
-            Touch touch = Input.GetTouch(0);
-            if(touch.phase == TouchPhase.Began) {
-                clickedIndicator.SetActive(true);
-                clicked = true;
-                gameManagerScript.clickedBlock = this;
-                gameManagerScript.SetCycleTrue();
-                Debug.Log(this.gameObject.name + " touched!");
-            }
-        }
-    }
-    else{
-        print("else");
-        gameManagerScript.clearClickedIndicator();
-    } 
-}
+    // // Mobile Version
+    // void OnTouchDown()
+    // {
+    // if(!gameManagerScript.cyclesMode){
+    //     if(Input.touchCount > 0) {
+    //         Touch touch = Input.GetTouch(0);
+    //         if(touch.phase == TouchPhase.Began) {
+    //             clickedIndicator.SetActive(true);
+    //             clicked = true;
+    //             gameManagerScript.clickedBlock = this;
+    //             gameManagerScript.SetCycleTrue();
+    //             Debug.Log(this.gameObject.name + " touched!");
+    //         }
+    //     }
+    // }
+    // else{
+    //     print("else");
+    //     gameManagerScript.clearClickedIndicator();
+    //     } 
+    // }
 }

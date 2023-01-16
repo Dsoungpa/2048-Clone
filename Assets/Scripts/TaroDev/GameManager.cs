@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int countUntilObstacle = 5;
     [SerializeField] private int obstacleCount = 0;
     [SerializeField] private float obstacleSpawnChance = 0.1f;
+    [SerializeField] private bool cycling = false;
     public bool cyclesMode;
     public Block clickedBlock;
 
@@ -275,7 +276,6 @@ public class GameManager : MonoBehaviour
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
                 currentPosition = Input.GetTouch(0).position;
                 Vector3 Distance = currentPosition - startTouchPosition;
-
                 //if (Input.GetKeyDown(KeyCode.W)) {
                 if(Distance.y > swipeRange){
                     Shift(Vector2.up);
@@ -284,17 +284,20 @@ public class GameManager : MonoBehaviour
 
                 else if (Distance.y < -swipeRange){
                 //else if (Input.GetKeyDown(KeyCode.S)) {
+                    print("Down");
                     Shift(Vector2.down);
                     stopTouch = true;
                 }
 
                 //if (Input.GetKeyDown(KeyCode.A)) {
                 else if(Distance.x < -swipeRange){
+                    print("Left");
                     Shift(Vector2.left);
                     stopTouch = true;
                 } 
                 else if (Distance.x > swipeRange){
                 //else if (Input.GetKeyDown(KeyCode.D)) {
+                    print("Right");
                     Shift(Vector2.right);
                     stopTouch = true;
                 }
@@ -304,13 +307,14 @@ public class GameManager : MonoBehaviour
         if(cyclesMode){
             
             
-            StartCoroutine(CheckCyclesModeDelay());
+            //StartCoroutine(CheckCyclesModeDelay());
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
                 startTouchPosition = Input.GetTouch(0).position;
             }
 
-            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended){
+                //cycling = true;
                 currentPosition = Input.GetTouch(0).position;
                 Vector3 Distance = currentPosition - startTouchPosition;
 
@@ -338,18 +342,22 @@ public class GameManager : MonoBehaviour
                 {
                     print(clickedBlock.Pos.y);
                     if(clickedBlock.Pos.y == 0){
+                        print("going into cycle");
                         Cycle("FourthRowRight");
                     }
 
                     else if(clickedBlock.Pos.y == 1){
+                        print("going into cycle");
                         Cycle("ThirdRowRight");
                     }
 
                     else if(clickedBlock.Pos.y == 2){
+                        print("going into cycle");
                         Cycle("SecRowRight");
                     }
 
                     else if(clickedBlock.Pos.y == 3){
+                        print("going into cycle");
                         Cycle("FirstRowRight");
                     }
                 }
@@ -378,6 +386,7 @@ public class GameManager : MonoBehaviour
                 {
                     print(clickedBlock.Pos.x);
                     if(clickedBlock.Pos.x == 0){
+                        
                         Cycle("FirstColDown");
                     }
 
@@ -1055,6 +1064,8 @@ public class GameManager : MonoBehaviour
 
         // audioSource.PlayOneShot(swipe, 0.2f);
         // print("OrderedBlocks:" + orderedBlocks.Count());
+
+        //cycling = false;
     }
 
     private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value, bool obstacle)

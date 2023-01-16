@@ -16938,6 +16938,7 @@ MonoBehaviour:
   countUntilObstacle: 5
   obstacleCount: 0
   obstacleSpawnChance: 0.05
+  cycling: 0
   cyclesMode: 0
   clickedBlock: {fileID: 0}
   brickValues: 040000000800000010000000
@@ -16966,7 +16967,7 @@ MonoBehaviour:
   muted: 0
   audioListener: {fileID: 519420029}
   stopTouch: 0
-  swipeRange: 0
+  swipeRange: 10
   colorThemeScript: {fileID: 2016963120}
 --- !u!82 &2016963119
 AudioSource:
