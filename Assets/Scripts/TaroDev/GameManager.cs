@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         instance = this;
-        NewUpdateBlockColors();
+        // NewUpdateBlockColors();
     }
 
     void Start()
@@ -457,6 +457,8 @@ public class GameManager : MonoBehaviour
         gameBoard = Instantiate(boardPrefab, center, Quaternion.identity);
         gameBoard.size = new Vector2(width, height);
         colorThemeScript.boardReady = true;
+
+        NewUpdateBlockColors();
 
         ChangeState(GameState.SpawningBlocks);
     }

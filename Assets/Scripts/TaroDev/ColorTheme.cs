@@ -68,8 +68,8 @@ public class ColorTheme : MonoBehaviour
         colorHexes[2] = fallHexes;
         colorHexes[3] = winterHexes;
 
-        // prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", 0);
-        prefThemeValue = 0;
+        prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", 0);
+        // prefThemeValue = 0;
 
         currentTheme = colorThemes[prefThemeValue];
         TextToColor(prefThemeValue);
