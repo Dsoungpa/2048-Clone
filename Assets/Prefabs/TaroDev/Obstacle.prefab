@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8311910087866534304, guid: c15c81aa82045f04d8bb3a35e9878fff, type: 2}
+  - {fileID: 7813853715039614, guid: dbc8aeb676929c849b9abfa9aacabde1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -102,8 +102,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c15c81aa82045f04d8bb3a35e9878fff, type: 2}
-  m_sharedMaterial: {fileID: 8311910087866534304, guid: c15c81aa82045f04d8bb3a35e9878fff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: dbc8aeb676929c849b9abfa9aacabde1, type: 2}
+  m_sharedMaterial: {fileID: 7813853715039614, guid: dbc8aeb676929c849b9abfa9aacabde1, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -198,8 +198,8 @@ Transform:
   m_GameObject: {fileID: 2865554044034558623}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.07, y: 0.07, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 6, y: 6, z: 85.71429}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5199927271819526618}
   m_RootOrder: 1
@@ -245,8 +245,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: a9ddc32b91c815d41b255d6cfd542571, type: 3}
-  m_Color: {r: 0.43921328, g: 0.531365, b: 0.6603774, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 16f9a044746b3ec42a55f357cac76f01, type: 3}
+  m_Color: {r: 0.48384658, g: 0.606721, b: 0.7830189, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
