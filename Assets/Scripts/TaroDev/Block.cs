@@ -90,7 +90,8 @@ public class Block : MonoBehaviour
     // Keyboard Version
     void OnMouseDown()
     {
-        if(!gameManagerScript.cyclesMode){
+        if(gameManagerScript.phase > 4){
+            if(!gameManagerScript.cyclesMode){
             clickedIndicator.SetActive(true);
             clicked = true;
             gameManagerScript.clickedBlock = this;
@@ -102,6 +103,8 @@ public class Block : MonoBehaviour
             print("Deselected");
             gameManagerScript.clearClickedIndicator();
         } 
+        }
+        
         
     }
 

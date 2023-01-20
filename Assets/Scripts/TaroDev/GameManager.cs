@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] public Leaderboard leaderboard;
 
+    [SerializeField] public int phase;
+
     [SerializeField] private int width = 4;
     [SerializeField] private int height = 4;
     [SerializeField] private Node nodePrefab;
@@ -52,6 +54,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject audioOnIcon;
     [SerializeField] private GameObject audioOffIcon;
     [SerializeField] public UIShake shakeScript;
+
+    [Header("Tutorial UI")]
+    [SerializeField] private GameObject phase1, phase2, phase3, phase4, phase5, phase6;
 
     [Header("Audio")]
     [SerializeField] private List<AudioClip> merges = new List<AudioClip>();
@@ -97,6 +102,7 @@ public class GameManager : MonoBehaviour
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
+        phase = 0;
         // UpdateBlockColors();
     }
 
@@ -169,12 +175,58 @@ public class GameManager : MonoBehaviour
 
         if(state != GameState.WaitingInput) return;
 
+        if(phase == 0){
+            phase1.SetActive(true);
+        }
+
+        if(phase == 2){
+            phase1.SetActive(false);
+            phase2.SetActive(true);
+        }
+
+        if(phase == 3){
+            phase2.SetActive(false);
+            phase3.SetActive(true);
+        }
+
+        if(phase == 4){
+            phase3.SetActive(false);
+            phase4.SetActive(true);
+        }
+
+        if(phase == 5){
+            phase4.SetActive(false);
+            phase5.SetActive(true);
+        }
+
+        if(phase == 6){
+            phase5.SetActive(false);
+            phase6.SetActive(true);
+        }
+
         // Keyboard Input
         if(!cyclesMode){
-            if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
-            if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
-            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
-            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+            if(phase != 0){
+                if(phase != 4){
+                    if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+                }
+                if(phase != 1){
+                    if(phase != 3){
+                        if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+                    }
+
+                    if(phase != 4){
+                        if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+                    }
+                    
+                }
+                
+            }
+            
+            if(phase != 1){
+                if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
+            }
+            
         }
 
         // Cycle Instead of Shift
@@ -516,33 +568,51 @@ public class GameManager : MonoBehaviour
 
     void SpawnBlocks(int amount)
     {
-        // Get a list of nodes that are not Occupied by a block from the list of nodes
-        var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
-
-        if(round > 1 && Random.value > (1 - obstacleSpawnChance) && obstacleCount < 3)
-        {
-            foreach (var nodes in freeNodes.Take(amount))
-            {
-                SpawnObstacle(nodes);
-            }
+        if(phase == 0){
+            SpawnBlock(GetNodeAtPosition(new Vector2(0,0)), 2);
+            SpawnBlock(GetNodeAtPosition(new Vector2(3,0)), 2);
         }
 
-        else
-        {
-            // For each of the free nodes get a certain amount of Nodes that you want to use
-            // for spawning the blocks
-            foreach (var nodes in freeNodes.Take(amount))
+        else if(phase == 1){
+            SpawnObstacle(GetNodeAtPosition(new Vector2(3,1)));
+        }
+
+        else if(phase == 3){
+            SpawnBlock(GetNodeAtPosition(new Vector2(3,0)), 4);
+        }
+
+        else{
+            // Get a list of nodes that are not Occupied by a block from the list of nodes
+            var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
+
+            if(round > 1 && Random.value > (1 - obstacleSpawnChance) && obstacleCount < 3)
             {
-                SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
+                foreach (var nodes in freeNodes.Take(amount))
+                {
+                    SpawnObstacle(nodes);
+                }
             }
 
-            if (freeNodes.Count() == 1) {
-                //print("FN: " + freeNodes.Count());
-                // if(cycleMovesLeft == 0)
-                //     return;
-                GameOverCase();
-            }     
+            else
+            {
+                // For each of the free nodes get a certain amount of Nodes that you want to use
+                // for spawning the blocks
+                foreach (var nodes in freeNodes.Take(amount))
+                {
+                    SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
+                }
+
+                if (freeNodes.Count() == 1) {
+                    //print("FN: " + freeNodes.Count());
+                    // if(cycleMovesLeft == 0)
+                    //     return;
+                    GameOverCase();
+                }     
+            }
+        
         }
+
+        
 
         // "b=>b" - "Is there any..."
         ChangeState(blocks.Any(b=>b.Value == winCondition) ? GameState.Win : GameState.WaitingInput);
@@ -570,7 +640,10 @@ public class GameManager : MonoBehaviour
     }
 
     void SpawnObstacle(Node node)
-    {   
+    {       
+            if(phase == 1){
+                phase++;
+            }
             // Instantiate a block prefab at the chosen node location
             var block = Instantiate(obstaclePrefab, node.Pos, Quaternion.identity);    
             block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
@@ -580,7 +653,15 @@ public class GameManager : MonoBehaviour
             // List<int> fivePercents = new List<int>(new int[] {16, 32, 64}) ;
             // List<int> twoPercents = new List<int>(new int[] {128, 256, 512, 1024});
             UpdateWeightedBrickValues(brickValues);
-            int value = weightedBrickValues[Random.Range(0, weightedBrickValues.Length)];
+            int value;
+            if(phase < 3){
+                value = 8;
+            }
+
+            else{
+                value = weightedBrickValues[Random.Range(0, weightedBrickValues.Length)];
+            }
+            
 
             // if(Random.value <= 0.6f){
             //     value = 4;
@@ -609,6 +690,7 @@ public class GameManager : MonoBehaviour
     void Shift(Vector2 dir)
     {
         ChangeState(GameState.Moving);
+
 
         // Order the block array by x then by y if it is moving left or down
         // Or change it to ordered by y then x if it is moving right or up
@@ -659,6 +741,22 @@ public class GameManager : MonoBehaviour
 
         if(blocksMoved)
         {
+            if(phase == 0){
+                phase++;
+            }
+
+            else if(phase == 2){
+                phase++;
+            }
+
+            else if(phase == 3){
+                phase++;
+            }
+
+            else if(phase == 4){
+                phase++;
+            }
+
             var sequence = DOTween.Sequence();
 
             foreach(var block in orderedBlocks)
@@ -771,13 +869,16 @@ public class GameManager : MonoBehaviour
 
     public void Cycle(String locationCheck)
     {
-        if(cycleMovesLeft >= 0){
+        if(cycleMovesLeft > 0){
             audioSource.PlayOneShot(buttonPress, 0.2f);
         }
         
         if(cycleMovesLeft == 0)
             return; 
 
+        if(phase == 5){
+            phase++;
+        }
         int blockCoordinate = 0;
         int loopCoordinateCheck = 0;
 
