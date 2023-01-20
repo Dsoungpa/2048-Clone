@@ -92,6 +92,12 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         instance = this;
+        if(PlayerPrefs.GetInt("phase") > 5){
+            phase = 7;
+        }
+        else{
+            phase = 0;
+        }
         // NewUpdateBlockColors();
     }
 
@@ -102,7 +108,10 @@ public class GameManager : MonoBehaviour
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
-        phase = 0;
+        
+        
+
+
         // UpdateBlockColors();
     }
 
@@ -567,7 +576,8 @@ public class GameManager : MonoBehaviour
     }
 
     void SpawnBlocks(int amount)
-    {
+    { 
+        
         if(phase == 0){
             SpawnBlock(GetNodeAtPosition(new Vector2(0,0)), 2);
             SpawnBlock(GetNodeAtPosition(new Vector2(3,0)), 2);
@@ -1287,6 +1297,8 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("myHighScore", possibleHighScore);
         }
+
+        PlayerPrefs.SetInt("phase", phase);
         
     }
 
