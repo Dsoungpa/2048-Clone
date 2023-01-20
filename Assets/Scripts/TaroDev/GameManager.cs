@@ -216,7 +216,7 @@ public class GameManager : MonoBehaviour
         // Keyboard Input
         if(!cyclesMode){
             if(phase != 0){
-                if(phase != 4){
+                if( phase != 3 && phase != 4 ){
                     if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
                 }
                 if(phase != 1){
