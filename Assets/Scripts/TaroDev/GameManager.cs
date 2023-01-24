@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject audioOffIcon;
     [SerializeField] public UIShake shakeScript;
 
-    [Header("Tutorial UI")]
+    // [Header("Tutorial UI")]
     [SerializeField] private GameObject phase1, phase2, phase3, phase4, phase5, phase6;
 
     [Header("Audio")]
@@ -108,10 +108,6 @@ public class GameManager : MonoBehaviour
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
-        
-        
-
-
         // UpdateBlockColors();
     }
 
