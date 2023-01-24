@@ -24,8 +24,9 @@ public class UIShake : MonoBehaviour
         }
         else
         {
+            
             shakeTimer = 0.0f;
-            transform.position = originalPosition;
+            //transform.position = originalPosition;
         }
     }
 
