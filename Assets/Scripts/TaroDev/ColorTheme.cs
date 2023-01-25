@@ -47,7 +47,13 @@ public class ColorTheme : MonoBehaviour
     private string fallHexes = "#4b6522 #397b2e #9fbf20 #c5be0c #e1b815 #dc812f #d56044 #cc7c7c #ce7cc2 #cea7f9 #92ab7a #a5a66b #69a687 #4897a3 #5374ab";
     private string winterHexes = "#284a6a #679cbb #a38cc9 #da9ce7 #e57695 #7f65ca #598cdf #60ccb6 #71e171 #4da43e #71c3db #459177 #5e863d #c1bd4f #c39650";
 
-    // [SerializeField] private string[] files; 
+    [Header("Background Icons")]
+    [SerializeField] private GameObject[] backgroundIcons;
+    [SerializeField] private GameObject placeholder;
+    [SerializeField] private int columnLength, rowLength;
+    [SerializeField] private float x_Start, y_Start, x_Space, y_Space;
+    private List<GameObject> instantiatedIcons = new List<GameObject>();
+    
 
     [Header("General")]
     [SerializeField] private TMP_Dropdown themeOptions;
@@ -70,17 +76,39 @@ public class ColorTheme : MonoBehaviour
         colorHexes[3] = winterHexes;
 
         prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", 0);
-        // prefThemeValue = 0;
-
         currentTheme = colorThemes[prefThemeValue];
         TextToColor(prefThemeValue);
-        // CreateBlockColors();
+
+        SpawnBackgroundIcons(prefThemeValue);
     }
 
     void Start()
     {
         StartCoroutine(SetBoard(currentTheme, prefThemeValue));
         SetDropdownOptions(prefThemeValue);
+    }
+
+    void SpawnBackgroundIcons(int iconIndex) {
+        Boolean shift = true;
+        for (int i = 0; i < columnLength * rowLength; i++) {
+            Vector3 iconPos = new Vector3(x_Start + (x_Space * (i % columnLength)), y_Start + (y_Space * (i / columnLength)));
+            GameObject icon = Instantiate(placeholder, iconPos, Quaternion.identity);
+            instantiatedIcons.Add(icon);
+
+            if (shift) {
+                icon.transform.position += new Vector3(0f, .75f, 0f);
+                shift = false;
+            }else {
+                shift = true;
+            }
+        }
+    }
+
+    void UpdateBackgrounIcons(int iconIndex) {
+        Sprite currentIcon = backgroundIcons[iconIndex].GetComponent<SpriteRenderer>().sprite;
+        foreach (GameObject icon in instantiatedIcons) {
+            icon.GetComponent<SpriteRenderer>().sprite = currentIcon;
+        }
     }
 
     void TextToColor(int themeValue) {
@@ -181,7 +209,7 @@ public class ColorTheme : MonoBehaviour
 
     void SetDropdownOptions(int currentOption) {
         foreach(ColorArray theme in colorThemes) {
-            themeOptionNames.Add(theme.themeName);
+            themeOptionNames.Add(theme.themeName.ToUpper()); //upper case options
         }
         themeOptions.AddOptions(themeOptionNames);
         themeOptions.value = currentOption;
@@ -189,7 +217,7 @@ public class ColorTheme : MonoBehaviour
 
     public void ChangeTheme(ColorArray theme, int themeIndex) {
         TextToColor(themeIndex);
-        //GMScript.SetBlockColors();
+        UpdateBackgrounIcons(themeIndex);
 
         PlayerPrefs.SetInt("SelectedTheme", themeIndex);
         currentTheme = theme;
@@ -200,21 +228,12 @@ public class ColorTheme : MonoBehaviour
 
         foreach (Image button in buttons) { button.color = theme.colors[0]; }
         foreach (Node node in nodes) { node.visualRenderer.color = ShiftColor(theme.colors[2]); }
-        // foreach (Block block in blocks) {
-            // if (colorRange.ContainsKey(block.Value)) {
-            //     if (!block.Obstacle) block.renderer.color = colorRange[block.Value];
-            // }
-        // }
         
         cam.backgroundColor = theme.colors[2];
         gameBoard.color = theme.colors[1];
 
         ToggleThemeArt(themeIndex);
     }
-
-    // public void InitialSetTheme(ColorArray theme, int themeIndex, initialSetTheme) {
-    //     ChangeTheme(theme, themeIndex);
-    // }
 
     public Color ShiftColor(Color color) {
         float r = Mathf.Clamp01(color.r * colorShift);
