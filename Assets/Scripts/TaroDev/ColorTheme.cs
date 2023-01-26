@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 using TMPro;
 
 [System.Serializable]
@@ -45,15 +46,17 @@ public class ColorTheme : MonoBehaviour
     private string springHexes = "#59d980 #60edc0 #83c958 #c1ee23 #e1e40d #f8a92e #ee543b #f69fc2 #c166cc #6397d7 #c2db7b #68ab66 #52afa1 #296b8d #3651ab";
     private string summerHexes = "#2a6562 #35a77b #60bec4 #6bafe9 #7e76f0 #ffd556 #f79638 #ef9bc0 #e371e2 #a169cc #7fcdd1 #58b1e9 #56b9a0 #529672 #80a356";
     private string fallHexes = "#4b6522 #397b2e #9fbf20 #c5be0c #e1b815 #dc812f #d56044 #cc7c7c #ce7cc2 #cea7f9 #92ab7a #a5a66b #69a687 #4897a3 #5374ab";
-    private string winterHexes = "#284a6a #679cbb #a38cc9 #da9ce7 #e57695 #7f65ca #598cdf #60ccb6 #71e171 #4da43e #71c3db #459177 #5e863d #c1bd4f #c39650";
+    private string winterHexes = "#284a6a #679cbb #a38cc9 #da9ce7 #e57695 #3c9eca #598cdf #60ccb6 #71e171 #4da43e #7dc8e7 #459177 #5e863d #c1bd4f #c39650";
 
-    [Header("Background Icons")]
+    [Header("Background Pattern")]
     [SerializeField] private GameObject[] backgroundIcons;
     [SerializeField] private GameObject placeholder;
     [SerializeField] private int columnLength, rowLength;
     [SerializeField] private float x_Start, y_Start, x_Space, y_Space;
     private List<GameObject> instantiatedIcons = new List<GameObject>();
-    
+
+    [Header("Devs")]
+    [SerializeField] private GameObject[] devs;
 
     [Header("General")]
     [SerializeField] private TMP_Dropdown themeOptions;
@@ -75,11 +78,12 @@ public class ColorTheme : MonoBehaviour
         colorHexes[2] = fallHexes;
         colorHexes[3] = winterHexes;
 
-        prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", 0);
+        prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", Random.Range(0, 4)); //random default theme
         currentTheme = colorThemes[prefThemeValue];
         TextToColor(prefThemeValue);
 
         SpawnBackgroundIcons(prefThemeValue);
+        ActivateDev(prefThemeValue);
     }
 
     void Start()
@@ -102,6 +106,19 @@ public class ColorTheme : MonoBehaviour
                 shift = true;
             }
         }
+    }
+
+    void ActivateDev(int devIndex) {
+        devs[devIndex].SetActive(true);
+    }
+
+    void UpdateActiveDevs(int devIndex) {
+        foreach(GameObject dev in devs) {
+            if (dev.activeInHierarchy) {
+                dev.SetActive(false);
+            }
+        }
+        ActivateDev(devIndex);
     }
 
     void UpdateBackgrounIcons(int iconIndex) {
@@ -217,7 +234,8 @@ public class ColorTheme : MonoBehaviour
 
     public void ChangeTheme(ColorArray theme, int themeIndex) {
         TextToColor(themeIndex);
-        UpdateBackgrounIcons(themeIndex);
+        UpdateBackgrounIcons(themeIndex); // background icons art
+        UpdateActiveDevs(themeIndex); // dev art
 
         PlayerPrefs.SetInt("SelectedTheme", themeIndex);
         currentTheme = theme;
@@ -230,7 +248,7 @@ public class ColorTheme : MonoBehaviour
         foreach (Node node in nodes) { node.visualRenderer.color = ShiftColor(theme.colors[2]); }
         
         cam.backgroundColor = theme.colors[2];
-        gameBoard.color = theme.colors[1];
+        gameBoard.color = theme.colors[3];
 
         ToggleThemeArt(themeIndex);
     }

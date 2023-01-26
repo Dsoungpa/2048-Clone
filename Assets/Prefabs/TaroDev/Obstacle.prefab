@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0003, y: 0.041}
-  m_SizeDelta: {x: 9.0928, y: 8.9482}
+  m_AnchoredPosition: {x: 0, y: 0.05}
+  m_SizeDelta: {x: 5.75, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &670052452
 MeshRenderer:
@@ -127,12 +127,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
+  m_fontSize: 38.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 30
-  m_fontSizeMax: 32
+  m_fontSizeMax: 50
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 1894720575369121710}
   - component: {fileID: 2247726501223878643}
   m_Layer: 0
-  m_Name: Obstacle Ring
+  m_Name: Obstacle Mark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,7 +246,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 16f9a044746b3ec42a55f357cac76f01, type: 3}
-  m_Color: {r: 0.48235294, g: 0.61068785, b: 0.81960785, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
