@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LootLocker.Requests;
@@ -6,12 +6,15 @@ using TMPro;
 
 public class Leaderboard : MonoBehaviour
 {
-    [Header("Leaderboard ID ")]
-    [SerializeField] private int leaderBoardID = 8851;    //ID which is found in website(corresponds to specific leaderboard)
+    public static Leaderboard instance;
 
-    [Header("Display Name and Scores")]
-    public TextMeshProUGUI playerNames;
-    public TextMeshProUGUI playerScores;
+    int leaderboardID = 8851;
+    public TMP_Text playerNames;
+    public TMP_Text playerScores;
+    public Leaderboard leaderboardPlayerPrefab;
+    public GameObject leaderboardUI;
+    public Transform leaderboardPanel;
+    public Vector2 leaderboardUITransform;
 
 
     // Start is called before the first frame update
@@ -24,51 +27,15 @@ public class Leaderboard : MonoBehaviour
     {
         bool done = false;
         string playerID = PlayerPrefs.GetString("PlayerID");
-        LootLockerSDKManager.SubmitScore(playerID, scoreToUpload, leaderBoardID, (response) =>
+        LootLockerSDKManager.SubmitScore(playerID, scoreToUpload, leaderboardID, (response) => 
         {
             if(response.success)
             {
                 Debug.Log("Successfully uploaded score");
                 done = true;
             }
-            else{
-                Debug.Log("Failed" + response.Error);
-                done = true;
-            }
-        });
-        yield return new WaitWhile(() => done = false);
-    }
-
-    public IEnumerator FetchTopHighscoresRoutine()      //grabs names and scores from website
-    {
-        bool done = false;
-        LootLockerSDKManager.GetScoreList(leaderBoardID, 15, 0, (response) =>
-        {
-            if(response.success)
+            else
             {
-                string tempPlayerNames = "Names\n\n";
-                string tempPlayerScores = "Scores\n\n";
-
-                LootLockerLeaderboardMember[] members = response.items;
-
-                for (int i = 0; i < members.Length; i++)
-                {
-                    tempPlayerNames += members[i].rank + ".  ";
-                    if(members[i].player.name != "")
-                    {
-                        tempPlayerNames += members[i].player.name;
-                    }
-                    else{
-                        tempPlayerNames += members[i].player.id;
-                    }
-                    tempPlayerScores += members[i].score + "\n";
-                    tempPlayerNames += "\n";
-                }
-                done = true;
-                playerNames.text = tempPlayerNames;
-                playerScores.text = tempPlayerScores;
-            }
-            else{
                 Debug.Log("Failed" + response.Error);
                 done = true;
             }
@@ -76,5 +43,62 @@ public class Leaderboard : MonoBehaviour
         yield return new WaitWhile(() => done == false);
     }
 
+    public IEnumerator FetchTopHighScoresRoutine()
+    {
+        bool done = false;
+        LootLockerSDKManager.GetScoreListMain(leaderboardID, 10, 0, (response) =>
+        {
+            if(response.success)
+            {
+                ClearLeaderboardPanel();
+                string tempPlayerNames = "";
+                //string tempPlayerScores = "PPS\n";
+
+                LootLockerLeaderboardMember[] members = response.items;
+
+                for(int i = 0; i < members.Length; i++)
+                {
+                    if(members[i].player.name != "")
+                    {
+                        tempPlayerNames = members[i].rank + ". " + members[i].player.name;
+                    }
+                    else
+                    {
+                        tempPlayerNames = members[i].rank + ". " + members[i].player.id.ToString();
+                    }
+                    Leaderboard player = Instantiate(leaderboardPlayerPrefab, leaderboardPanel);
+                    player.playerNames.text = tempPlayerNames;
+                    player.playerScores.text = members[i].score.ToString() + " PPS";
+
+                    // tempPlayerScores += members[i].score + "\n";
+                    // tempPlayerNames += "\n";
+                }
+                done = true;
+                
+                // playerNames.text = tempPlayerNames;
+                // playerScores.text = tempPlayerScores;
+            }
+            else
+            {
+                Debug.Log("Failed: " + response.Error);
+                done = true;
+                
+            }
+        });
+        yield return new WaitWhile(() => done == false);
+    }
+
     
+
+    public void ClearLeaderboardPanel()
+    {
+        int children = leaderboardPanel.childCount;
+        //print(children);
+        for(int i = 1; i < children; i++)
+        {
+            // print(i);
+            // print(leaderboardPanel.GetChild(i));
+            Destroy(leaderboardPanel.GetChild(i).gameObject);
+        }
+    }
 }

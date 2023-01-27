@@ -22,7 +22,7 @@ public class PlayerManager : MonoBehaviour
     {
         playerNameInputField.characterLimit = lengthofName;
         yield return LoginRoutine();
-        yield return leaderboard.FetchTopHighscoresRoutine();
+        yield return leaderboard.FetchTopHighScoresRoutine();
     }
 
     public IEnumerator LoginRoutine()  //makes sure that we have connection with server
@@ -63,7 +63,7 @@ public class PlayerManager : MonoBehaviour
 
     public IEnumerator UpdateLeaderboard() {
         yield return new WaitForSecondsRealtime(0.5f);
-        yield return leaderboard.FetchTopHighscoresRoutine();
+        yield return leaderboard.FetchTopHighScoresRoutine();
     }
     
     // Update is called once per frame
