@@ -89,7 +89,6 @@ public class Leaderboard : MonoBehaviour
     }
 
     
-
     public void ClearLeaderboardPanel()
     {
         int children = leaderboardPanel.childCount;

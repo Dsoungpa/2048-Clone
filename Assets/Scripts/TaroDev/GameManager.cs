@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Leaderboard leaderboard;
 
     [SerializeField] public int phase;
+    
+    [SerializeField] private Transform boardParent;
 
     [SerializeField] private int width = 4;
     [SerializeField] private int height = 4;
@@ -506,12 +508,15 @@ public class GameManager : MonoBehaviour
             {
                 var node = Instantiate(nodePrefab, new Vector2(x,y), Quaternion.identity);
                 nodes.Add(node);
+                node.transform.SetParent(boardParent, true);
             }
         }
 
         var center = new Vector2((float) width / 2 - 0.5f, (float) height / 2 - 0.5f);
 
         gameBoard = Instantiate(boardPrefab, center, Quaternion.identity);
+        gameBoard.transform.SetParent(boardParent, true);
+
         gameBoard.size = new Vector2(width, height);
         colorThemeScript.boardReady = true;
 
@@ -632,6 +637,7 @@ public class GameManager : MonoBehaviour
     {
         // Instantiate a block prefab at the chosen node location
         var block = Instantiate(blockPrefab, node.Pos, Quaternion.identity);
+        block.transform.SetParent(boardParent, true);
         
         block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
 

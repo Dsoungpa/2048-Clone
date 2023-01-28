@@ -53,7 +53,6 @@ public class AnchorGameObject : MonoBehaviour
 
         UpdateAnchor();
         updateAnchorRoutine = null;
-
     }
 
     void UpdateAnchor()

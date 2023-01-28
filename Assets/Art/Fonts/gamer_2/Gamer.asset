@@ -57,9 +57,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: Gamer
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: 85423388
   material: {fileID: -1411346116477319424}
-  materialHashCode: 0
+  materialHashCode: -1322115524
   m_Version: 1.1.0
   m_SourceFontFileGUID: 940e36ed856d48347a27d86f8c039e53
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 940e36ed856d48347a27d86f8c039e53, type: 3}
