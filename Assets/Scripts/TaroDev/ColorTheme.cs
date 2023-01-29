@@ -111,16 +111,20 @@ public class ColorTheme : MonoBehaviour
     }
 
     void ActivateDev(int devIndex) {
-        devs[devIndex].SetActive(true);
+        if (PlayerPrefs.GetInt("phase", 0) < 5) {
+            devs[devIndex].SetActive(true);
+        }
     }
 
     void UpdateActiveDevs(int devIndex) {
-        foreach(GameObject dev in devs) {
-            if (dev.activeInHierarchy) {
-                dev.SetActive(false);
+        if (PlayerPrefs.GetInt("Phase", 0) < 5) {
+            foreach(GameObject dev in devs) {
+                if (dev.activeInHierarchy) {
+                    dev.SetActive(false);
+                }
             }
+            ActivateDev(devIndex);
         }
-        ActivateDev(devIndex);
     }
 
     void UpdateBackgrounIcons(int iconIndex) {
