@@ -46,7 +46,7 @@ public class Leaderboard : MonoBehaviour
     public IEnumerator FetchTopHighScoresRoutine()
     {
         bool done = false;
-        LootLockerSDKManager.GetScoreListMain(leaderboardID, 10, 0, (response) =>
+        LootLockerSDKManager.GetScoreList(leaderboardID, 10, 0, (response) =>
         {
             if(response.success)
             {
@@ -68,7 +68,7 @@ public class Leaderboard : MonoBehaviour
                     }
                     Leaderboard player = Instantiate(leaderboardPlayerPrefab, leaderboardPanel);
                     player.playerNames.text = tempPlayerNames;
-                    player.playerScores.text = members[i].score.ToString() + " PPS";
+                    player.playerScores.text = members[i].score.ToString();
 
                     // tempPlayerScores += members[i].score + "\n";
                     // tempPlayerNames += "\n";

@@ -58,7 +58,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] public UIShake shakeScript;
 
     // [Header("Tutorial UI")]
-    [SerializeField] private GameObject phase1, phase2, phase3, phase4, phase5, phase6;
+    [SerializeField] private GameObject phase0, phase1, phase2, phase3, phase4, phase5, phase6;
+    [SerializeField] private TMP_InputField username;
 
     [Header("Audio")]
     [SerializeField] private List<AudioClip> merges = new List<AudioClip>();
@@ -98,7 +99,7 @@ public class GameManager : MonoBehaviour
             phase = 7;
         }
         else{
-            phase = 0;
+            phase = -1;
         }
         // NewUpdateBlockColors();
     }
@@ -182,8 +183,13 @@ public class GameManager : MonoBehaviour
 
         if(state != GameState.WaitingInput) return;
 
+        if(phase == -1){
+            phase0.SetActive(true);
+        }
+
         if(phase == 0){
             phase1.SetActive(true);
+            phase0.SetActive(false);
         }
 
         if(phase == 2){
@@ -213,34 +219,34 @@ public class GameManager : MonoBehaviour
 
         // Keyboard Input
         if(!cyclesMode){
-            if(phase != 0){
-                if( phase != 3 && phase != 4 ){
-                    if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
-                }
-                if(phase != 1){
-                    if(phase != 3){
-                        if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+            if (phase != -1) {
+                if(phase != 0){
+                    if( phase != 3 && phase != 4 ){
+                        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
                     }
+                    if(phase != 1){
+                        if(phase != 3){
+                            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+                        }
 
-                    if(phase != 4){
-                        if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+                        if(phase != 4){
+                            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+                        }
+                        
                     }
-                    
-                }
                 
             }
             
             if(phase != 1){
                 if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
             }
-            
+            }       
         }
 
         // Cycle Instead of Shift
         
         if(cyclesMode){
-            
-            
+             
             StartCoroutine(CheckCyclesModeDelay());
 
             if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
@@ -579,7 +585,7 @@ public class GameManager : MonoBehaviour
     void SpawnBlocks(int amount)
     { 
         
-        if(phase == 0){
+        if(phase == -1){
             SpawnBlock(GetNodeAtPosition(new Vector2(0,0)), 2);
             SpawnBlock(GetNodeAtPosition(new Vector2(3,0)), 2);
         }
@@ -1340,6 +1346,13 @@ public class GameManager : MonoBehaviour
             audioOnIcon.SetActive(true);
             audioOffIcon.SetActive(false);
             muted = false;
+        }
+    }
+
+    public void SubmitUsername(){
+        if(username.text.Length > 0){
+            phase = 0;
+            PlayerPrefs.SetString("PlayerID", username.text);
         }
     }
 }
