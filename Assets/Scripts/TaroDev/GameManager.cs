@@ -630,9 +630,6 @@ public class GameManager : MonoBehaviour
             }
         
         }
-
-        
-
         // "b=>b" - "Is there any..."
         ChangeState(blocks.Any(b=>b.Value == winCondition) ? GameState.Win : GameState.WaitingInput);
     }
@@ -818,28 +815,28 @@ public class GameManager : MonoBehaviour
                     if(nodeUp && nodeUp.Obstacle && nodeUp.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeUp.Obstacle = false;
-                        RemoveBlock(nodeUp.OccupiedBlock);
+                        RemoveObstacle(nodeUp.OccupiedBlock);
                         cycleMovesLeft++;
                     }
 
                     if(nodeDown && nodeDown.Obstacle && nodeDown.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeDown.Obstacle = false;
-                        RemoveBlock(nodeDown.OccupiedBlock);
+                        RemoveObstacle(nodeDown.OccupiedBlock);
                         cycleMovesLeft++;
                     }
 
                     if(nodeLeft && nodeLeft.Obstacle && nodeLeft.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeLeft.Obstacle = false;
-                        RemoveBlock(nodeLeft.OccupiedBlock);
+                        RemoveObstacle(nodeLeft.OccupiedBlock);
                         cycleMovesLeft++;
                     }
 
                     if(nodeRight && nodeRight.Obstacle && nodeRight.OccupiedBlock.Value == block.Value * 2 )
                     {
                         nodeRight.Obstacle = false;
-                        RemoveBlock(nodeRight.OccupiedBlock);
+                        RemoveObstacle(nodeRight.OccupiedBlock);
                         cycleMovesLeft++;
                     }
 
@@ -878,10 +875,8 @@ public class GameManager : MonoBehaviour
             StartCoroutine(SubmitScore(score));
             return;
         }
-
         else
-        {
-            
+        {    
             ChangeState(GameState.WaitingInput);
             return;
         }
@@ -1296,6 +1291,23 @@ public class GameManager : MonoBehaviour
         }
         blocks.Remove(block);
         Destroy(block.gameObject);
+    }
+
+    void RemoveObstacle(Block block)
+    {   
+        if(block.Obstacle){
+            audioSource.PlayOneShot(blockBreak, 0.2f);
+            SpawnBlock(block.Node, block.Value);
+            obstacleCount--;
+        }
+        blocks.Remove(block);
+        Destroy(block.gameObject, .4f);
+
+        foreach (Transform child in block.gameObject.transform) {
+            if (child.gameObject.name == "ObstacleBreak") {
+                child.gameObject.SetActive(true);
+            }
+        }
     }
 
 

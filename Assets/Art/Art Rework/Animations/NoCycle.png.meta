@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f1be32b877e9b634497d2a0e15ce9ab5
+guid: 880dc8a6b38b80f4d82bcae3cadcbd30
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 46
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -140,13 +140,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ObstacleBreakAnimation_0
+      name: NoCycle_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 64
-        height: 64
+        width: 46
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,20 +154,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b908a1b30a5853a44a7300d836f3afa1
-      internalID: -1281318136
+      spriteID: 925067d38699f844180dcd1a3cd03c02
+      internalID: 1621248571
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ObstacleBreakAnimation_1
+      name: NoCycle_1
       rect:
         serializedVersion: 2
-        x: 64
+        x: 46
         y: 0
-        width: 64
-        height: 64
+        width: 46
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -175,20 +175,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a67b82bf9f2473b44aa691be7b2817d2
-      internalID: -840089976
+      spriteID: 74f6860f724c5b943a9eeb725db289f6
+      internalID: 171999670
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ObstacleBreakAnimation_2
+      name: NoCycle_2
       rect:
         serializedVersion: 2
-        x: 128
+        x: 92
         y: 0
-        width: 64
-        height: 64
+        width: 46
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -196,20 +196,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 193d3a4bcfaf5bb4890b2448d0896b8d
-      internalID: 510405820
+      spriteID: 0258adae2d3390249aff7a1e5a870bad
+      internalID: 561204002
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ObstacleBreakAnimation_3
+      name: NoCycle_3
       rect:
         serializedVersion: 2
-        x: 192
+        x: 138
         y: 0
-        width: 64
-        height: 64
+        width: 46
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -217,20 +217,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1d5bcc656cf1a924ca796c234020fd1b
-      internalID: -1234203885
+      spriteID: 68a5f47dbdfa28c4cbf27b507801aa10
+      internalID: -1378338226
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ObstacleBreakAnimation_4
+      name: NoCycle_4
       rect:
         serializedVersion: 2
-        x: 256
+        x: 184
         y: 0
-        width: 64
-        height: 64
+        width: 46
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -238,8 +238,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7f0ab166ffe3f5242bdeda600731ef05
-      internalID: 277323438
+      spriteID: 7770d6b97c5400649a71a8b18a1ba578
+      internalID: -64579367
       vertices: []
       indices: 
       edges: []
@@ -255,11 +255,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ObstacleBreakAnimation_0: -1281318136
-      ObstacleBreakAnimation_1: -840089976
-      ObstacleBreakAnimation_3: -1234203885
-      ObstacleBreakAnimation_4: 277323438
-      ObstacleBreakAnimation_2: 510405820
+      NoCycle_0: 1621248571
+      NoCycle_4: -64579367
+      NoCycle_3: -1378338226
+      NoCycle_1: 171999670
+      NoCycle_2: 561204002
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
