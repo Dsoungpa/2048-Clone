@@ -20670,7 +20670,8 @@ MonoBehaviour:
   gameOver: 0
   score: 0
   possibleHighScore: 0
-  cycleMovesLeft: 5
+  cycleMovesLeft: 100
+  cycleDelay: 0.1
   countUntilObstacle: 5
   obstacleCount: 0
   obstacleSpawnChance: 0.06

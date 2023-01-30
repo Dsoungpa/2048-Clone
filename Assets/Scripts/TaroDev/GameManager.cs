@@ -34,12 +34,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int score = 0;
     [SerializeField] private int possibleHighScore;
     [SerializeField] private int cycleMovesLeft = 5;
+    [SerializeField] private float cycleDelay = 0.25f;
     [SerializeField] private int countUntilObstacle = 5;
     [SerializeField] private int obstacleCount = 0;
     [SerializeField] private float obstacleSpawnChance = 0.1f;
     [SerializeField] private bool cycling = false;
     public bool cyclesMode;
     public Block clickedBlock;
+    private float cycleTimer = 0;
 
     [Header("Brick Values")]
     [SerializeField] private int[] brickValues = new int[0];
@@ -890,6 +892,11 @@ public class GameManager : MonoBehaviour
         if(cycleMovesLeft > 0){
             audioSource.PlayOneShot(buttonPress, 0.2f);
         }
+
+        if (Time.time - cycleTimer < cycleDelay) {
+            return;
+        }
+        cycleTimer = Time.time;
         
         if(cycleMovesLeft == 0)
             return; 
