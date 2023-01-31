@@ -57,7 +57,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject cycleUI;
     [SerializeField] private GameObject audioOnIcon;
     [SerializeField] private GameObject audioOffIcon;
-    [SerializeField] public UIShake shakeScript;
+    [SerializeField] private GameObject noCycleIndicator;
+    // [SerializeField] public UIShake shakeScript;
 
     // [Header("Tutorial UI")]
     [SerializeField] private GameObject phase0, phase1, phase2, phase3, phase4, phase5, phase6;
@@ -857,7 +858,7 @@ public class GameManager : MonoBehaviour
         {
             //var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
             if (orderedBlocks.Count() == 16) {
-                shakeScript.TriggerShake();
+                // shakeScript.TriggerShake();
             }
 
             ChangeState(GameState.WaitingInput);
@@ -872,6 +873,9 @@ public class GameManager : MonoBehaviour
         {
             ChangeState(GameState.Lose);
             //here
+            if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
+                PlayerPrefs.SetInt("myHighScore", possibleHighScore);
+            }
             StartCoroutine(SubmitScore(score));
             return;
         }
@@ -893,8 +897,10 @@ public class GameManager : MonoBehaviour
         }
         cycleTimer = Time.time;
         
-        if(cycleMovesLeft == 0)
+        if(cycleMovesLeft == 0) { // toggle "No Cycle" animation on
+            noCycleIndicator.SetActive(true);
             return; 
+        }
 
         if(phase == 5){
             phase++;
@@ -1324,7 +1330,6 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("myHighScore", possibleHighScore);
         }
-
         PlayerPrefs.SetInt("phase", phase);
         
     }
