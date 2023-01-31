@@ -27,6 +27,7 @@ public class Leaderboard : MonoBehaviour
     {
         bool done = false;
         string playerID = PlayerPrefs.GetString("PlayerID");
+        print(playerID);
         LootLockerSDKManager.SubmitScore(playerID, scoreToUpload, leaderboardID, (response) => 
         {
             if(response.success)
@@ -51,6 +52,7 @@ public class Leaderboard : MonoBehaviour
             if(response.success)
             {
                 ClearLeaderboardPanel();
+                
                 string tempPlayerNames = "";
                 //string tempPlayerScores = "PPS\n";
 

@@ -637,6 +637,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator SubmitScore(int score){
         yield return leaderboard.SubmitScoreRoutine(score);
+        yield return leaderboard.FetchTopHighScoresRoutine();
     }
 
     void SpawnBlock(Node node, int value)
@@ -1377,6 +1378,7 @@ public class GameManager : MonoBehaviour
         if(username.text.Length > 0){
             phase = 0;
             PlayerPrefs.SetString("PlayerID", username.text);
+            print(username.text);
         }
     }
 }

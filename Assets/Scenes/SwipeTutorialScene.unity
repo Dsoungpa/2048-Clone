@@ -11289,7 +11289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leaderboard: {fileID: 1475188938}
-  playerNameInputField: {fileID: 1345923529}
+  playerNameInputField: {fileID: 475052493}
   lengthofName: 10
 --- !u!4 &865935223
 Transform:
@@ -12151,6 +12151,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2016963118}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SubmitUsername
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 865935222}
+        m_TargetAssemblyTypeName: PlayerManager, Assembly-CSharp
+        m_MethodName: SetPlayerName
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -23496,7 +23508,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: -390
     m_Bottom: 0
   m_ChildAlignment: 1
   m_Spacing: 25
