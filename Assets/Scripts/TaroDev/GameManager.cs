@@ -47,6 +47,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int obstacleCount = 0;
     [SerializeField] private float obstacleSpawnChance = 0.1f;
     [SerializeField] private bool cycling = false;
+
+    // Settings
+    [SerializeField] private bool settingsActive = true;
+    [SerializeField] private GameObject audioSetting;
+    [SerializeField] private GameObject tutorialSetting;
+    [SerializeField] private GameObject usernameSetting;
+    [SerializeField] private float offsetDuration;
+
     public bool cyclesMode;
     public Block clickedBlock;
     private float cycleTimer = 0;
@@ -68,6 +76,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject noCycleIndicator;
     [SerializeField] private GameObject newHighScoreObject;
     [SerializeField] private GameObject backgroundDarken;
+    [SerializeField] private GameObject skipTutorial;
     // [SerializeField] public UIShake shakeScript;
 
     // [Header("Tutorial UI")]
@@ -114,7 +123,6 @@ public class GameManager : MonoBehaviour
         else{
             phase = -1;
         }
-        // NewUpdateBlockColors();
     }
 
     void Start()
@@ -197,14 +205,16 @@ public class GameManager : MonoBehaviour
         if(state != GameState.WaitingInput) return;
 
         if(phase == -1){
-            backgroundDarken.SetActive(true);
             phase0.SetActive(true);
+            backgroundDarken.SetActive(true);
+            skipTutorial.SetActive(true);
         }
 
         if(phase == 0){
-            backgroundDarken.SetActive(false);
             phase1.SetActive(true);
             phase0.SetActive(false);
+            backgroundDarken.SetActive(false);
+            skipTutorial.SetActive(true);
         }
 
         if(phase == 2){
@@ -230,6 +240,7 @@ public class GameManager : MonoBehaviour
         if(phase == 6){
             phase5.SetActive(false);
             phase6.SetActive(true);
+            skipTutorial.SetActive(false);
         }
 
         // Keyboard Input
@@ -1394,22 +1405,72 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ToggleAudio()
-    {
+    public void ToggleSettings() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        if (!settingsActive) {
+            settingsActive = true;
+            OffsetIcons(usernameSetting, 1);
+            OffsetIcons(tutorialSetting, 2);
+            OffsetIcons(audioSetting, 3);
+        }else {
+            settingsActive = false;
+            OffsetIcons(usernameSetting, 1, true);
+            OffsetIcons(tutorialSetting, 2, true);
+            OffsetIcons(audioSetting, 3, true);
+        }
+    }
+
+    public void OffsetIcons(GameObject icon, int offsetIndex, bool reverse = false) {
+        float baseOffset = 125;
+        RectTransform iconRect = icon.GetComponent<RectTransform>();
+        if (reverse) { // baseOffset *= -1
+            iconRect.transform.DOLocalMoveY(0, offsetDuration);
+        }else {
+            iconRect.transform.DOLocalMoveY(baseOffset * offsetIndex, offsetDuration);
+        }
+        // if (reverse) iconRect.transform.DOLocalMoveY();
+        // print("Offset: " + baseOffset);
+        // Vector3 offset = new Vector3(iconRect.transform.localPosition.x, (baseOffset * offsetIndex), 0);
+        
+    }
+
+    public void ToggleAudio() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         if(!muted){
             audioListener.enabled = false;
             audioOnIcon.SetActive(false);
             audioOffIcon.SetActive(true);
             muted = true;
-        }
-
-        else if(muted){
+        }else if(muted){
             audioListener.enabled = true;
             audioOnIcon.SetActive(true);
             audioOffIcon.SetActive(false);
             muted = false;
         }
+    }
+
+    public void RestartTutorial() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        PlayerPrefs.SetInt("phase", -1);
+        SceneManager.LoadScene(0);
+        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
+            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
+        }
+    }
+
+    public void SkipTutorial() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        
+        PlayerPrefs.SetInt("phase", 7);
+        SceneManager.LoadScene(0);
+        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
+            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
+        }
+    }
+
+    public void ChangeUsername() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+
     }
 
     public void SubmitUsername(){
