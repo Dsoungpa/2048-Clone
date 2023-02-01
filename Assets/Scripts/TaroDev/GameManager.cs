@@ -32,6 +32,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int winCondition = 2048;
     [SerializeField] private bool gameOver;
     [SerializeField] private int score = 0;
+    // High Score Alert
+    [SerializeField] private float newHighScoreDuration = 2f;
+    [SerializeField] private Vector3 newHighScorePos;
+    [SerializeField] private Vector3 startScale;
+    [SerializeField] private Vector3 endScale;
+    [SerializeField] private float scaleTime;
+    [SerializeField] private bool gotNewHighScore = false;
+    
     [SerializeField] private int possibleHighScore;
     [SerializeField] private int cycleMovesLeft = 5;
     [SerializeField] private float cycleDelay = 0.25f;
@@ -58,6 +66,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject audioOnIcon;
     [SerializeField] private GameObject audioOffIcon;
     [SerializeField] private GameObject noCycleIndicator;
+    [SerializeField] private GameObject newHighScoreObject;
+    [SerializeField] private GameObject backgroundDarken;
     // [SerializeField] public UIShake shakeScript;
 
     // [Header("Tutorial UI")]
@@ -187,10 +197,12 @@ public class GameManager : MonoBehaviour
         if(state != GameState.WaitingInput) return;
 
         if(phase == -1){
+            backgroundDarken.SetActive(true);
             phase0.SetActive(true);
         }
 
         if(phase == 0){
+            backgroundDarken.SetActive(false);
             phase1.SetActive(true);
             phase0.SetActive(false);
         }
@@ -671,7 +683,9 @@ public class GameManager : MonoBehaviour
                 phase++;
             }
             // Instantiate a block prefab at the chosen node location
-            var block = Instantiate(obstaclePrefab, node.Pos, Quaternion.identity);    
+            var block = Instantiate(obstaclePrefab, node.Pos, Quaternion.identity);
+            block.transform.SetParent(boardParent, true);
+
             block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
             node.Obstacle = true;
             block.Obstacle = true;
@@ -881,7 +895,8 @@ public class GameManager : MonoBehaviour
         {
             ChangeState(GameState.Lose);
             //here
-            if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
+            gameoverscore.text = score.ToString(); // moved from merge function
+            if (possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
                 PlayerPrefs.SetInt("myHighScore", possibleHighScore);
             }
             StartCoroutine(SubmitScore(score));
@@ -1291,9 +1306,26 @@ public class GameManager : MonoBehaviour
         if (baseBlock.Value * 2 > currentHighestValue) UpdateBrickValue();
 
         scoreText.text = score.ToString();
-        gameoverscore.text = score.ToString();
+        // gameoverscore.text = score.ToString();
+        if (!gotNewHighScore && score > PlayerPrefs.GetInt("myHighScore", score)) {
+            gotNewHighScore = true;
+            NewHighScore();
+        }
         RemoveBlock(baseBlock);
         RemoveBlock(mergingBlock);
+    }
+
+    void NewHighScore() {
+        print("NEW HIGH SCORE ACHIEVED!");
+        GameObject newHighScoreInstance = Instantiate(newHighScoreObject, Vector3.zero, Quaternion.identity);
+        newHighScoreInstance.transform.SetParent(GameObject.Find("Canvas").transform, true);
+        newHighScoreInstance.transform.localScale = startScale;
+        newHighScoreInstance.GetComponent<RectTransform>().localPosition = newHighScorePos;
+
+        //animation;
+        newHighScoreInstance.transform.DOScale(endScale, scaleTime).SetEase(Ease.OutBounce);
+
+        Destroy(newHighScoreInstance, newHighScoreDuration);
     }
 
     void RemoveBlock(Block block)
@@ -1334,8 +1366,7 @@ public class GameManager : MonoBehaviour
     {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         SceneManager.LoadScene(0);
-        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore")))
-        {
+        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
             PlayerPrefs.SetInt("myHighScore", possibleHighScore);
         }
         PlayerPrefs.SetInt("phase", phase);
