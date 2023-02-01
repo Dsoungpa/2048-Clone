@@ -117,10 +117,11 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         instance = this;
-        if(PlayerPrefs.GetInt("phase") > 5){
+        if(PlayerPrefs.GetInt("phase", -1) == 0) {
+            phase = 0;
+        }else if(PlayerPrefs.GetInt("phase", -1) > 5){
             phase = 7;
-        }
-        else{
+        }else{
             phase = -1;
         }
     }
@@ -1451,7 +1452,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartTutorial() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
-        PlayerPrefs.SetInt("phase", -1);
+        PlayerPrefs.SetInt("phase", 0);
         SceneManager.LoadScene(0);
         if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
             PlayerPrefs.SetInt("myHighScore", possibleHighScore);
