@@ -238,7 +238,7 @@ public class GameManager : MonoBehaviour
                         
                     }
                 
-            }
+                }
             
             if(phase != 1){
                 if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
@@ -344,37 +344,44 @@ public class GameManager : MonoBehaviour
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
                 currentPosition = Input.GetTouch(0).position;
                 Vector3 Distance = currentPosition - startTouchPosition;
-                //if (Input.GetKeyDown(KeyCode.W)) {
-                if(Distance.y > swipeRange){
-                    Shift(Vector2.up);
-                    stopTouch = true;
-                } 
 
-                else if (Distance.y < -swipeRange){
-                //else if (Input.GetKeyDown(KeyCode.S)) {
-                    print("Down");
-                    Shift(Vector2.down);
-                    stopTouch = true;
-                }
+                if(phase != -1){
+                    if(phase != 0){
+                        if(phase != 1){
+                            //if (Input.GetKeyDown(KeyCode.W)) {
+                            if(phase != 3 && Distance.y > swipeRange){
+                                Shift(Vector2.up);
+                                stopTouch = true;
+                            } 
 
-                //if (Input.GetKeyDown(KeyCode.A)) {
-                else if(Distance.x < -swipeRange){
-                    print("Left");
-                    Shift(Vector2.left);
-                    stopTouch = true;
-                } 
-                else if (Distance.x > swipeRange){
-                //else if (Input.GetKeyDown(KeyCode.D)) {
-                    print("Right");
-                    Shift(Vector2.right);
-                    stopTouch = true;
+                            if (phase != 4 && Distance.y < -swipeRange){
+                            //else if (Input.GetKeyDown(KeyCode.S)) {
+                                print("Down");
+                                Shift(Vector2.down);
+                                stopTouch = true;
+                            }
+                        }
+
+                        //if (Input.GetKeyDown(KeyCode.A)) {
+                        if(phase != 3 && phase != 4 && Distance.x < -swipeRange){
+                            print("Left");
+                            Shift(Vector2.left);
+                            stopTouch = true;
+                        } 
+                    }
+                
+                
+                    if (phase != 1 && Distance.x > swipeRange){
+                    //else if (Input.GetKeyDown(KeyCode.D)) {
+                        print("Right");
+                        Shift(Vector2.right);
+                        stopTouch = true;
+                    }
                 }
             }
         }
 
         if(cyclesMode){
-            
-            
             //StartCoroutine(CheckCyclesModeDelay());
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
