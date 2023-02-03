@@ -53,6 +53,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject audioSetting;
     [SerializeField] private GameObject tutorialSetting;
     [SerializeField] private GameObject usernameSetting;
+    [SerializeField] private GameObject audioSettingInfo;
+    [SerializeField] private GameObject tutorialSettingInfo;
+    [SerializeField] private GameObject usernameSettingInfo;
+    [SerializeField] private GameObject updateUsername;
     [SerializeField] private float offsetDuration;
 
     public bool cyclesMode;
@@ -1413,11 +1417,25 @@ public class GameManager : MonoBehaviour
             OffsetIcons(usernameSetting, 1);
             OffsetIcons(tutorialSetting, 2);
             OffsetIcons(audioSetting, 3);
+            Invoke("DeactivateSettings", offsetDuration * 0.25f);
         }else {
             settingsActive = false;
             OffsetIcons(usernameSetting, 1, true);
             OffsetIcons(tutorialSetting, 2, true);
             OffsetIcons(audioSetting, 3, true);
+            Invoke("DeactivateSettings", offsetDuration * 0.25f);
+        }
+    }
+
+    void DeactivateSettings() {
+        if (settingsActive) {
+            usernameSettingInfo.SetActive(true);
+            tutorialSettingInfo.SetActive(true);
+            audioSettingInfo.SetActive(true);
+        }else {
+            usernameSettingInfo.SetActive(false);
+            tutorialSettingInfo.SetActive(false);
+            audioSettingInfo.SetActive(false);
         }
     }
 
@@ -1469,17 +1487,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ChangeUsername() {
-        audioSource.PlayOneShot(buttonPress, 0.2f);
-
-    }
-
     public void SubmitUsername(){
         if(username.text.Length > 0){
             phase = 0;
             PlayerPrefs.SetString("PlayerID", username.text);
             print(username.text);
         }
+    }
+
+    public void UpdateUsername(){
+        if(username.text.Length > 0){
+            PlayerPrefs.SetString("PlayerID", username.text);
+            print(username.text);
+        }
+    }
+
+    public void ToggleUsernameUpdate() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        updateUsername.SetActive(!updateUsername.activeInHierarchy);
     }
 }
 
