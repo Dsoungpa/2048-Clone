@@ -253,24 +253,39 @@ public class GameManager : MonoBehaviour
             if (phase != -1) {
                 if(phase != 0){
                     if( phase != 3 && phase != 4 ){
-                        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Shift(Vector2.left);
+                        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)){
+                            Shift(Vector2.left);
+                            return;
+                        }
+                        
                     }
+
                     if(phase != 1){
                         if(phase != 3){
-                            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Shift(Vector2.up);
+                            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)){
+                                Shift(Vector2.up);
+                                return;
+                            }
                         }
 
                         if(phase != 4){
-                            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Shift(Vector2.down);
+                            if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+                            {
+                                Shift(Vector2.down);
+                                return;
+                            }
                         }
                         
                     }
                 
                 }
             
-            if(phase != 1){
-                if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Shift(Vector2.right);
-            }
+                if(phase != 1){
+                    if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)){
+                        Shift(Vector2.right);
+                        return;
+                    } 
+                }
             }       
         }
 
@@ -1505,7 +1520,7 @@ public class GameManager : MonoBehaviour
     public void ToggleUsernameUpdate() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         updateUsername.SetActive(!updateUsername.activeInHierarchy);
-    }
+     }
 }
 
 [Serializable]
