@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int winCondition = 2048;
     [SerializeField] private bool gameOver;
     [SerializeField] private int score = 0;
+    [SerializeField] private int movementtracker;
     // High Score Alert
     [SerializeField] private float newHighScoreDuration = 2f;
     [SerializeField] private Vector3 newHighScorePos;
@@ -293,7 +294,7 @@ public class GameManager : MonoBehaviour
         
         if(cyclesMode){
              
-            StartCoroutine(CheckCyclesModeDelay());
+            //StartCoroutine(CheckCyclesModeDelay());
 
             if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
             {
@@ -376,63 +377,18 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        
-        // Touch Input
-        if(!cyclesMode){
-
-            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
-                startTouchPosition = Input.GetTouch(0).position;
-            }
-
-            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved){
-                currentPosition = Input.GetTouch(0).position;
-                Vector3 Distance = currentPosition - startTouchPosition;
-
-                if(phase != -1){
-                    if(phase != 0){
-                        if(phase != 1){
-                            //if (Input.GetKeyDown(KeyCode.W)) {
-                            if(phase != 3 && Distance.y > swipeRange){
-                                Shift(Vector2.up);
-                                stopTouch = true;
-                            } 
-
-                            if (phase != 4 && Distance.y < -swipeRange){
-                            //else if (Input.GetKeyDown(KeyCode.S)) {
-                                print("Down");
-                                Shift(Vector2.down);
-                                stopTouch = true;
-                            }
-                        }
-
-                        //if (Input.GetKeyDown(KeyCode.A)) {
-                        if(phase != 3 && phase != 4 && Distance.x < -swipeRange){
-                            print("Left");
-                            Shift(Vector2.left);
-                            stopTouch = true;
-                        } 
-                    }
-                
-                
-                    if (phase != 1 && Distance.x > swipeRange){
-                    //else if (Input.GetKeyDown(KeyCode.D)) {
-                        print("Right");
-                        Shift(Vector2.right);
-                        stopTouch = true;
-                    }
-                }
-            }
-        }
-
         if(cyclesMode){
             //StartCoroutine(CheckCyclesModeDelay());
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
+                movementtracker = 0;
+                print("began touch in cycles");
                 startTouchPosition = Input.GetTouch(0).position;
             }
 
-            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended){
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
                 //cycling = true;
+                print("Moved Finger In Cycle");
                 currentPosition = Input.GetTouch(0).position;
                 Vector3 Distance = currentPosition - startTouchPosition;
 
@@ -440,18 +396,22 @@ public class GameManager : MonoBehaviour
                 {
                     print(clickedBlock.Pos.y);
                     if(clickedBlock.Pos.y == 0){
+                        movementtracker++;
                         Cycle("FourthRowLeft");
                     }
 
                     else if(clickedBlock.Pos.y == 1){
+                        movementtracker++;
                         Cycle("ThirdRowLeft");
                     }
 
                     else if(clickedBlock.Pos.y == 2){
+                        movementtracker++;
                         Cycle("SecRowLeft");
                     }
 
                     else if(clickedBlock.Pos.y == 3){
+                        movementtracker++;
                         Cycle("FirstRowLeft");
                     }
                 }
@@ -461,21 +421,25 @@ public class GameManager : MonoBehaviour
                     print(clickedBlock.Pos.y);
                     if(clickedBlock.Pos.y == 0){
                         print("going into cycle");
+                        movementtracker++;
                         Cycle("FourthRowRight");
                     }
 
                     else if(clickedBlock.Pos.y == 1){
                         print("going into cycle");
+                        movementtracker++;
                         Cycle("ThirdRowRight");
                     }
 
                     else if(clickedBlock.Pos.y == 2){
                         print("going into cycle");
+                        movementtracker++;
                         Cycle("SecRowRight");
                     }
 
                     else if(clickedBlock.Pos.y == 3){
                         print("going into cycle");
+                        movementtracker++;
                         Cycle("FirstRowRight");
                     }
                 }
@@ -484,18 +448,22 @@ public class GameManager : MonoBehaviour
                 {
                     print(clickedBlock.Pos.x);
                     if(clickedBlock.Pos.x == 0){
+                        movementtracker++;
                         Cycle("FirstColUp");
                     }
 
                     else if(clickedBlock.Pos.x == 1){
+                        movementtracker++;
                         Cycle("SecColUp");
                     }
 
                     else if(clickedBlock.Pos.x == 2){
+                        movementtracker++;
                         Cycle("ThirdColUp");
                     }
 
                     else if(clickedBlock.Pos.x == 3){
+                        movementtracker++;
                         Cycle("FourthColUp");
                     }
                 }
@@ -504,24 +472,87 @@ public class GameManager : MonoBehaviour
                 {
                     print(clickedBlock.Pos.x);
                     if(clickedBlock.Pos.x == 0){
-                        
+                        movementtracker++;
                         Cycle("FirstColDown");
                     }
 
                     else if(clickedBlock.Pos.x == 1){
+                        movementtracker++;
                         Cycle("SecColDown");
                     }
 
                     else if(clickedBlock.Pos.x == 2){
+                        movementtracker++;
                         Cycle("ThirdColDown");
                     }
 
                     else if(clickedBlock.Pos.x == 3){
+                        movementtracker++;
                         Cycle("FourthColDown");
                     }
                 }
             }
         }
+        // Touch Input
+        else if(!cyclesMode){
+
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
+                startTouchPosition = Input.GetTouch(0).position;
+                movementtracker = 0;
+                print("began touch");
+            }
+
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
+                print("Moved finger");
+                currentPosition = Input.GetTouch(0).position;
+                Vector3 Distance = currentPosition - startTouchPosition;
+
+                if(phase != -1){
+                    if(phase != 0){
+                        if(phase != 1){
+                            //if (Input.GetKeyDown(KeyCode.W)) {
+                            if(phase != 3 && Distance.y > swipeRange){
+                                movementtracker++;
+                                print("Up");
+                                Shift(Vector2.up);
+                                stopTouch = true;
+                                return;
+                            } 
+
+                            if (phase != 4 && Distance.y < -swipeRange){
+                            //else if (Input.GetKeyDown(KeyCode.S)) {
+                                movementtracker++;
+                                print("Down");
+                                Shift(Vector2.down);
+                                stopTouch = true;
+                                return;
+                            }
+                        }
+
+                        //if (Input.GetKeyDown(KeyCode.A)) {
+                        if(phase != 3 && phase != 4 && Distance.x < -swipeRange){
+                            movementtracker++;
+                            print("Left");
+                            Shift(Vector2.left);
+                            stopTouch = true;
+                            return;
+                        } 
+                    }
+                
+                
+                    if (phase != 1 && Distance.x > swipeRange){
+                    //else if (Input.GetKeyDown(KeyCode.D)) {
+                        movementtracker++;
+                        print("Right");
+                        Shift(Vector2.right);
+                        stopTouch = true;
+                        return;
+                    }
+                }
+            }
+        }
+
+
     }
 
     private void ChangeState(GameState newState)

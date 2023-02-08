@@ -96,6 +96,7 @@ public class Block : MonoBehaviour
             clicked = true;
             gameManagerScript.clickedBlock = this;
             gameManagerScript.SetCycleTrue();
+            print("block selected");
             Debug.Log(this.gameObject.name + " clicked!");
         }
     

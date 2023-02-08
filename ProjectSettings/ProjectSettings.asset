@@ -250,8 +250,8 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/Dylan/Desktop/2048-Clone/Keystores/theblockbash.keystore
-  AndroidKeyaliasName: theblockbash
+  AndroidKeystoreName: G:/2048-Clone Keys/user.keystore
+  AndroidKeyaliasName: luiskey
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
   AndroidIsGame: 1
@@ -274,7 +274,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: fb091aae6018b6b4981627cf66de0e4e, type: 3}
+      m_Icon: {fileID: 2800000, guid: 522268404e37f02479473cabf71a7aa7, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
