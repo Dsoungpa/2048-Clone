@@ -81,17 +81,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject noCycleIndicator;
     [SerializeField] private GameObject newHighScoreObject;
     [SerializeField] private GameObject backgroundDarken;
+    [SerializeField] private GameObject backgroundDarken2;
     [SerializeField] private GameObject skipTutorial;
     // [SerializeField] public UIShake shakeScript;
 
     // [Header("Tutorial UI")]
     [SerializeField] private GameObject phase0, phase1, phase2, phase3, phase4, phase5, phase6;
     [SerializeField] private TMP_InputField username;
+    [SerializeField] private int postTutorialMoveLimit;
+    public int postTutorialMoveCounter = 0;
 
     [Header("Audio")]
     [SerializeField] private List<AudioClip> merges = new List<AudioClip>();
     [SerializeField] private AudioClip blockBreak;
     [SerializeField] private AudioClip buttonPress;
+    [SerializeField] private AudioClip noCycleError;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private bool muted = false;
     [SerializeField] private AudioListener audioListener;
@@ -129,6 +133,8 @@ public class GameManager : MonoBehaviour
         }else{
             phase = -1;
         }
+
+        InitializeAudioState();
     }
 
     void Start()
@@ -213,7 +219,6 @@ public class GameManager : MonoBehaviour
         if(phase == -1){
             phase0.SetActive(true);
             backgroundDarken.SetActive(true);
-            skipTutorial.SetActive(true);
         }
 
         if(phase == 0){
@@ -236,16 +241,18 @@ public class GameManager : MonoBehaviour
         if(phase == 4){
             phase3.SetActive(false);
             phase4.SetActive(true);
+            backgroundDarken2.SetActive(true);
         }
 
         if(phase == 5){
             phase4.SetActive(false);
+            backgroundDarken2.SetActive(false);
             phase5.SetActive(true);
         }
 
         if(phase == 6){
             phase5.SetActive(false);
-            phase6.SetActive(true);
+            if (postTutorialMoveCounter < postTutorialMoveLimit) phase6.SetActive(true);
             skipTutorial.SetActive(false);
         }
 
@@ -255,6 +262,7 @@ public class GameManager : MonoBehaviour
                 if(phase != 0){
                     if( phase != 3 && phase != 4 ){
                         if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)){
+                            PostTutorialMoveLimiter();
                             Shift(Vector2.left);
                             return;
                         }
@@ -264,6 +272,7 @@ public class GameManager : MonoBehaviour
                     if(phase != 1){
                         if(phase != 3){
                             if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)){
+                                PostTutorialMoveLimiter();
                                 Shift(Vector2.up);
                                 return;
                             }
@@ -272,6 +281,7 @@ public class GameManager : MonoBehaviour
                         if(phase != 4){
                             if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
                             {
+                                PostTutorialMoveLimiter();
                                 Shift(Vector2.down);
                                 return;
                             }
@@ -283,6 +293,7 @@ public class GameManager : MonoBehaviour
             
                 if(phase != 1){
                     if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)){
+                        PostTutorialMoveLimiter();
                         Shift(Vector2.right);
                         return;
                     } 
@@ -298,6 +309,7 @@ public class GameManager : MonoBehaviour
 
             if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
             {
+                PostTutorialMoveLimiter();
                 print(clickedBlock.Pos.y);
                 if(clickedBlock.Pos.y == 0){
                     Cycle("FourthRowLeft");
@@ -318,6 +330,7 @@ public class GameManager : MonoBehaviour
 
             if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) 
             {
+                PostTutorialMoveLimiter();
                 print(clickedBlock.Pos.y);
                 if(clickedBlock.Pos.y == 0){
                     Cycle("FourthRowRight");
@@ -338,6 +351,7 @@ public class GameManager : MonoBehaviour
 
             if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             {
+                PostTutorialMoveLimiter();
                 print(clickedBlock.Pos.x);
                 if(clickedBlock.Pos.x == 0){
                     Cycle("FirstColUp");
@@ -358,6 +372,7 @@ public class GameManager : MonoBehaviour
 
             if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
             {
+                PostTutorialMoveLimiter();
                 print(clickedBlock.Pos.x);
                 if(clickedBlock.Pos.x == 0){
                     Cycle("FirstColDown");
@@ -388,6 +403,7 @@ public class GameManager : MonoBehaviour
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
                 //cycling = true;
+                PostTutorialMoveLimiter();
                 print("Moved Finger In Cycle");
                 currentPosition = Input.GetTouch(0).position;
                 Vector3 Distance = currentPosition - startTouchPosition;
@@ -503,6 +519,9 @@ public class GameManager : MonoBehaviour
             }
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
+
+                PostTutorialMoveLimiter();
+
                 print("Moved finger");
                 currentPosition = Input.GetTouch(0).position;
                 Vector3 Distance = currentPosition - startTouchPosition;
@@ -553,6 +572,18 @@ public class GameManager : MonoBehaviour
         }
 
 
+    }
+
+    void PostTutorialMoveLimiter() {
+        if (phase >= 6) {
+            if (postTutorialMoveCounter < postTutorialMoveLimit) {
+                print("Incrementing Counter: " + postTutorialMoveCounter);
+                postTutorialMoveCounter++;
+            }else {
+                phase6.SetActive(false);
+                PlayerPrefs.SetInt("phase", phase); // might night be needed in 'game end/restart' methods
+            }
+        } // Can be optimized
     }
 
     private void ChangeState(GameState newState)
@@ -983,6 +1014,7 @@ public class GameManager : MonoBehaviour
         cycleTimer = Time.time;
         
         if(cycleMovesLeft == 0) { // toggle "No Cycle" animation on
+            audioSource.PlayOneShot(noCycleError, 0.2f);
             noCycleIndicator.SetActive(true);
             return; 
         }
@@ -1463,17 +1495,18 @@ public class GameManager : MonoBehaviour
             OffsetIcons(usernameSetting, 1);
             OffsetIcons(tutorialSetting, 2);
             OffsetIcons(audioSetting, 3);
-            Invoke("DeactivateSettings", offsetDuration * 0.25f);
+            Invoke("ToggleSettingsInfo", offsetDuration * 0.25f);
         }else {
             settingsActive = false;
             OffsetIcons(usernameSetting, 1, true);
             OffsetIcons(tutorialSetting, 2, true);
             OffsetIcons(audioSetting, 3, true);
-            Invoke("DeactivateSettings", offsetDuration * 0.25f);
+            Invoke("ToggleSettingsInfo", offsetDuration * 0.25f);
+            backgroundDarken.SetActive(false);
         }
     }
 
-    void DeactivateSettings() {
+    public void ToggleSettingsInfo() {
         if (settingsActive) {
             usernameSettingInfo.SetActive(true);
             tutorialSettingInfo.SetActive(true);
@@ -1506,11 +1539,27 @@ public class GameManager : MonoBehaviour
             audioOnIcon.SetActive(false);
             audioOffIcon.SetActive(true);
             muted = true;
+            PlayerPrefs.SetInt("audioToggle", muted ? 0 : 1);
         }else if(muted){
             audioListener.enabled = true;
             audioOnIcon.SetActive(true);
             audioOffIcon.SetActive(false);
             muted = false;
+            PlayerPrefs.SetInt("audioToggle", muted ? 0 : 1);
+        }
+    }
+
+    public void InitializeAudioState() {
+        if (PlayerPrefs.GetInt("audioToggle", 1) == 1) {
+            audioListener.enabled = true;
+            audioOnIcon.SetActive(true);
+            audioOffIcon.SetActive(false);
+            muted = false;
+        }else if (PlayerPrefs.GetInt("audioToggle", 1) == 0) {
+            audioListener.enabled = false;
+            audioOnIcon.SetActive(false);
+            audioOffIcon.SetActive(true);
+            muted = true;
         }
     }
 
@@ -1550,8 +1599,14 @@ public class GameManager : MonoBehaviour
 
     public void ToggleUsernameUpdate() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
-        updateUsername.SetActive(!updateUsername.activeInHierarchy);
-     }
+        print("WHATS GOING ON");
+        if (updateUsername.activeInHierarchy) {
+            updateUsername.SetActive(false);
+        }else {
+            updateUsername.SetActive(true);
+        }
+        backgroundDarken.SetActive(!backgroundDarken.activeInHierarchy);
+    }
 }
 
 [Serializable]
