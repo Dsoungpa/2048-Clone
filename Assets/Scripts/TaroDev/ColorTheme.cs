@@ -41,6 +41,7 @@ public class ColorTheme : MonoBehaviour
     private Color startColor;
     [SerializeField] int[] intValues = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
 
+    [SerializeField] public Color[] highlightColors;
     [SerializeField] public string[] colorHexes = new string[4];
     // Need to optimize this
     private string springHexes = "#59d980 #60edc0 #83c958 #c1ee23 #e1e40d #f8b82e #eda86a #f69fc2 #c166cc #6397d7 #c2db7b #68ab66 #52afa1 #296b8d #3651ab";
@@ -54,6 +55,7 @@ public class ColorTheme : MonoBehaviour
     [SerializeField] private GameObject placeholder;
     [SerializeField] private int columnLength, rowLength;
     [SerializeField] private float x_Start, y_Start, x_Space, y_Space;
+    [SerializeField] private float shiftValue;
     private List<GameObject> instantiatedIcons = new List<GameObject>();
 
     [Header("Devs")]
@@ -72,6 +74,7 @@ public class ColorTheme : MonoBehaviour
     private ColorArray currentTheme;
     private List<string> themeOptionNames = new List<string>();
     private int prefThemeValue;
+    public int currentThemeIndex; // primarily for updating block highlight color
 
     void Awake() {
         colorHexes[0] = springHexes;
@@ -80,6 +83,7 @@ public class ColorTheme : MonoBehaviour
         colorHexes[3] = winterHexes;
 
         prefThemeValue = PlayerPrefs.GetInt("SelectedTheme", Random.Range(0, colorThemes.Length)); //random default theme
+        currentThemeIndex = prefThemeValue;
         currentTheme = colorThemes[prefThemeValue];
         TextToColor(prefThemeValue);
 
@@ -102,7 +106,7 @@ public class ColorTheme : MonoBehaviour
             icon.transform.SetParent(iconsParent, true);
 
             if (shift) {
-                icon.transform.position += new Vector3(0f, .75f, 0f);
+                icon.transform.position += new Vector3(0f, shiftValue, 0f);
                 shift = false;
             }else {
                 shift = true;
@@ -209,16 +213,6 @@ public class ColorTheme : MonoBehaviour
         ChangeTheme(currentTheme, themeIndex);
     }
 
-    // public void ToggleThemeArt(int themeIndex) {
-    //     for (int i = 0; i < themeArtPrefabs.Length; i++) {
-    //         if (i == themeIndex) {
-    //             themeArtPrefabs[i].SetActive(true);
-    //         }else {
-    //             themeArtPrefabs[i].SetActive(false);
-    //         }
-    //     }
-    // }
-
     public void OldUpdateThemeFromDropdown() {
         ColorArray dropdownTheme = colorThemes[themeOptions.value];
         StartCoroutine(DelayedChangeTheme(dropdownTheme, themeOptions.value));
@@ -226,6 +220,7 @@ public class ColorTheme : MonoBehaviour
 
     private IEnumerator DelayedChangeTheme(ColorArray dropdownTheme, int colorThemeIndex) {
         yield return new WaitUntil(() => boardReady == true);
+        currentThemeIndex = colorThemeIndex;
         ChangeTheme(dropdownTheme, colorThemeIndex);
         GMScript.SetBlockColors();
     }

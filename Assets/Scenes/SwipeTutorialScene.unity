@@ -24038,10 +24038,10 @@ MonoBehaviour:
   colorThemes:
   - themeName: Spring
     colors:
-    - {r: 0.34901962, g: 0.8509804, b: 0.5019608, a: 1}
-    - {r: 0.93333334, g: 0.45490196, b: 0.45490196, a: 1}
-    - {r: 0.79607844, g: 0.90588236, b: 0.56078434, a: 1}
-    - {r: 0.9333334, g: 0.454902, b: 0.454902, a: 1}
+    - {r: 0.85882354, g: 0.34509805, b: 0.47058824, a: 1}
+    - {r: 0.18039216, g: 0.6901961, b: 0.5764706, a: 1}
+    - {r: 0.9921569, g: 0.70980394, b: 0.7058824, a: 1}
+    - {r: 0.18039216, g: 0.6901961, b: 0.5764706, a: 1}
   - themeName: Summer
     colors:
     - {r: 0.16470589, g: 0.39607844, b: 0.38431373, a: 1}
@@ -24121,6 +24121,11 @@ MonoBehaviour:
   colorVariance: 1
   colorShift: 0.25
   intValues: 020000000400000008000000100000002000000040000000800000000001000000020000000400000008000000100000002000000040000000800000
+  highlightColors:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.98039216, g: 0.8627451, b: 0.3019608, a: 1}
   colorHexes:
   - 
   - 
@@ -24135,10 +24140,11 @@ MonoBehaviour:
   placeholder: {fileID: 510378187737577034, guid: 5fb4fccbdfd222c43a0db020a93f43f5, type: 3}
   columnLength: 20
   rowLength: 20
-  x_Start: -13
+  x_Start: -14.25
   y_Start: -13
   x_Space: 1.5
   y_Space: 1.5
+  shiftValue: 0.75
   devs:
   - {fileID: 860521743}
   - {fileID: 11911609}
@@ -24150,6 +24156,7 @@ MonoBehaviour:
   nodes: []
   blocks: []
   boardReady: 0
+  currentThemeIndex: 0
 --- !u!61 &2016963121
 BoxCollider2D:
   m_ObjectHideFlags: 0

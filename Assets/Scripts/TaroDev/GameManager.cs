@@ -167,9 +167,15 @@ public class GameManager : MonoBehaviour
             foreach (var block in blocks) {
                 if (block.Value == pair.Key && block.Obstacle != true) {
                     block.renderer.color = pair.Value;
+                    UpdateHighlightColor(block);
                 }
             }
         }
+    }
+
+    void UpdateHighlightColor(Block block) {
+        int themeIndex = colorThemeScript.currentThemeIndex;
+        block.gameObject.transform.GetChild(2).GetComponent<SpriteRenderer>().color = colorThemeScript.highlightColors[themeIndex];
     }
 
     public void SetCycleTrue(){
@@ -758,6 +764,9 @@ public class GameManager : MonoBehaviour
         var block = Instantiate(blockPrefab, node.Pos, Quaternion.identity);
         block.transform.SetParent(boardParent, true);
         
+        //Set block highlight color
+        UpdateHighlightColor(block);
+        
         block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
 
         // Take the block game object and initialize it as a BlockType
@@ -778,6 +787,7 @@ public class GameManager : MonoBehaviour
             // Instantiate a block prefab at the chosen node location
             var block = Instantiate(obstaclePrefab, node.Pos, Quaternion.identity);
             block.transform.SetParent(boardParent, true);
+            UpdateHighlightColor(block);
 
             block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
             node.Obstacle = true;
