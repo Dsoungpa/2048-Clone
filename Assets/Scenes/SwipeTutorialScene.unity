@@ -23882,6 +23882,7 @@ MonoBehaviour:
   usernameSettingInfo: {fileID: 175297927}
   updateUsername: {fileID: 747428424}
   offsetDuration: 0.3
+  tutorialRestartPhase: 0
   cyclesMode: 0
   clickedBlock: {fileID: 0}
   brickValues: 040000000800000010000000

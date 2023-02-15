@@ -60,6 +60,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject updateUsername;
     [SerializeField] private float offsetDuration;
 
+    [SerializeField] private int tutorialRestartPhase;
+
     public bool cyclesMode;
     public Block clickedBlock;
     private float cycleTimer = 0;
@@ -705,8 +707,10 @@ public class GameManager : MonoBehaviour
 
     void SpawnBlocks(int amount)
     { 
-        
-        if(phase == -1){
+        if (phase == -1) {
+            ChangeState(blocks.Any(b=>b.Value == winCondition) ? GameState.Win : GameState.WaitingInput);
+        }
+        else if(phase == 0){
             SpawnBlock(GetNodeAtPosition(new Vector2(0,0)), 2);
             SpawnBlock(GetNodeAtPosition(new Vector2(3,0)), 2);
         }
@@ -1575,7 +1579,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartTutorial() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
-        PlayerPrefs.SetInt("phase", 0);
+        PlayerPrefs.SetInt("phase", tutorialRestartPhase);
         SceneManager.LoadScene(0);
         if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
             PlayerPrefs.SetInt("myHighScore", possibleHighScore);
@@ -1595,6 +1599,7 @@ public class GameManager : MonoBehaviour
     public void SubmitUsername(){
         if(username.text.Length > 0){
             phase = 0;
+            ChangeState(GameState.SpawningBlocks);
             PlayerPrefs.SetString("PlayerID", username.text);
             print(username.text);
         }
