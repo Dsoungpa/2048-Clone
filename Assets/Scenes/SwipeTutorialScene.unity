@@ -12712,6 +12712,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leaderboard: {fileID: 1475188938}
   playerNameInputField: {fileID: 475052493}
+  updateusername: {fileID: 919747198}
   lengthofName: 10
 --- !u!4 &865935223
 Transform:
@@ -17334,7 +17335,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2016963118}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: UpdateUsername
+        m_MethodName: UpdateUsernameOnSettings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17346,7 +17347,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 865935222}
         m_TargetAssemblyTypeName: PlayerManager, Assembly-CSharp
-        m_MethodName: SetPlayerName
+        m_MethodName: SetPlayerNameThroughSettings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -23910,6 +23911,7 @@ MonoBehaviour:
   phase5: {fileID: 309420707}
   phase6: {fileID: 1825469251}
   username: {fileID: 475052493}
+  updateusername: {fileID: 919747198}
   postTutorialMoveLimit: 5
   postTutorialMoveCounter: 0
   merges:

@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour
     // [Header("Tutorial UI")]
     [SerializeField] private GameObject phase0, phase1, phase2, phase3, phase4, phase5, phase6;
     [SerializeField] private TMP_InputField username;
+    [SerializeField] private TMP_InputField updateusername;
     [SerializeField] private int postTutorialMoveLimit;
     public int postTutorialMoveCounter = 0;
 
@@ -1609,6 +1610,15 @@ public class GameManager : MonoBehaviour
         if(username.text.Length > 0){
             PlayerPrefs.SetString("PlayerID", username.text);
             print(username.text);
+        }
+    }
+
+    
+
+    public void UpdateUsernameOnSettings(){
+        if(username.text.Length > 0){
+            PlayerPrefs.SetString("PlayerID", updateusername.text);
+            print(updateusername.text);
         }
     }
 

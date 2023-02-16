@@ -10,6 +10,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] public Leaderboard leaderboard;
     [Header("Custom Name InputField")]
     [SerializeField] public TMP_InputField playerNameInputField;
+    [Header("Update Player Name Through Settings")]
+    [SerializeField] public TMP_InputField updateusername;
     [Header("Length of Input Name")]
     public int lengthofName = 10;
     // Start is called before the first frame update
@@ -46,6 +48,20 @@ public class PlayerManager : MonoBehaviour
     public void SetPlayerName()
     {
         LootLockerSDKManager.SetPlayerName(playerNameInputField.text, (response) =>
+        {
+            if(response.success)
+            {
+                Debug.Log("Successfully set player name");
+            }
+            else{
+                Debug.Log("Could not set player name");
+            }
+        });
+    }
+
+    public void SetPlayerNameThroughSettings()
+    {
+        LootLockerSDKManager.SetPlayerName(updateusername.text, (response) =>
         {
             if(response.success)
             {
