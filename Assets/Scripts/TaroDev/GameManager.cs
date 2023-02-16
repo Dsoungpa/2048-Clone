@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject usernameSettingInfo;
     [SerializeField] private GameObject updateUsername;
     [SerializeField] private float offsetDuration;
+    [SerializeField] public bool disableControl = false;
 
     [SerializeField] private int tutorialRestartPhase;
 
@@ -85,6 +86,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject backgroundDarken;
     [SerializeField] private GameObject backgroundDarken2;
     [SerializeField] private GameObject skipTutorial;
+    [SerializeField] private GameObject devsIcons;
     // [SerializeField] public UIShake shakeScript;
 
     // [Header("Tutorial UI")]
@@ -147,6 +149,8 @@ public class GameManager : MonoBehaviour
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
+
+        // if (phase > 5) devsIcons.SetActive(false);
         // UpdateBlockColors();
     }
 
@@ -173,6 +177,12 @@ public class GameManager : MonoBehaviour
                     UpdateHighlightColor(block);
                 }
             }
+        }
+    }
+
+    public void SetObstacleHighlightColor() {
+        foreach (var obstacle in obstacles) {
+            UpdateHighlightColor(obstacle);
         }
     }
 
@@ -220,12 +230,15 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (disableControl) return; // disable control while updating username;
+
         cycleMoves.text = cycleMovesLeft.ToString();
         possibleHighScore = score;
 
         if(state != GameState.WaitingInput) return;
 
         if(phase == -1){
+            devsIcons.SetActive(true);
             phase0.SetActive(true);
             backgroundDarken.SetActive(true);
         }
@@ -590,6 +603,7 @@ public class GameManager : MonoBehaviour
                 postTutorialMoveCounter++;
             }else {
                 phase6.SetActive(false);
+                devsIcons.SetActive(false);
                 PlayerPrefs.SetInt("phase", phase); // might night be needed in 'game end/restart' methods
             }
         } // Can be optimized
@@ -1581,20 +1595,20 @@ public class GameManager : MonoBehaviour
     public void RestartTutorial() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         PlayerPrefs.SetInt("phase", tutorialRestartPhase);
-        SceneManager.LoadScene(0);
         if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
             PlayerPrefs.SetInt("myHighScore", possibleHighScore);
         }
+        devsIcons.SetActive(true);
+        SceneManager.LoadScene(0);
     }
 
     public void SkipTutorial() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
-        
         PlayerPrefs.SetInt("phase", 7);
-        SceneManager.LoadScene(0);
         if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
             PlayerPrefs.SetInt("myHighScore", possibleHighScore);
         }
+        SceneManager.LoadScene(0);
     }
 
     public void SubmitUsername(){
@@ -1620,6 +1634,7 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetString("PlayerID", updateusername.text);
             print(updateusername.text);
         }
+        disableControl = false;
     }
 
     public void ToggleUsernameUpdate() {
@@ -1627,10 +1642,17 @@ public class GameManager : MonoBehaviour
         print("WHATS GOING ON");
         if (updateUsername.activeInHierarchy) {
             updateUsername.SetActive(false);
+            disableControl = false;
         }else {
             updateUsername.SetActive(true);
+            disableControl = true;
         }
         backgroundDarken.SetActive(!backgroundDarken.activeInHierarchy);
+    }
+
+    public void ForceCloseUsernameUpdate() {
+        if (updateUsername.activeInHierarchy) ToggleUsernameUpdate();
+        backgroundDarken.SetActive(false);
     }
 }
 

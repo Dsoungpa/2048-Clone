@@ -223,6 +223,7 @@ public class ColorTheme : MonoBehaviour
         currentThemeIndex = colorThemeIndex;
         ChangeTheme(dropdownTheme, colorThemeIndex);
         GMScript.SetBlockColors();
+        GMScript.SetObstacleHighlightColor(); // update obstacle highlight colors
     }
 
     void SetDropdownOptions(int currentOption) {

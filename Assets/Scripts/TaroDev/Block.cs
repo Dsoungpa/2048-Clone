@@ -90,6 +90,8 @@ public class Block : MonoBehaviour
     // Keyboard Version
     void OnMouseDown()
     {
+        if (gameManagerScript.disableControl) return; // disable control while updating username
+
         if(gameManagerScript.phase > 4){
             if(!gameManagerScript.cyclesMode){
             clickedIndicator.SetActive(true);
