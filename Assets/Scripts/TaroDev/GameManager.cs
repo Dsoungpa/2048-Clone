@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int obstacleCount = 0;
     [SerializeField] private float obstacleSpawnChance = 0.1f;
     [SerializeField] private bool cycling = false;
+    [SerializeField] private bool inCycle = false;
 
     // Settings
     [SerializeField] private bool settingsActive = true;
@@ -417,13 +418,14 @@ public class GameManager : MonoBehaviour
         if(cyclesMode){
             //StartCoroutine(CheckCyclesModeDelay());
 
-            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && !inCycle){
                 movementtracker = 0;
                 print("began touch in cycles");
                 startTouchPosition = Input.GetTouch(0).position;
+                StartCoroutine(WaitingToClear());
             }
 
-            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
+            else if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
                 //cycling = true;
                 PostTutorialMoveLimiter();
                 print("Moved Finger In Cycle");
@@ -530,7 +532,15 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+            else if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && inCycle){
+                clearClickedIndicator();
+                inCycle = false;
+                print("cleared");
+            }
+
         }
+
+        
         // Touch Input
         else if(!cyclesMode){
 
@@ -595,6 +605,11 @@ public class GameManager : MonoBehaviour
 
 
     }
+
+    IEnumerator WaitingToClear(){
+            yield return new WaitForSeconds(.1f);
+            inCycle = true;
+        }
 
     void PostTutorialMoveLimiter() {
         if (phase >= 6) {
