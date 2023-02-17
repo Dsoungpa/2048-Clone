@@ -1605,9 +1605,9 @@ public class GameManager : MonoBehaviour
     public void SkipTutorial() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         PlayerPrefs.SetInt("phase", 7);
-        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
-            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
-        }
+        // if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
+        //     PlayerPrefs.SetInt("myHighScore", possibleHighScore);
+        // } // Don't save highscore when skipping tutorial
         SceneManager.LoadScene(0);
     }
 
