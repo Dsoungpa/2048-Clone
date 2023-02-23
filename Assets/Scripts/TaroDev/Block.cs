@@ -96,6 +96,7 @@ public class Block : MonoBehaviour
             if(!gameManagerScript.cyclesMode){
             clickedIndicator.SetActive(true);
             clicked = true;
+            StartCoroutine(CycleCoolDown());
             gameManagerScript.clickedBlock = this;
             gameManagerScript.SetCycleTrue();
             print("block selected");
@@ -104,11 +105,16 @@ public class Block : MonoBehaviour
     
         else if (clicked){
             print("Deselected");
-            gameManagerScript.clearClickedIndicator();
-        } 
+            //gameManagerScript.clearClickedIndicator();
+        }
         }
         
         
+    }
+
+    IEnumerator CycleCoolDown(){
+        yield return new WaitForSeconds(.1f);
+        gameManagerScript.inCycle = true;
     }
 
     // // Mobile Version
