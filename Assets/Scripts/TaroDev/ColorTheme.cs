@@ -18,8 +18,8 @@ public class ColorArray
 public class ColorTheme : MonoBehaviour
 {
     [Header("Themes")]
-    [SerializeField] private ColorArray[] colorThemes;
-
+    [SerializeField] private ColorArray[] colorThemes; 
+    
     [Header("Color Separations")]
     [SerializeField] private Image[] primaryColors;
     [SerializeField] private Image[] secondaryColors;

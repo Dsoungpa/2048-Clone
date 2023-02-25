@@ -88,6 +88,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject backgroundDarken2;
     [SerializeField] private GameObject skipTutorial;
     [SerializeField] private GameObject devsIcons;
+    [SerializeField] private GameObject mask1;
+    [SerializeField] private GameObject mask2;
     // [SerializeField] public UIShake shakeScript;
 
     // [Header("Tutorial UI")]
@@ -132,12 +134,20 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         instance = this;
-        if(PlayerPrefs.GetInt("phase", -1) == 0) {
-            phase = 0;
-        }else if(PlayerPrefs.GetInt("phase", -1) > 5){
-            phase = 7;
-        }else{
+        // if(PlayerPrefs.GetInt("phase", -1) == 0) {
+        //     phase = 0;
+        // }else if(PlayerPrefs.GetInt("phase", -1) > 5){
+        //     phase = 7;
+        // }else{
+        //     phase = -1;
+        // }
+
+        if (PlayerPrefs.GetInt("phase", -1) == -1) {
             phase = -1;
+        }else if (PlayerPrefs.GetInt("phase", - 1) > 5) {
+            phase = 7;
+        }else {
+            phase = 0;
         }
 
         InitializeAudioState();
@@ -259,17 +269,21 @@ public class GameManager : MonoBehaviour
         if(phase == 3){
             phase2.SetActive(false);
             phase3.SetActive(true);
+            backgroundDarken2.SetActive(true);
+            mask1.SetActive(true);
         }
 
         if(phase == 4){
             phase3.SetActive(false);
             phase4.SetActive(true);
-            backgroundDarken2.SetActive(true);
+            mask2.SetActive(true);
         }
 
         if(phase == 5){
             phase4.SetActive(false);
             backgroundDarken2.SetActive(false);
+            mask1.SetActive(false);
+            mask2.SetActive(false);
             phase5.SetActive(true);
         }
 
@@ -1584,10 +1598,6 @@ public class GameManager : MonoBehaviour
         }else {
             iconRect.transform.DOLocalMoveY(baseOffset * offsetIndex, offsetDuration);
         }
-        // if (reverse) iconRect.transform.DOLocalMoveY();
-        // print("Offset: " + baseOffset);
-        // Vector3 offset = new Vector3(iconRect.transform.localPosition.x, (baseOffset * offsetIndex), 0);
-        
     }
 
     public void ToggleAudio() {
