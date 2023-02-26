@@ -43,6 +43,9 @@ public class ColorTheme : MonoBehaviour
 
     [SerializeField] public Color[] highlightColors;
     [SerializeField] public string[] colorHexes = new string[4];
+
+    [SerializeField] public Color[] highScoreColors;
+
     // Need to optimize this
     private string springHexes = "#59d980 #60edc0 #83c958 #c1ee23 #e1e40d #f8b82e #eda86a #f69fc2 #c166cc #6397d7 #c2db7b #68ab66 #52afa1 #296b8d #3651ab";
     private string summerHexes = "#237762 #41b48a #60bec4 #6bafe9 #7e76f0 #ffd556 #ffae5e #ef9bc0 #e371e2 #a169cc #7fcdd1 #58b1e9 #56b9a0 #529672 #80a356";
@@ -224,6 +227,7 @@ public class ColorTheme : MonoBehaviour
         ChangeTheme(dropdownTheme, colorThemeIndex);
         GMScript.SetBlockColors();
         GMScript.SetObstacleHighlightColor(); // update obstacle highlight colors
+        GMScript.UpdateHighScoreColor();
     }
 
     void SetDropdownOptions(int currentOption) {
@@ -261,5 +265,9 @@ public class ColorTheme : MonoBehaviour
         float b = Mathf.Clamp01(color.b * colorShift);
 
         return new Color(r, g, b);
+    }
+
+    public Color GetCurrentHighScoreColor() {
+        return highScoreColors[currentThemeIndex];
     }
 }

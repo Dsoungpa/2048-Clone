@@ -5,6 +5,7 @@ using System.Linq;
 using DG.Tweening;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -45,7 +46,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int cycleMovesLeft = 5;
     [SerializeField] private float cycleDelay = 0.25f;
     [SerializeField] private int countUntilObstacle = 5;
-    [SerializeField] private int obstacleCount = 0;
+    [SerializeField] private int obstacleCount;
+    [SerializeField] private int obstacleLimit;
     [SerializeField] private float obstacleSpawnChance = 0.1f;
     [SerializeField] private bool cycling = false;
     [SerializeField] public bool inCycle = false;
@@ -79,6 +81,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text gameoverscore;
     [SerializeField] private TMP_Text highscoreText;
     [SerializeField] private TMP_Text cycleMoves;
+    [SerializeField] private TMP_Text leaderboardHighScore;
     [SerializeField] private GameObject cycleUI;
     [SerializeField] private GameObject audioOnIcon;
     [SerializeField] private GameObject audioOffIcon;
@@ -202,6 +205,15 @@ public class GameManager : MonoBehaviour
         block.gameObject.transform.GetChild(2).GetComponent<SpriteRenderer>().color = colorThemeScript.highlightColors[themeIndex];
     }
 
+    public void UpdateHighScoreColor() {
+        GameObject highScoreInstance = GameObject.Find("NewHighScore");
+        if(highScoreInstance != null) {
+            Color newColor = colorThemeScript.GetCurrentHighScoreColor();
+            highScoreInstance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = newColor;
+            highScoreInstance.transform.GetChild(1).GetComponent<Image>().color = newColor;
+        }
+    }
+
     public void SetCycleTrue(){
         cyclesMode = true;
     }
@@ -231,13 +243,6 @@ public class GameManager : MonoBehaviour
             clearClickedIndicator();
         }
     }
-
-    // void OnMouseDown()
-    // {
-    //     if(cyclesMode){
-    //         clearClickedIndicator();
-    //     }
-    // }
 
     void Update()
     {
@@ -652,7 +657,7 @@ public class GameManager : MonoBehaviour
         switch(newState)
         {
             case GameState.GenerateLevel:
-                //dprint("Generating...");
+                //print("Generating...");
                 GenerateGrid();
                 break;
             case GameState.SpawningBlocks:
@@ -779,7 +784,7 @@ public class GameManager : MonoBehaviour
             // Get a list of nodes that are not Occupied by a block from the list of nodes
             var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
 
-            if(round > 1 && Random.value > (1 - obstacleSpawnChance) && obstacleCount < 3)
+            if(round > 1 && Random.value > (1 - obstacleSpawnChance) && obstacleCount < obstacleLimit)
             {
                 foreach (var nodes in freeNodes.Take(amount))
                 {
@@ -796,10 +801,7 @@ public class GameManager : MonoBehaviour
                     SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
                 }
 
-                if (freeNodes.Count() == 1) {
-                    //print("FN: " + freeNodes.Count());
-                    // if(cycleMovesLeft == 0)
-                    //     return;
+                if (freeNodes.Count() <= 1) {
                     GameOverCase();
                 }     
             }
@@ -823,7 +825,7 @@ public class GameManager : MonoBehaviour
         //Set block highlight color
         UpdateHighlightColor(block);
         
-        block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
+        block.transform.DOScale(new Vector3(1f, 1f, 0), 0.5f).SetEase(Ease.OutBounce);
 
         // Take the block game object and initialize it as a BlockType
         block.Init(GetBlockTypeByValue(value));
@@ -845,7 +847,7 @@ public class GameManager : MonoBehaviour
             block.transform.SetParent(boardParent, true);
             UpdateHighlightColor(block);
 
-            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.5f).SetEase(Ease.OutBounce);
+            block.transform.DOScale(new Vector3(1f, 1f, 0), 0.5f).SetEase(Ease.OutBounce);
             node.Obstacle = true;
             block.Obstacle = true;
 
@@ -1049,15 +1051,13 @@ public class GameManager : MonoBehaviour
 
     private void GameOverCase() {
         var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
-        //print("Game Over: " + GameOver);
         if(GameOver && cycleMovesLeft <= 0)
         {
             ChangeState(GameState.Lose);
             //here
             gameoverscore.text = score.ToString(); // moved from merge function
-            if (possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
-                PlayerPrefs.SetInt("myHighScore", possibleHighScore);
-            }
+            SetHighScore();
+            leaderboardHighScore.text = PlayerPrefs.GetInt("myHighScore").ToString();
             StartCoroutine(SubmitScore(score));
             return;
         }
@@ -1065,6 +1065,12 @@ public class GameManager : MonoBehaviour
         {    
             ChangeState(GameState.WaitingInput);
             return;
+        }
+    }
+
+    void SetHighScore() {
+        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
+            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
         }
     }
 
@@ -1475,6 +1481,8 @@ public class GameManager : MonoBehaviour
         // gameoverscore.text = score.ToString();
         if (!gotNewHighScore && score > PlayerPrefs.GetInt("myHighScore", score)) {
             gotNewHighScore = true;
+            possibleHighScore = score;
+            SetHighScore();
             NewHighScore();
         }
         RemoveBlock(baseBlock);
@@ -1483,15 +1491,21 @@ public class GameManager : MonoBehaviour
 
     void NewHighScore() {
         print("NEW HIGH SCORE ACHIEVED!");
-        GameObject newHighScoreInstance = Instantiate(newHighScoreObject, Vector3.zero, Quaternion.identity);
-        newHighScoreInstance.transform.SetParent(GameObject.Find("Canvas").transform, true);
-        newHighScoreInstance.transform.localScale = startScale;
-        newHighScoreInstance.GetComponent<RectTransform>().localPosition = newHighScorePos;
+        GameObject highScoreInstance = Instantiate(newHighScoreObject, Vector3.zero, Quaternion.identity);
+        highScoreInstance.name = "NewHighScore";
+        highScoreInstance.GetComponent<RectTransform>().localPosition = newHighScorePos;
+        highScoreInstance.transform.SetParent(GameObject.Find("World Canvas").transform, false);
+        highScoreInstance.transform.localScale = startScale;
+
+        //adjust color
+        Color newColor = colorThemeScript.GetCurrentHighScoreColor();
+        highScoreInstance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = newColor;
+        highScoreInstance.transform.GetChild(1).GetComponent<Image>().color = newColor;
 
         //animation;
-        newHighScoreInstance.transform.DOScale(endScale, scaleTime).SetEase(Ease.OutBounce);
+        highScoreInstance.transform.DOScale(endScale, scaleTime).SetEase(Ease.OutBounce);
 
-        Destroy(newHighScoreInstance, newHighScoreDuration);
+        Destroy(highScoreInstance, newHighScoreDuration);
     }
 
     void RemoveBlock(Block block)
@@ -1523,39 +1537,28 @@ public class GameManager : MonoBehaviour
     }
 
 
-    Node GetNodeAtPosition(Vector2 pos)
-    {
+    Node GetNodeAtPosition(Vector2 pos) {
         return nodes.FirstOrDefault(n => n.Pos == pos);
     }
 
-    public void RestartGame()
-    {
+    public void RestartGame() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
-        SceneManager.LoadScene(0);
-        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
-            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
-        }
+        SetHighScore();
         PlayerPrefs.SetInt("phase", phase);
-        
+        SceneManager.LoadScene(0);
     }
 
-    public void ContinueGame()
-    {
+    public void ContinueGame() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         winScreen.SetActive(false);
         ChangeState(GameState.WaitingInput);
     }
 
-    public void ToggleCycle()
-    {
+    public void ToggleCycle() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
-        if(cycleUI.activeSelf)
-        {
+        if(cycleUI.activeSelf) {
             cycleUI.SetActive(false);
-        }
-
-        else
-        {
+        }else {
             cycleUI.SetActive(true);
         }
     }
@@ -1634,9 +1637,7 @@ public class GameManager : MonoBehaviour
     public void RestartTutorial() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         PlayerPrefs.SetInt("phase", tutorialRestartPhase);
-        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
-            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
-        }
+        SetHighScore();
         devsIcons.SetActive(true);
         SceneManager.LoadScene(0);
     }
@@ -1644,9 +1645,6 @@ public class GameManager : MonoBehaviour
     public void SkipTutorial() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         PlayerPrefs.SetInt("phase", 7);
-        // if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) { // if player starts new game
-        //     PlayerPrefs.SetInt("myHighScore", possibleHighScore);
-        // } // Don't save highscore when skipping tutorial
         SceneManager.LoadScene(0);
     }
 
