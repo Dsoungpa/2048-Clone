@@ -117,6 +117,7 @@ public class GameManager : MonoBehaviour
     private Vector3 endTouchPosition;
     [SerializeField] private bool stopTouch = false;
     [SerializeField] private float swipeRange;
+    private bool hasSwiped;
 
     [Header("Script Reference")]
     [SerializeField] private ColorTheme colorThemeScript;
@@ -577,11 +578,12 @@ public class GameManager : MonoBehaviour
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
                 startTouchPosition = Input.GetTouch(0).position;
                 movementtracker = 0;
+                hasSwiped = false;
                 print("began touch");
             }
 
-            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
-
+            else if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0 && !hasSwiped){
+                hasSwiped = true;
                 PostTutorialMoveLimiter();
 
                 print("Moved finger");
@@ -641,18 +643,55 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+
+            if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && !hasSwiped){
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position), Vector2.zero);                
+
+                if(hit.collider != null){
+                    print(hit.collider.gameObject);
+                    Block selectedBlock = hit.collider.gameObject.GetComponent<Block>();
+                    if (disableControl) return; // disable control while updating username
+
+                    if(phase > 4){
+                        if(!cyclesMode){
+                        selectedBlock.clickedIndicator.SetActive(true);
+                        selectedBlock.clicked = true;
+                        StartCoroutine(CycleCoolDown());
+                        clickedBlock = selectedBlock;
+                        SetCycleTrue();
+                        print("block selected");
+                        Debug.Log(this.gameObject.name + " clicked!");
+                    }
+                }
+                }
+            }
         }
 
 
     }
 
+    IEnumerator HasSwipedFalse(){
+        yield return new WaitForSeconds(.05f);
+        hasSwiped = false;
+    }
+
+    IEnumerator HasSwipedTrue(){
+        yield return new WaitForSeconds(.05f);
+        hasSwiped = true;
+    }
+    
+    IEnumerator CycleCoolDown(){
+        yield return new WaitForSeconds(.05f);
+        inCycle = true;
+    }
+
     IEnumerator CycleCoolDownFalse(){
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSeconds(.05f);
         inCycle = false;
     }
 
     IEnumerator WaitingToClear(){
-            yield return new WaitForSeconds(.1f);
+            yield return new WaitForSeconds(.05f);
             inCycle = true;
         }
 
@@ -1406,7 +1445,7 @@ public class GameManager : MonoBehaviour
     }
 
     IEnumerator cyclings(){
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.05f);
         cycling = false;
     }
 

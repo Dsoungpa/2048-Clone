@@ -88,29 +88,29 @@ public class Block : MonoBehaviour
 
 
     // Keyboard Version
-    void OnMouseUp()
-    {
-        if (gameManagerScript.disableControl) return; // disable control while updating username
+    // void OnMouseUp()
+    // {
+    //     if (gameManagerScript.disableControl) return; // disable control while updating username
 
-        if(gameManagerScript.phase > 4){
-            if(!gameManagerScript.cyclesMode){
-            clickedIndicator.SetActive(true);
-            clicked = true;
-            StartCoroutine(CycleCoolDown());
-            gameManagerScript.clickedBlock = this;
-            gameManagerScript.SetCycleTrue();
-            print("block selected");
-            Debug.Log(this.gameObject.name + " clicked!");
-        }
+    //     if(gameManagerScript.phase > 4){
+    //         if(!gameManagerScript.cyclesMode){
+    //         clickedIndicator.SetActive(true);
+    //         clicked = true;
+    //         StartCoroutine(CycleCoolDown());
+    //         gameManagerScript.clickedBlock = this;
+    //         gameManagerScript.SetCycleTrue();
+    //         print("block selected");
+    //         Debug.Log(this.gameObject.name + " clicked!");
+    //     }
     
-        else if (clicked){
-            print("Deselected");
-            //gameManagerScript.clearClickedIndicator();
-        }
-        }
+    //     else if (clicked){
+    //         print("Deselected");
+    //         //gameManagerScript.clearClickedIndicator();
+    //     }
+    //     }
         
         
-    }
+    // }
 
     IEnumerator CycleCoolDown(){
         yield return new WaitForSeconds(.1f);
