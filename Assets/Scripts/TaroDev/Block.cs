@@ -88,7 +88,7 @@ public class Block : MonoBehaviour
 
 
     // Keyboard Version
-    void OnMouseDown()
+    void OnMouseUp()
     {
         if (gameManagerScript.disableControl) return; // disable control while updating username
 

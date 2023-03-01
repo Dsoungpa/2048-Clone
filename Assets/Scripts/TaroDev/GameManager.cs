@@ -373,7 +373,7 @@ public class GameManager : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) 
             {
                 PostTutorialMoveLimiter();
-                print(clickedBlock.Pos.y);
+                //print(clickedBlock.Pos.y);
                 if(clickedBlock.Pos.y == 0){
                     Cycle("FourthRowRight");
                 }
@@ -394,7 +394,7 @@ public class GameManager : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             {
                 PostTutorialMoveLimiter();
-                print(clickedBlock.Pos.x);
+                //print(clickedBlock.Pos.x);
                 if(clickedBlock.Pos.x == 0){
                     Cycle("FirstColUp");
                 }
@@ -415,7 +415,7 @@ public class GameManager : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
             {
                 PostTutorialMoveLimiter();
-                print(clickedBlock.Pos.x);
+                //print(clickedBlock.Pos.x);
                 if(clickedBlock.Pos.x == 0){
                     Cycle("FirstColDown");
                 }
@@ -452,9 +452,17 @@ public class GameManager : MonoBehaviour
                 Vector3 Distance = currentPosition - startTouchPosition;
                 print("X" + Distance.x);
                 print("Y" + Distance.y);
+
+                if(Mathf.Abs(Distance.x) > Mathf.Abs(Distance.y)){
+                    Distance.y = 0;
+                }
+                
+                else{
+                    Distance.x = 0;
+                }
+
                 if(Distance.x < -swipeRange) 
-                {
-                    
+                {     
                     print(clickedBlock.Pos.y);
                     if(clickedBlock.Pos.y == 0){
                         movementtracker++;
@@ -579,6 +587,16 @@ public class GameManager : MonoBehaviour
                 print("Moved finger");
                 currentPosition = Input.GetTouch(0).position;
                 Vector3 Distance = currentPosition - startTouchPosition;
+                print("X" + Distance.x);
+                print("Y" + Distance.y);
+                
+                if(Mathf.Abs(Distance.x) > Mathf.Abs(Distance.y)){
+                    Distance.y = 0;
+                }
+
+                else{
+                    Distance.x = 0;
+                }
 
                 if(phase != -1){
                     if(phase != 0){
