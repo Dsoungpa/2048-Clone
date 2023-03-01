@@ -118,6 +118,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool stopTouch = false;
     [SerializeField] private float swipeRange;
     private bool hasSwiped;
+    private bool hasSwipedCycle;
 
     [Header("Script Reference")]
     [SerializeField] private ColorTheme colorThemeScript;
@@ -442,11 +443,12 @@ public class GameManager : MonoBehaviour
                 movementtracker = 0;
                 print("began touch in cycles");
                 startTouchPosition = Input.GetTouch(0).position;
-                StartCoroutine(WaitingToClear()); // sets inCycle to True
+                //StartCoroutine(WaitingToClear()); // sets inCycle to True
+                hasSwipedCycle = false;
             }
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
-                cycling = true;
+                hasSwipedCycle = true;
                 PostTutorialMoveLimiter();
                 print("Moved Finger In Cycle");
                 currentPosition = Input.GetTouch(0).position;
@@ -562,10 +564,9 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
-            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && inCycle && !cycling){
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && !hasSwipedCycle){
                 clearClickedIndicator();
-                StartCoroutine(CycleCoolDownFalse());
-                
+                //StartCoroutine(CycleCoolDownFalse());
                 print("cleared");
             }
 
@@ -656,7 +657,8 @@ public class GameManager : MonoBehaviour
                         if(!cyclesMode){
                         selectedBlock.clickedIndicator.SetActive(true);
                         selectedBlock.clicked = true;
-                        StartCoroutine(CycleCoolDown());
+                        // StartCoroutine(CycleCoolDown());
+                        inCycle = true;
                         clickedBlock = selectedBlock;
                         SetCycleTrue();
                         print("block selected");
@@ -1440,8 +1442,8 @@ public class GameManager : MonoBehaviour
         // audioSource.PlayOneShot(swipe, 0.2f);
         // print("OrderedBlocks:" + orderedBlocks.Count());
 
-        StartCoroutine(cyclings());
-        
+        //StartCoroutine(cyclings());
+        //cycling = false;
     }
 
     IEnumerator cyclings(){
