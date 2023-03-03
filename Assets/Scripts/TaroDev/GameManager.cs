@@ -93,6 +93,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject devsIcons;
     [SerializeField] private GameObject mask1;
     [SerializeField] private GameObject mask2;
+    [SerializeField] private GameObject mask3;
+    [SerializeField] private GameObject cyclesDarken;
+    [SerializeField] private GameObject[] panelDarken;
     // [SerializeField] public UIShake shakeScript;
 
     // [Header("Tutorial UI")]
@@ -259,37 +262,44 @@ public class GameManager : MonoBehaviour
             devsIcons.SetActive(true);
             phase0.SetActive(true);
             backgroundDarken.SetActive(true);
+            OverlayCanvasDarkenOn();
         }
 
         if(phase == 0){
             phase1.SetActive(true);
             phase0.SetActive(false);
             backgroundDarken.SetActive(false);
+            OverlayCanvasDarkenOff();
             skipTutorial.SetActive(true);
         }
 
         if(phase == 2){
             phase1.SetActive(false);
             phase2.SetActive(true);
+            backgroundDarken2.SetActive(true);
+            OverlayCanvasDarkenOn();
+            mask1.SetActive(true);
+            mask3.SetActive(true);
         }
 
         if(phase == 3){
             phase2.SetActive(false);
             phase3.SetActive(true);
-            backgroundDarken2.SetActive(true);
-            mask1.SetActive(true);
+            mask3.SetActive(false);
         }
 
         if(phase == 4){
             phase3.SetActive(false);
             phase4.SetActive(true);
+            mask1.SetActive(false);
             mask2.SetActive(true);
+            cyclesDarken.SetActive(false);
         }
 
         if(phase == 5){
             phase4.SetActive(false);
             backgroundDarken2.SetActive(false);
-            mask1.SetActive(false);
+            OverlayCanvasDarkenOff();
             mask2.SetActive(false);
             phase5.SetActive(true);
         }
@@ -298,6 +308,18 @@ public class GameManager : MonoBehaviour
             phase5.SetActive(false);
             if (postTutorialMoveCounter < postTutorialMoveLimit) phase6.SetActive(true);
             skipTutorial.SetActive(false);
+        }
+
+        void OverlayCanvasDarkenOn() {
+            foreach(var panel in panelDarken) {
+                panel.SetActive(true);
+            }
+        }
+
+        void OverlayCanvasDarkenOff() {
+            foreach(var panel in panelDarken) {
+                panel.SetActive(false);
+            }
         }
 
         // Keyboard Input
