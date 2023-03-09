@@ -76,9 +76,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int currentHighestValue;
 
     [Header("UI")]
-    [SerializeField] private GameObject winScreen, loseScreen;
+    [SerializeField] private GameObject winScreen;
+    [SerializeField] private GameObject loseScreen;
+    [SerializeField] private GameObject worldLoseScreen;
     [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private TMP_Text gameoverscore;
+    [SerializeField] private TMP_Text gameOverScore;
     [SerializeField] private TMP_Text highscoreText;
     [SerializeField] private TMP_Text cycleMoves;
     [SerializeField] private TMP_Text leaderboardHighScore;
@@ -756,6 +758,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.Lose:
                 loseScreen.SetActive(true);
+                worldLoseScreen.SetActive(true);
                 break; 
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);      
@@ -870,6 +873,10 @@ public class GameManager : MonoBehaviour
                 foreach (var nodes in freeNodes.Take(amount))
                 {
                     SpawnObstacle(nodes);
+                }
+
+                if (freeNodes.Count() <= 1) {
+                    GameOverCase();
                 }
             }
 
@@ -1136,9 +1143,9 @@ public class GameManager : MonoBehaviour
         {
             ChangeState(GameState.Lose);
             //here
-            gameoverscore.text = score.ToString(); // moved from merge function
             SetHighScore();
             leaderboardHighScore.text = PlayerPrefs.GetInt("myHighScore").ToString();
+            gameOverScore.text = score.ToString(); // moved from merge function
             StartCoroutine(SubmitScore(score));
             return;
         }
@@ -1559,8 +1566,7 @@ public class GameManager : MonoBehaviour
         if (baseBlock.Value * 2 > currentHighestValue) UpdateBrickValue();
 
         scoreText.text = score.ToString();
-        // gameoverscore.text = score.ToString();
-        if (!gotNewHighScore && score > PlayerPrefs.GetInt("myHighScore", score)) {
+        if (!gotNewHighScore && score >= PlayerPrefs.GetInt("myHighScore", score) && PlayerPrefs.HasKey("myHghScore")) {
             gotNewHighScore = true;
             possibleHighScore = score;
             SetHighScore();
