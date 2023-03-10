@@ -475,7 +475,7 @@ public class GameManager : MonoBehaviour
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
                 debugText.text = "SWIPE CYCLE";
-                
+
                 PostTutorialMoveLimiter();
                 print("Moved Finger In Cycle");
                 currentPosition = Input.GetTouch(0).position;
@@ -650,7 +650,7 @@ public class GameManager : MonoBehaviour
                                 print("Up");
                                 Shift(Vector2.up);
                                 stopTouch = true;
-                                hasSwiped = false;
+                                hasSwiped = true;
                                 return;
                             } 
 
@@ -660,7 +660,7 @@ public class GameManager : MonoBehaviour
                                 print("Down");
                                 Shift(Vector2.down);
                                 stopTouch = true;
-                                hasSwiped = false;
+                                hasSwiped = true;
                                 return;
                             }
                         }
@@ -671,7 +671,7 @@ public class GameManager : MonoBehaviour
                             print("Left");
                             Shift(Vector2.left);
                             stopTouch = true;
-                            hasSwiped = false;
+                            hasSwiped = true;
                             return;
                         } 
                     }
@@ -683,7 +683,7 @@ public class GameManager : MonoBehaviour
                         print("Right");
                         Shift(Vector2.right);
                         stopTouch = true;
-                        hasSwiped = false;
+                        hasSwiped = true;
                         return;
                     }
                 }
