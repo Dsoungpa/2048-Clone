@@ -82,6 +82,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text gameOverScore;
     [SerializeField] private TMP_Text highscoreText;
+    [SerializeField] private TMP_Text debugText;
     [SerializeField] private TMP_Text cycleMoves;
     [SerializeField] private TMP_Text leaderboardHighScore;
     [SerializeField] private GameObject cycleUI;
@@ -464,6 +465,7 @@ public class GameManager : MonoBehaviour
             //StartCoroutine(CheckCyclesModeDelay());
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && inCycle){
+                debugText.text = "TOUCH CYCLE";
                 movementtracker = 0;
                 print("began touch in cycles");
                 startTouchPosition = Input.GetTouch(0).position;
@@ -472,7 +474,8 @@ public class GameManager : MonoBehaviour
             }
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0){
-                hasSwipedCycle = true;
+                debugText.text = "SWIPE CYCLE";
+                
                 PostTutorialMoveLimiter();
                 print("Moved Finger In Cycle");
                 currentPosition = Input.GetTouch(0).position;
@@ -510,6 +513,8 @@ public class GameManager : MonoBehaviour
                         movementtracker++;
                         Cycle("FirstRowLeft");
                     }
+
+                    hasSwipedCycle = true;
                 }
 
                 else if (Distance.x > swipeRange)
@@ -538,6 +543,8 @@ public class GameManager : MonoBehaviour
                         movementtracker++;
                         Cycle("FirstRowRight");
                     }
+
+                    hasSwipedCycle = true;
                 }
 
                 else if(Distance.y > swipeRange)
@@ -562,6 +569,8 @@ public class GameManager : MonoBehaviour
                         movementtracker++;
                         Cycle("FourthColUp");
                     }
+
+                    hasSwipedCycle = true;
                 }
 
                 else if(Distance.y < -swipeRange)
@@ -586,9 +595,16 @@ public class GameManager : MonoBehaviour
                         movementtracker++;
                         Cycle("FourthColDown");
                     }
+
+                    hasSwipedCycle = true;
+                }
+
+                else{
+                    hasSwipedCycle = false;
                 }
             }
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && !hasSwipedCycle){
+                debugText.text = "DESELECTED";
                 clearClickedIndicator();
                 //StartCoroutine(CycleCoolDownFalse());
                 print("cleared");
@@ -601,6 +617,7 @@ public class GameManager : MonoBehaviour
         else if(!cyclesMode){
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began){
+                debugText.text = "TOUCH";
                 startTouchPosition = Input.GetTouch(0).position;
                 movementtracker = 0;
                 hasSwiped = false;
@@ -608,9 +625,8 @@ public class GameManager : MonoBehaviour
             }
 
             else if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved && movementtracker == 0 && !hasSwiped){
-                hasSwiped = true;
                 PostTutorialMoveLimiter();
-
+                debugText.text = "SWIPE";
                 print("Moved finger");
                 currentPosition = Input.GetTouch(0).position;
                 Vector3 Distance = currentPosition - startTouchPosition;
@@ -634,6 +650,7 @@ public class GameManager : MonoBehaviour
                                 print("Up");
                                 Shift(Vector2.up);
                                 stopTouch = true;
+                                hasSwiped = false;
                                 return;
                             } 
 
@@ -643,6 +660,7 @@ public class GameManager : MonoBehaviour
                                 print("Down");
                                 Shift(Vector2.down);
                                 stopTouch = true;
+                                hasSwiped = false;
                                 return;
                             }
                         }
@@ -653,6 +671,7 @@ public class GameManager : MonoBehaviour
                             print("Left");
                             Shift(Vector2.left);
                             stopTouch = true;
+                            hasSwiped = false;
                             return;
                         } 
                     }
@@ -664,15 +683,18 @@ public class GameManager : MonoBehaviour
                         print("Right");
                         Shift(Vector2.right);
                         stopTouch = true;
+                        hasSwiped = false;
                         return;
                     }
                 }
+                hasSwiped = false;
             }
 
             if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && !hasSwiped){
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position), Vector2.zero);                
 
                 if(hit.collider != null){
+                    debugText.text = "NOT";
                     print(hit.collider.gameObject);
                     Block selectedBlock = hit.collider.gameObject.GetComponent<Block>();
                     if (disableControl) return; // disable control while updating username
@@ -687,9 +709,14 @@ public class GameManager : MonoBehaviour
                         SetCycleTrue();
                         print("block selected");
                         Debug.Log(this.gameObject.name + " clicked!");
+                        }
                     }
                 }
+
+                else{
+                    debugText.text = "NULL";
                 }
+
             }
         }
 
