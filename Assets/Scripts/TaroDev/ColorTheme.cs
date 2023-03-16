@@ -27,9 +27,6 @@ public class ColorTheme : MonoBehaviour
     [SerializeField] private Image[] buttons;
     [SerializeField] private Camera cam;
 
-    // [Header("Theme Art")]
-    // [SerializeField] private GameObject[] themeArtPrefabs;
-
     [Header("Block Colors")]
     public Dictionary<int, Color> colorRange;
     [SerializeField] public Color[] colorValueDisplay; // was private
@@ -46,7 +43,6 @@ public class ColorTheme : MonoBehaviour
 
     [SerializeField] public Color[] highScoreColors;
 
-    // Need to optimize this
     private string springHexes = "#59d980 #60edc0 #83c958 #c1ee23 #e1e40d #f8b82e #eda86a #f69fc2 #c166cc #6397d7 #c2db7b #68ab66 #52afa1 #296b8d #3651ab";
     private string summerHexes = "#237762 #41b48a #60bec4 #6bafe9 #7e76f0 #ffd556 #ffae5e #ef9bc0 #e371e2 #a169cc #7fcdd1 #58b1e9 #56b9a0 #529672 #80a356";
     private string fallHexes = "#4b6522 #397b2e #9fbf20 #c5be0c #e1b815 #dc812f #d56044 #cc7c7c #ce7cc2 #cea7f9 #92ab7a #a5a66b #69a687 #4897a3 #5374ab";
@@ -255,8 +251,6 @@ public class ColorTheme : MonoBehaviour
         
         cam.backgroundColor = theme.colors[2];
         gameBoard.color = theme.colors[3];
-
-        // ToggleThemeArt(themeIndex);
     }
 
     public Color ShiftColor(Color color) {

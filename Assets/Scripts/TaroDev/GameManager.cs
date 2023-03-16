@@ -145,13 +145,6 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         instance = this;
-        // if(PlayerPrefs.GetInt("phase", -1) == 0) {
-        //     phase = 0;
-        // }else if(PlayerPrefs.GetInt("phase", -1) > 5){
-        //     phase = 7;
-        // }else{
-        //     phase = -1;
-        // }
 
         if (PlayerPrefs.GetInt("phase", -1) == -1) {
             phase = -1;
@@ -164,16 +157,12 @@ public class GameManager : MonoBehaviour
         InitializeAudioState();
     }
 
-    void Start()
-    {
+    void Start() {
         highscoreText.text = PlayerPrefs.HasKey("myHighScore") ? PlayerPrefs.GetInt("myHighScore").ToString() : "0";
         ChangeState(GameState.GenerateLevel);
         weightedBrickValues = brickValues;
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
-
-        // if (phase > 5) devsIcons.SetActive(false);
-        // UpdateBlockColors();
     }
 
     void UpdateBlockColors() {
