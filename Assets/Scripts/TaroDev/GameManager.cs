@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool cycling = false;
     [SerializeField] public bool inCycle = false;
 
-    // Settings
+    [Header("Settings")]
     [SerializeField] private bool settingsActive = true;
     [SerializeField] private GameObject audioSetting;
     [SerializeField] private GameObject tutorialSetting;
