@@ -13,35 +13,16 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
-    // private void Awake() => instance = this;
+    #region VARIABLES
 
-    [SerializeField] public Leaderboard leaderboard;
-
-    [SerializeField] public int phase;
-    
-    [SerializeField] private Transform boardParent;
-
+    #region  GENERAL VARIABLES
+    [Header("General")]
     [SerializeField] private int width = 4;
     [SerializeField] private int height = 4;
-    [SerializeField] private Node nodePrefab;
-    [SerializeField] private Block blockPrefab;
-    [SerializeField] private Block obstaclePrefab;
-    [SerializeField] private SpriteRenderer boardPrefab;
-    [SerializeField] private List<BlockType> types;
     [SerializeField] private float travelTime = 0.2f;
     [SerializeField] private int winCondition = 2048;
-    [SerializeField] private bool gameOver;
     [SerializeField] private int score = 0;
     [SerializeField] private int movementtracker;
-    // High Score Alert
-    [SerializeField] private float newHighScoreDuration = 2f;
-    [SerializeField] private Vector3 newHighScorePos;
-    [SerializeField] private Vector3 startScale;
-    [SerializeField] private Vector3 endScale;
-    [SerializeField] private float scaleTime;
-    [SerializeField] private bool gotNewHighScore = false;
-    
     [SerializeField] private int possibleHighScore;
     [SerializeField] private int cycleMovesLeft = 5;
     [SerializeField] private float cycleDelay = 0.25f;
@@ -49,22 +30,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int obstacleCount;
     [SerializeField] private int obstacleLimit;
     [SerializeField] private float obstacleSpawnChance = 0.1f;
+
+    public static GameManager instance;
+    [SerializeField] private Node nodePrefab;
+    [SerializeField] private Block blockPrefab;
+    [SerializeField] private Block obstaclePrefab;
+    [SerializeField] private Transform boardParent;
+    [SerializeField] private SpriteRenderer boardPrefab;
+    [SerializeField] private List<BlockType> types;
+
+    // Booleans
+    [SerializeField] private bool gameOver;
     [SerializeField] private bool cycling = false;
     [SerializeField] public bool inCycle = false;
-
-    [Header("Settings")]
-    [SerializeField] private bool settingsActive = true;
-    [SerializeField] private GameObject audioSetting;
-    [SerializeField] private GameObject tutorialSetting;
-    [SerializeField] private GameObject usernameSetting;
-    [SerializeField] private GameObject audioSettingInfo;
-    [SerializeField] private GameObject tutorialSettingInfo;
-    [SerializeField] private GameObject usernameSettingInfo;
-    [SerializeField] private GameObject updateUsername;
-    [SerializeField] private float offsetDuration;
-    [SerializeField] public bool disableControl = false;
-
-    [SerializeField] private int tutorialRestartPhase;
 
     public bool cyclesMode;
     public Block clickedBlock;
@@ -74,8 +52,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int[] brickValues = new int[0];
     [SerializeField] private int[] weightedBrickValues;
     [SerializeField] private int currentHighestValue;
+    #endregion
 
-    [Header("UI")]
+    #region UI VARIABLES
+    [Header("UI")] [Space(10)]
+    [Header("UI Main")]
     [SerializeField] private GameObject winScreen;
     [SerializeField] private GameObject loseScreen;
     [SerializeField] private GameObject worldLoseScreen;
@@ -86,28 +67,53 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text cycleMoves;
     [SerializeField] private TMP_Text leaderboardHighScore;
     [SerializeField] private GameObject cycleUI;
-    [SerializeField] private GameObject audioOnIcon;
-    [SerializeField] private GameObject audioOffIcon;
     [SerializeField] private GameObject noCycleIndicator;
     [SerializeField] private GameObject newHighScoreObject;
+
+    [Header("UI Misc")]
     [SerializeField] private GameObject backgroundDarken;
     [SerializeField] private GameObject backgroundDarken2;
-    [SerializeField] private GameObject skipTutorial;
-    [SerializeField] private GameObject devsIcons;
+    [SerializeField] private GameObject cyclesDarken;
+    [SerializeField] private GameObject[] panelDarken;
     [SerializeField] private GameObject mask1;
     [SerializeField] private GameObject mask2;
     [SerializeField] private GameObject mask3;
-    [SerializeField] private GameObject cyclesDarken;
-    [SerializeField] private GameObject[] panelDarken;
-    // [SerializeField] public UIShake shakeScript;
 
-    // [Header("Tutorial UI")]
-    [SerializeField] private GameObject phase0, phase1, phase2, phase3, phase4, phase5, phase6;
+    [Header("UI Settings")]
+    [SerializeField] private bool settingsActive = true;
+    [SerializeField] private GameObject audioOnIcon;
+    [SerializeField] private GameObject audioOffIcon;
+    [SerializeField] private GameObject audioSetting;
+    [SerializeField] private GameObject tutorialSetting;
+    [SerializeField] private GameObject usernameSetting;
+    [SerializeField] private GameObject audioSettingInfo;
+    [SerializeField] private GameObject tutorialSettingInfo;
+    [SerializeField] private GameObject usernameSettingInfo;
+    [SerializeField] private GameObject updateUsername;
+    [SerializeField] private float offsetDuration;
+    [SerializeField] public bool disableControl = false;
+
+    [Header("Tutorial")]
+    [SerializeField] private GameObject skipTutorial;
+    [SerializeField] private GameObject devsIcons;
     [SerializeField] private TMP_InputField username;
     [SerializeField] private TMP_InputField updateusername;
     [SerializeField] private int postTutorialMoveLimit;
+    [SerializeField] public int phase;
+    [SerializeField] private GameObject phase0, phase1, phase2, phase3, phase4, phase5, phase6;
+    [SerializeField] private int tutorialRestartPhase;
     public int postTutorialMoveCounter = 0;
 
+    [Header("High Score Alert")]
+    [SerializeField] private float newHighScoreDuration = 2f;
+    [SerializeField] private Vector3 newHighScorePos;
+    [SerializeField] private Vector3 startScale;
+    [SerializeField] private Vector3 endScale;
+    [SerializeField] private float scaleTime;
+    [SerializeField] private bool gotNewHighScore = false;
+    #endregion
+
+    #region OTHER VARIALBES
     [Header("Audio")]
     [SerializeField] private List<AudioClip> merges = new List<AudioClip>();
     [SerializeField] private AudioClip blockBreak;
@@ -128,21 +134,24 @@ public class GameManager : MonoBehaviour
 
     [Header("Script Reference")]
     [SerializeField] private ColorTheme colorThemeScript;
+    [SerializeField] public Leaderboard leaderboard;
     private SpriteRenderer gameBoard;
 
+    // Node and Block management lists
     private List<Node> nodes;
     private List<Block> blocks;
     private List<Block> obstacles;
     private GameState state;
     private int round;
+    #endregion
 
-    [Header("Block Color Manager")]
-    public Dictionary<int, Color> blockColors;
+    #endregion
 
     // Get a Blocktype by the int value you pass
     // It takes from the list of types that already has a color attached to the value
     private BlockType GetBlockTypeByValue(int value) => types.First(t=>t.Value == value);
 
+    #region STARTUP METHODS
     void Awake() {
         instance = this;
 
@@ -164,7 +173,10 @@ public class GameManager : MonoBehaviour
         currentHighestValue = brickValues[brickValues.Length - 1];
         cyclesMode = false;
     }
+    #endregion
 
+    
+    #region THEME UPDATE METHODS
     void UpdateBlockColors() {
         for (int i = 0; i < types.Count(); i++) {
             if (colorThemeScript.colorRange.ContainsKey(types[i].Value)) {
@@ -210,7 +222,9 @@ public class GameManager : MonoBehaviour
             highScoreInstance.transform.GetChild(1).GetComponent<Image>().color = newColor;
         }
     }
+    #endregion
 
+    #region CYCLE MANAGEMENT
     public void SetCycleTrue(){
         cyclesMode = true;
     }
@@ -240,6 +254,7 @@ public class GameManager : MonoBehaviour
             clearClickedIndicator();
         }
     }
+    #endregion
 
     void Update()
     {
@@ -712,6 +727,7 @@ public class GameManager : MonoBehaviour
 
     }
 
+    #region MOBILE
     IEnumerator HasSwipedFalse(){
         yield return new WaitForSeconds(.05f);
         hasSwiped = false;
@@ -735,20 +751,10 @@ public class GameManager : MonoBehaviour
     IEnumerator WaitingToClear(){
             yield return new WaitForSeconds(.05f);
             inCycle = true;
-        }
-
-    void PostTutorialMoveLimiter() {
-        if (phase >= 6) {
-            if (postTutorialMoveCounter < postTutorialMoveLimit) {
-                print("Incrementing Counter: " + postTutorialMoveCounter);
-                postTutorialMoveCounter++;
-            }else {
-                phase6.SetActive(false);
-                devsIcons.SetActive(false);
-                PlayerPrefs.SetInt("phase", phase); // might night be needed in 'game end/restart' methods
-            }
-        } // Can be optimized
     }
+    #endregion
+
+    #region MAIN
 
     private void ChangeState(GameState newState)
     {
@@ -781,17 +787,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void GenerateGrid()
-    {
+    void GenerateGrid() {
         round = 0;
         nodes = new List<Node>();
         blocks = new List<Block>();
         obstacles = new List<Block>();
 
-        for(int x = 0; x < width; x++)
-        {
-            for(int y = 0; y < height; y++)
-            {
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
                 var node = Instantiate(nodePrefab, new Vector2(x,y), Quaternion.identity);
                 nodes.Add(node);
                 node.transform.SetParent(boardParent, true);
@@ -811,6 +814,44 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.SpawningBlocks);
     }
 
+    private void GameOverCase() {
+        var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
+        if(GameOver && cycleMovesLeft <= 0) {
+            ChangeState(GameState.Lose);
+            SetHighScore();
+            leaderboardHighScore.text = PlayerPrefs.GetInt("myHighScore").ToString();
+            gameOverScore.text = score.ToString(); // moved from merge function
+            StartCoroutine(SubmitScore(score));
+            return;
+        }else {    
+            ChangeState(GameState.WaitingInput);
+            return;
+        }
+    }
+
+    private bool GameOverCheck(Vector2 dir) {
+        var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); 
+        if(dir == Vector2.right || dir == Vector2.up) orderedBlocks.Reverse();
+
+        foreach (var block in orderedBlocks) {
+            if(block.Obstacle) continue;
+            var next = block.Node;
+            do {
+                //block.SetBlock(next);
+                var possibleNode = GetNodeAtPosition(next.Pos + dir);
+
+                if(possibleNode != null) {
+                    if(possibleNode.OccupiedBlock != null && possibleNode.OccupiedBlock.CanMerge(block.Value)) {
+                        return true;
+                    }else if (possibleNode.OccupiedBlock == null) {
+                        return true;
+                    } 
+                }
+            } while (next != block.Node);
+        }
+        return false;
+    }
+
     public SpriteRenderer GetBoard() {
         if (gameBoard != null) {
             return gameBoard;
@@ -826,6 +867,9 @@ public class GameManager : MonoBehaviour
     public List<Block> GetBlocks() {
         return blocks;
     }
+    #endregion
+
+    #region  BRICK VALUE MANAGEMENT
 
     void UpdateBrickValue() {
         int[] newBrickValues = new int[brickValues.Length + 1];
@@ -854,70 +898,40 @@ public class GameManager : MonoBehaviour
 
     private int AdditionFactorial(int startNum) {
         int total = 0;
-
         for (int i = 1; i <= startNum; i++) {
             total += i;
         }
-
         return total;
     }
+    #endregion
 
+    #region SPAWN MANAGEMENT
+    
     void SpawnBlocks(int amount)
     { 
         if (phase == -1) {
             ChangeState(blocks.Any(b=>b.Value == winCondition) ? GameState.Win : GameState.WaitingInput);
-        }
-        else if(phase == 0){
+        }else if (phase == 0){
             SpawnBlock(GetNodeAtPosition(new Vector2(0,0)), 2);
             SpawnBlock(GetNodeAtPosition(new Vector2(3,0)), 2);
-        }
-
-        else if(phase == 1){
+        }else if (phase == 1){
             SpawnObstacle(GetNodeAtPosition(new Vector2(3,1)));
-        }
-
-        else if(phase == 3){
+        }else if (phase == 3){
             SpawnBlock(GetNodeAtPosition(new Vector2(3,0)), 4);
-        }
-
-        else{
+        }else {
             // Get a list of nodes that are not Occupied by a block from the list of nodes
             var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
 
-            if(round > 1 && Random.value > (1 - obstacleSpawnChance) && obstacleCount < obstacleLimit)
-            {
-                foreach (var nodes in freeNodes.Take(amount))
-                {
-                    SpawnObstacle(nodes);
-                }
-
-                if (freeNodes.Count() <= 1) {
-                    GameOverCase();
-                }
+            if(round > 1 && Random.value > (1 - obstacleSpawnChance) && obstacleCount < obstacleLimit) {
+                foreach (var nodes in freeNodes.Take(amount)) SpawnObstacle(nodes);
+                if (freeNodes.Count() <= 1) GameOverCase();
+            }else {
+                // For each of the free nodes get a certain amount of Nodes that you want to use for spawning the blocks
+                foreach (var nodes in freeNodes.Take(amount)) SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
+                if (freeNodes.Count() <= 1) GameOverCase();    
             }
-
-            else
-            {
-                // For each of the free nodes get a certain amount of Nodes that you want to use
-                // for spawning the blocks
-                foreach (var nodes in freeNodes.Take(amount))
-                {
-                    SpawnBlock(nodes, Random.value > 0.8f ? 4 : 2);
-                }
-
-                if (freeNodes.Count() <= 1) {
-                    GameOverCase();
-                }     
-            }
-        
         }
-        // "b=>b" - "Is there any..."
         ChangeState(blocks.Any(b=>b.Value == winCondition) ? GameState.Win : GameState.WaitingInput);
-    }
-
-    IEnumerator SubmitScore(int score){
-        yield return leaderboard.SubmitScoreRoutine(score);
-        yield return leaderboard.FetchTopHighScoresRoutine();
     }
 
     void SpawnBlock(Node node, int value)
@@ -943,14 +957,11 @@ public class GameManager : MonoBehaviour
 
     void SpawnObstacle(Node node)
     {       
-            if(phase == 1){
-                phase++;
-            }
+            if(phase == 1) phase++;
             // Instantiate a block prefab at the chosen node location
             var block = Instantiate(obstaclePrefab, node.Pos, Quaternion.identity);
             block.transform.SetParent(boardParent, true);
             UpdateHighlightColor(block);
-
             block.transform.DOScale(new Vector3(1f, 1f, 0), 0.5f).SetEase(Ease.OutBounce);
             node.Obstacle = true;
             block.Obstacle = true;
@@ -959,27 +970,11 @@ public class GameManager : MonoBehaviour
             // List<int> twoPercents = new List<int>(new int[] {128, 256, 512, 1024});
             UpdateWeightedBrickValues(brickValues);
             int value;
-            if(phase < 3){
+            if(phase < 3) {
                 value = 8;
-            }
-
-            else{
+            }else{
                 value = weightedBrickValues[Random.Range(0, weightedBrickValues.Length)];
             }
-            
-
-            // if(Random.value <= 0.6f){
-            //     value = 4;
-            // }
-            // else if(Random.value <= 0.75f){
-            //     value = 16;
-            // }
-            // else if(Random.value <= 0.90f){
-            //     value = fivePercents[Random.Range(0, 3)];
-            // }
-            // else if(Random.value <= 1f){
-            //     value = twoPercents[Random.Range(0, 4)];
-            // }
 
             block.Value = value;
             block.text.text = block.Value.ToString();
@@ -992,23 +987,56 @@ public class GameManager : MonoBehaviour
             obstacleCount++;
     }
 
+    private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value, bool obstacle) {
+        Block block;
+        // Instantiate a block prefab at the chosen node location
+        if(obstacle) {
+            block = Instantiate(obstaclePrefab, spawn, Quaternion.identity);    
+            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
+            block.Obstacle = true;
+            node.Obstacle = true;
+
+            block.Value = value;
+            block.text.text = block.Value.ToString();
+
+            // Assign the node to the Block and visa versa
+            block.SetBlock(node);
+
+            // Add block to the list
+            blocks.Add(block);
+        }else {
+            // Take the block game object and initialize it as a BlockType
+            block = Instantiate(blockPrefab, spawn, Quaternion.identity);    
+            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
+            block.Init(GetBlockTypeByValue(value));
+
+            // Assign the node to the Block and visa versa
+            block.SetBlock(node);
+
+            // Add block to the list
+            blocks.Add(block);
+        }
+        return block;
+    }
+
+    #endregion
+
+    #region  MOVEMENT
+    #region SHIFTING
+
     void Shift(Vector2 dir)
     {
         ChangeState(GameState.Moving);
-
-
         // Order the block array by x then by y if it is moving left or down
         // Or change it to ordered by y then x if it is moving right or up
         var orderedBlocks = blocks.OrderBy(b => b.Pos.x ).ThenBy(b => b.Pos.y).ToList(); 
         if(dir == Vector2.right || dir == Vector2.up) orderedBlocks.Reverse();
-
         bool blocksMoved = false;
 
         // Go through the ordered list of blocks
-        foreach (var block in orderedBlocks)
-        {
-            if(block.Obstacle)
-                continue;
+        foreach (var block in orderedBlocks) {
+            if(block.Obstacle) continue;
+            
             // I think of "next" like current node that the block is on
             var next = block.Node;
             do {
@@ -1019,174 +1047,90 @@ public class GameManager : MonoBehaviour
                 var possibleNode = GetNodeAtPosition(next.Pos + dir);
 
                 //If there is a possible node in that direction
-                if(possibleNode != null)
-                {
-                    if(possibleNode.Obstacle == false)
-                    {
+                if(possibleNode != null) {
+                    if(possibleNode.Obstacle == false) {
                         // We know a node is present
                         // If its possible to merge, set merge
-                        if(possibleNode.OccupiedBlock != null && possibleNode.OccupiedBlock.CanMerge(block.Value))
-                        {
+                        if(possibleNode.OccupiedBlock != null && possibleNode.OccupiedBlock.CanMerge(block.Value)) {
                             block.MergeBlock(possibleNode.OccupiedBlock);
                             blocksMoved = true;
-                        }
-
-                        // Otherwise can we move to this spot?
-                        else if(possibleNode.OccupiedBlock == null){
+                        }else if(possibleNode.OccupiedBlock == null){ // Otherwise can we move to this spot?
                             next = possibleNode;
                             blocksMoved = true;
                         }
                     }
-                    
-                    // None hit? End do while loop
-                }
-            } while (next != block.Node);
-               
+                } // None hit? End do while loop
+            } while (next != block.Node);     
         }
 
-        if(blocksMoved)
-        {
+        if(blocksMoved) {
             if(phase == 0){
                 phase++;
-            }
-
-            else if(phase == 2){
+            }else if(phase == 2){
                 phase++;
-            }
-
-            else if(phase == 3){
+            }else if(phase == 3){
                 phase++;
-            }
-
-            else if(phase == 4){
+            }else if(phase == 4){
                 phase++;
             }
 
             var sequence = DOTween.Sequence();
 
-            foreach(var block in orderedBlocks)
-            {
+            foreach(var block in orderedBlocks) {
                 var movePoint = block.MergingBlock != null ? block.MergingBlock.Node.Pos : block.Node.Pos;
-
                 sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
             }
 
             sequence.OnComplete(() => {
                 var mergeBlocks = orderedBlocks.Where(b => b.MergingBlock != null).ToList();
 
-                foreach (var block in mergeBlocks)
-                {
-                    // foreach(var obstacle in obstacles)
-                    //     {
-                            
-                    //         var nodeUp = GetNodeAtPosition(obstacle.Pos + Vector2.up);
-                    //         print(nodeUp.Pos);
-                    //         var nodeDown = GetNodeAtPosition(obstacle.Pos + Vector2.down);
-                    //         print(nodeDown.Pos);
-                    //         var nodeLeft = GetNodeAtPosition(obstacle.Pos + Vector2.left);
-                    //         print(nodeLeft.Pos);
-                    //         var nodeRight = GetNodeAtPosition(obstacle.Pos + Vector2.right);
-                    //         print(nodeRight.Pos);
-
-                    //         if((nodeUp && block.Node == nodeUp) || (nodeDown && block.Node == nodeDown) || (nodeLeft && block.Node == nodeLeft) || (nodeRight && block.Node == nodeRight))
-                    //         {
-                    //             //obstacles.Remove(obstacle);
-                    //             print(obstacle.Pos);
-                    //         }
-                            
-                    //     }
+                foreach (var block in mergeBlocks) {
                     var nodeUp = GetNodeAtPosition(block.Pos + Vector2.up);
                     var nodeDown = GetNodeAtPosition(block.Pos + Vector2.down);
                     var nodeLeft = GetNodeAtPosition(block.Pos + Vector2.left);
                     var nodeRight = GetNodeAtPosition(block.Pos + Vector2.right);
 
-                    if(nodeUp && nodeUp.Obstacle && nodeUp.OccupiedBlock.Value == block.Value * 2 )
-                    {
+                    if(nodeUp && nodeUp.Obstacle && nodeUp.OccupiedBlock.Value == block.Value * 2 ) {
                         nodeUp.Obstacle = false;
                         RemoveObstacle(nodeUp.OccupiedBlock);
                         cycleMovesLeft++;
                     }
 
-                    if(nodeDown && nodeDown.Obstacle && nodeDown.OccupiedBlock.Value == block.Value * 2 )
-                    {
+                    if(nodeDown && nodeDown.Obstacle && nodeDown.OccupiedBlock.Value == block.Value * 2 ) {
                         nodeDown.Obstacle = false;
                         RemoveObstacle(nodeDown.OccupiedBlock);
                         cycleMovesLeft++;
                     }
 
-                    if(nodeLeft && nodeLeft.Obstacle && nodeLeft.OccupiedBlock.Value == block.Value * 2 )
-                    {
+                    if(nodeLeft && nodeLeft.Obstacle && nodeLeft.OccupiedBlock.Value == block.Value * 2 ) {
                         nodeLeft.Obstacle = false;
                         RemoveObstacle(nodeLeft.OccupiedBlock);
                         cycleMovesLeft++;
                     }
 
-                    if(nodeRight && nodeRight.Obstacle && nodeRight.OccupiedBlock.Value == block.Value * 2 )
-                    {
+                    if(nodeRight && nodeRight.Obstacle && nodeRight.OccupiedBlock.Value == block.Value * 2 ) {
                         nodeRight.Obstacle = false;
                         RemoveObstacle(nodeRight.OccupiedBlock);
                         cycleMovesLeft++;
                     }
-
                     MergeBlocks(block.MergingBlock, block);
-                    
-                    
                 }
-
                 if(mergeBlocks.Any()) audioSource.PlayOneShot(merges[Random.Range(0, merges.Count - 1)], 0.2f);
-                
                 ChangeState(GameState.SpawningBlocks);
             });
-
-            //audioSource.PlayOneShot(swipe, 0.2f);
-        }
-
-        else
-        {
-            //var freeNodes = nodes.Where(n=>n.OccupiedBlock == null).OrderBy(b=>Random.value).ToList();
-            if (orderedBlocks.Count() == 16) {
-                // shakeScript.TriggerShake();
-            }
-
+        }else {
             ChangeState(GameState.WaitingInput);
         }
-        
     }
+    #endregion
 
-    private void GameOverCase() {
-        var GameOver = (GameOverCheck(Vector2.left) == false && GameOverCheck(Vector2.right) == false && GameOverCheck(Vector2.up) == false && GameOverCheck(Vector2.down) == false) ? true : false;
-        if(GameOver && cycleMovesLeft <= 0)
-        {
-            ChangeState(GameState.Lose);
-            //here
-            SetHighScore();
-            leaderboardHighScore.text = PlayerPrefs.GetInt("myHighScore").ToString();
-            gameOverScore.text = score.ToString(); // moved from merge function
-            StartCoroutine(SubmitScore(score));
-            return;
-        }
-        else
-        {    
-            ChangeState(GameState.WaitingInput);
-            return;
-        }
-    }
-
-    void SetHighScore() {
-        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
-            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
-        }
-    }
+    #region CYCLING
 
     public void Cycle(String locationCheck)
     {
-        if(cycleMovesLeft > 0){
-            audioSource.PlayOneShot(buttonPress, 0.2f);
-        }
+        if(cycleMovesLeft > 0) udioSource.PlayOneShot(buttonPress, 0.2f);
+        if (Time.time - cycleTimer < cycleDelay) return;
 
-        if (Time.time - cycleTimer < cycleDelay) {
-            return;
-        }
         cycleTimer = Time.time;
         
         if(cycleMovesLeft == 0) { // toggle "No Cycle" animation on
@@ -1195,9 +1139,8 @@ public class GameManager : MonoBehaviour
             return; 
         }
 
-        if(phase == 5){
-            phase++;
-        }
+        if(phase == 5) phase++;
+
         int blockCoordinate = 0;
         int loopCoordinateCheck = 0;
 
@@ -1425,10 +1368,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if(orderedBlocks.Count() == 0)
-        {
-            return;
-        }
+        if(orderedBlocks.Count() == 0) return;
         cycleMovesLeft--;
 
         orderedBlocks.OrderBy(b => (xAxis ? b.Pos.x : b.Pos.y)).ToList();
@@ -1438,15 +1378,12 @@ public class GameManager : MonoBehaviour
 
         if (reverse) orderedBlocks.Reverse();
 
-
         // Create and Play the animation
         var sequence = DOTween.Sequence();
         var nodeMovingTo = GetNodeAtPosition(moveTo);
-        foreach(var block in orderedBlocks)
-        {
+        foreach(var block in orderedBlocks) {
             print("Block Pos: " + block.Pos);
-            if(!xAxis && block.Pos.x == loopCoordinateCheck)
-            {
+            if(!xAxis && block.Pos.x == loopCoordinateCheck) {
                 //print("Means you have to cycle");
                 tempBlock = block;
                 block.ClearBlock();
@@ -1454,10 +1391,7 @@ public class GameManager : MonoBehaviour
                 sequence.Insert(0, tempBlock.transform.DOMove(nodeMovingTo.Pos, travelTime));
                 // RemoveBlock(block);
                 continue;
-            }
-
-            else if(!yAxis && block.Pos.y == loopCoordinateCheck)
-            {
+            }else if (!yAxis && block.Pos.y == loopCoordinateCheck) {
                 //print("Means you have to cycle");
                 tempBlock = block;
                 block.ClearBlock();
@@ -1471,107 +1405,45 @@ public class GameManager : MonoBehaviour
             var currentNode = GetNodeAtPosition(block.Pos);
             
             block.SetBlock(possibleNode);
-            if(block.Obstacle){
+            if(block.Obstacle) {
                 currentNode.Obstacle = false;
                 possibleNode.Obstacle = true;
             }
             sequence.Insert(0, block.transform.DOMove(movePoint, travelTime));
         }
-
-        if (tempBlock != null) {
-            tempBlock.SetBlock(nodeMovingTo);
-        }
-
+        if (tempBlock != null) tempBlock.SetBlock(nodeMovingTo);
         if (cycleMovesLeft == 0) GameOverCase();
-
-        // audioSource.PlayOneShot(swipe, 0.2f);
-        // print("OrderedBlocks:" + orderedBlocks.Count());
-
-        //StartCoroutine(cyclings());
-        //cycling = false;
     }
 
     IEnumerator cyclings(){
         yield return new WaitForSeconds(.05f);
         cycling = false;
     }
+    #endregion
+    #endregion
 
-    private Block SpawnBlockWithNoNode(Vector2 spawn, Node node, int value, bool obstacle)
-    {
-        Block block;
-        // Instantiate a block prefab at the chosen node location
-        if(obstacle)
-        {
-            block = Instantiate(obstaclePrefab, spawn, Quaternion.identity);    
-            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
-            block.Obstacle = true;
-            node.Obstacle = true;
-
-            block.Value = value;
-            block.text.text = block.Value.ToString();
-
-            // Assign the node to the Block and visa versa
-            block.SetBlock(node);
-
-            // Add block to the list
-            blocks.Add(block);
-        }
-        else
-        {
-            // Take the block game object and initialize it as a BlockType
-            block = Instantiate(blockPrefab, spawn, Quaternion.identity);    
-            block.transform.DOScale(new Vector3(0.9f, 0.9f, 0), 0.01f).SetEase(Ease.OutBounce);
-            block.Init(GetBlockTypeByValue(value));
-
-            // Assign the node to the Block and visa versa
-            block.SetBlock(node);
-
-            // Add block to the list
-            blocks.Add(block);
-        }
-    
-        return block;
+    IEnumerator SubmitScore(int score){
+        yield return leaderboard.SubmitScoreRoutine(score);
+        yield return leaderboard.FetchTopHighScoresRoutine();
     }
 
-    bool GameOverCheck(Vector2 dir)
-    {
-        var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); 
-        if(dir == Vector2.right || dir == Vector2.up) 
-            //print("right or up");
-            orderedBlocks.Reverse();
-
-        
-
-        foreach (var block in orderedBlocks)
-        {
-            if(block.Obstacle){
-                continue;
-            }
-            var next = block.Node;
-            do {
-                //block.SetBlock(next);
-                var possibleNode = GetNodeAtPosition(next.Pos + dir);
-
-                if(possibleNode != null)
-                {
-                    if(possibleNode.OccupiedBlock != null && possibleNode.OccupiedBlock.CanMerge(block.Value))
-                    {
-                        // print("First");
-                        // print("Block Pos: " + block.Pos);
-                        // print("Value: " + block.Value);
-                        // print("Not Null: " + possibleNode.OccupiedBlock != null);
-                        // print("Can Merge: " + possibleNode.OccupiedBlock.CanMerge(block.Value));
-                        return true;
-                    }
-
-                    else if(possibleNode.OccupiedBlock == null){
-                        return true;
-                    } 
-                }
-            } while (next != block.Node);
+    void SetHighScore() {
+        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
+            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
         }
+    }
 
-        return false;
+    void PostTutorialMoveLimiter() {
+        if (phase >= 6) {
+            if (postTutorialMoveCounter < postTutorialMoveLimit) {
+                print("Incrementing Counter: " + postTutorialMoveCounter);
+                postTutorialMoveCounter++;
+            }else {
+                phase6.SetActive(false);
+                devsIcons.SetActive(false);
+                PlayerPrefs.SetInt("phase", phase); // might night be needed in 'game end/restart' methods
+            }
+        } // Can be optimized
     }
 
     void MergeBlocks(Block baseBlock, Block mergingBlock)
