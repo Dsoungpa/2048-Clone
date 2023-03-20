@@ -13,6 +13,13 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    /* ~~~COMMENT THINGS LIKE THIS~~~
+    IEnumerator SubmitScore(int score){
+        yield return leaderboard.SubmitScoreRoutine(score);
+        yield return leaderboard.FetchTopHighScoresRoutine();
+    }
+    */
+
     #region VARIABLES
 
     #region  GENERAL VARIABLES
@@ -174,8 +181,7 @@ public class GameManager : MonoBehaviour
         cyclesMode = false;
     }
     #endregion
-
-    
+   
     #region THEME UPDATE METHODS
     void UpdateBlockColors() {
         for (int i = 0; i < types.Count(); i++) {
@@ -265,6 +271,7 @@ public class GameManager : MonoBehaviour
 
         if(state != GameState.WaitingInput) return;
 
+        #region TUTORIAL
         if(phase == -1){
             devsIcons.SetActive(true);
             phase0.SetActive(true);
@@ -328,7 +335,11 @@ public class GameManager : MonoBehaviour
                 panel.SetActive(false);
             }
         }
+        #endregion
 
+        #region INPUT
+
+            #region KEYBOARD INPUT
         // Keyboard Input
         if(!cyclesMode){
             if (phase != -1) {
@@ -615,8 +626,9 @@ public class GameManager : MonoBehaviour
             }
 
         }
+        #endregion
 
-        
+            #region TOUCH INPUT
         // Touch Input
         else if(!cyclesMode){
 
@@ -723,38 +735,14 @@ public class GameManager : MonoBehaviour
 
             }
         }
+        #endregion
 
-
+        #endregion
     }
-
-    #region MOBILE
-    IEnumerator HasSwipedFalse(){
-        yield return new WaitForSeconds(.05f);
-        hasSwiped = false;
-    }
-
-    IEnumerator HasSwipedTrue(){
-        yield return new WaitForSeconds(.05f);
-        hasSwiped = true;
-    }
-    
-    IEnumerator CycleCoolDown(){
-        yield return new WaitForSeconds(.05f);
-        inCycle = true;
-    }
-
-    IEnumerator CycleCoolDownFalse(){
-        yield return new WaitForSeconds(.05f);
-        inCycle = false;
-    }
-
-    IEnumerator WaitingToClear(){
-            yield return new WaitForSeconds(.05f);
-            inCycle = true;
-    }
-    #endregion
 
     #region MAIN
+
+        #region GAME LOOP
 
     private void ChangeState(GameState newState)
     {
@@ -852,6 +840,61 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
+    IEnumerator SubmitScore(int score){
+        yield return leaderboard.SubmitScoreRoutine(score);
+        yield return leaderboard.FetchTopHighScoresRoutine();
+    }
+    #endregion
+
+        #region BLOCK MANAGEMENT
+
+    void MergeBlocks(Block baseBlock, Block mergingBlock) {
+        SpawnBlock(baseBlock.Node, baseBlock.Value * 2);
+        score += baseBlock.Value * 2;
+
+        if (baseBlock.Value * 2 > currentHighestValue) UpdateBrickValue();
+
+        scoreText.text = score.ToString();
+        if (!gotNewHighScore && score >= PlayerPrefs.GetInt("myHighScore", score) && PlayerPrefs.HasKey("myHghScore")) {
+            gotNewHighScore = true;
+            possibleHighScore = score;
+            SetHighScore();
+            NewHighScore();
+        }
+        RemoveBlock(baseBlock);
+        RemoveBlock(mergingBlock);
+    }
+
+    void RemoveBlock(Block block) {   
+        if(block.Obstacle){
+            audioSource.PlayOneShot(blockBreak, 0.2f);
+            SpawnBlock(block.Node, block.Value);
+            obstacleCount--;
+        }
+        blocks.Remove(block);
+        Destroy(block.gameObject);
+    }
+
+    void RemoveObstacle(Block block) {   
+        if(block.Obstacle){
+            audioSource.PlayOneShot(blockBreak, 0.2f);
+            SpawnBlock(block.Node, block.Value);
+            obstacleCount--;
+        }
+        blocks.Remove(block);
+        Destroy(block.gameObject, .4f);
+
+        foreach (Transform child in block.gameObject.transform) {
+            if (child.gameObject.name == "ObstacleBreak") {
+                child.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    Node GetNodeAtPosition(Vector2 pos) {
+        return nodes.FirstOrDefault(n => n.Pos == pos);
+    }
+
     public SpriteRenderer GetBoard() {
         if (gameBoard != null) {
             return gameBoard;
@@ -869,7 +912,39 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    #region  BRICK VALUE MANAGEMENT
+        #region GAME STATE MANAGEMENT
+
+    public void RestartGame() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        SetHighScore();
+        PlayerPrefs.SetInt("phase", phase);
+        SceneManager.LoadScene(0);
+    }
+
+    public void ContinueGame() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        winScreen.SetActive(false);
+        ChangeState(GameState.WaitingInput);
+    }
+
+    public void RestartTutorial() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        PlayerPrefs.SetInt("phase", tutorialRestartPhase);
+        SetHighScore();
+        devsIcons.SetActive(true);
+        SceneManager.LoadScene(0);
+    }
+
+    public void SkipTutorial() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        PlayerPrefs.SetInt("phase", 7);
+        SceneManager.LoadScene(0);
+    }
+    #endregion
+
+    #endregion
+
+    #region BRICK VALUE MANAGEMENT
 
     void UpdateBrickValue() {
         int[] newBrickValues = new int[brickValues.Length + 1];
@@ -1022,7 +1097,8 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region  MOVEMENT
-    #region SHIFTING
+
+        #region SHIFTING
 
     void Shift(Vector2 dir)
     {
@@ -1124,7 +1200,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    #region CYCLING
+        #region CYCLING
 
     public void Cycle(String locationCheck)
     {
@@ -1422,114 +1498,39 @@ public class GameManager : MonoBehaviour
     #endregion
     #endregion
 
-    IEnumerator SubmitScore(int score){
-        yield return leaderboard.SubmitScoreRoutine(score);
-        yield return leaderboard.FetchTopHighScoresRoutine();
+    #region MOBILE
+    
+    IEnumerator HasSwipedFalse(){
+        yield return new WaitForSeconds(.05f);
+        hasSwiped = false;
     }
 
-    void SetHighScore() {
-        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
-            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
-        }
+    IEnumerator HasSwipedTrue(){
+        yield return new WaitForSeconds(.05f);
+        hasSwiped = true;
+    }
+    
+    IEnumerator CycleCoolDown(){
+        yield return new WaitForSeconds(.05f);
+        inCycle = true;
     }
 
-    void PostTutorialMoveLimiter() {
-        if (phase >= 6) {
-            if (postTutorialMoveCounter < postTutorialMoveLimit) {
-                print("Incrementing Counter: " + postTutorialMoveCounter);
-                postTutorialMoveCounter++;
-            }else {
-                phase6.SetActive(false);
-                devsIcons.SetActive(false);
-                PlayerPrefs.SetInt("phase", phase); // might night be needed in 'game end/restart' methods
-            }
-        } // Can be optimized
+    IEnumerator CycleCoolDownFalse(){
+        yield return new WaitForSeconds(.05f);
+        inCycle = false;
     }
 
-    void MergeBlocks(Block baseBlock, Block mergingBlock)
-    {
-        SpawnBlock(baseBlock.Node, baseBlock.Value * 2);
-        score += baseBlock.Value * 2;
-
-        if (baseBlock.Value * 2 > currentHighestValue) UpdateBrickValue();
-
-        scoreText.text = score.ToString();
-        if (!gotNewHighScore && score >= PlayerPrefs.GetInt("myHighScore", score) && PlayerPrefs.HasKey("myHghScore")) {
-            gotNewHighScore = true;
-            possibleHighScore = score;
-            SetHighScore();
-            NewHighScore();
-        }
-        RemoveBlock(baseBlock);
-        RemoveBlock(mergingBlock);
+    IEnumerator WaitingToClear(){
+            yield return new WaitForSeconds(.05f);
+            inCycle = true;
     }
+    #endregion
 
-    void NewHighScore() {
-        print("NEW HIGH SCORE ACHIEVED!");
-        GameObject highScoreInstance = Instantiate(newHighScoreObject, Vector3.zero, Quaternion.identity);
-        highScoreInstance.name = "NewHighScore";
-        highScoreInstance.GetComponent<RectTransform>().localPosition = newHighScorePos;
-        highScoreInstance.transform.SetParent(GameObject.Find("World Canvas").transform, false);
-        highScoreInstance.transform.localScale = startScale;
+    #region UI
 
-        //adjust color
-        Color newColor = colorThemeScript.GetCurrentHighScoreColor();
-        highScoreInstance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = newColor;
-        highScoreInstance.transform.GetChild(1).GetComponent<Image>().color = newColor;
+        #region UI GENERAL
 
-        //animation;
-        highScoreInstance.transform.DOScale(endScale, scaleTime).SetEase(Ease.OutBounce);
-
-        Destroy(highScoreInstance, newHighScoreDuration);
-    }
-
-    void RemoveBlock(Block block)
-    {   
-        if(block.Obstacle){
-            audioSource.PlayOneShot(blockBreak, 0.2f);
-            SpawnBlock(block.Node, block.Value);
-            obstacleCount--;
-        }
-        blocks.Remove(block);
-        Destroy(block.gameObject);
-    }
-
-    void RemoveObstacle(Block block)
-    {   
-        if(block.Obstacle){
-            audioSource.PlayOneShot(blockBreak, 0.2f);
-            SpawnBlock(block.Node, block.Value);
-            obstacleCount--;
-        }
-        blocks.Remove(block);
-        Destroy(block.gameObject, .4f);
-
-        foreach (Transform child in block.gameObject.transform) {
-            if (child.gameObject.name == "ObstacleBreak") {
-                child.gameObject.SetActive(true);
-            }
-        }
-    }
-
-
-    Node GetNodeAtPosition(Vector2 pos) {
-        return nodes.FirstOrDefault(n => n.Pos == pos);
-    }
-
-    public void RestartGame() {
-        audioSource.PlayOneShot(buttonPress, 0.2f);
-        SetHighScore();
-        PlayerPrefs.SetInt("phase", phase);
-        SceneManager.LoadScene(0);
-    }
-
-    public void ContinueGame() {
-        audioSource.PlayOneShot(buttonPress, 0.2f);
-        winScreen.SetActive(false);
-        ChangeState(GameState.WaitingInput);
-    }
-
-    public void ToggleCycle() {
+        public void ToggleCycle() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
         if(cycleUI.activeSelf) {
             cycleUI.SetActive(false);
@@ -1577,6 +1578,100 @@ public class GameManager : MonoBehaviour
             iconRect.transform.DOLocalMoveY(baseOffset * offsetIndex, offsetDuration);
         }
     }
+    #endregion
+
+        #region USERNAME
+
+    public void SubmitUsername(){
+        if(username.text.Length > 0){
+            phase = 0;
+            ChangeState(GameState.SpawningBlocks);
+            PlayerPrefs.SetString("PlayerID", username.text);
+            print(username.text);
+        }
+    }
+
+    public void UpdateUsername(){
+        if(username.text.Length > 0){
+            PlayerPrefs.SetString("PlayerID", username.text);
+            print(username.text);
+        }
+    }
+
+    public void UpdateUsernameOnSettings(){
+        if(username.text.Length > 0){
+            PlayerPrefs.SetString("PlayerID", updateusername.text);
+            print(updateusername.text);
+        }
+        disableControl = false;
+    }
+
+    public void ToggleUsernameUpdate() {
+        audioSource.PlayOneShot(buttonPress, 0.2f);
+        if (updateUsername.activeInHierarchy) {
+            updateUsername.SetActive(false);
+            disableControl = false;
+        }else {
+            updateUsername.SetActive(true);
+            disableControl = true;
+        }
+        backgroundDarken.SetActive(!backgroundDarken.activeInHierarchy);
+    }
+
+    public void ForceCloseUsernameUpdate() {
+        if (updateUsername.activeInHierarchy) ToggleUsernameUpdate();
+        backgroundDarken.SetActive(false);
+    }
+
+        #endregion
+
+        #region HIGH SCORE ALERT
+        
+    void NewHighScore() {
+        print("NEW HIGH SCORE ACHIEVED!");
+        GameObject highScoreInstance = Instantiate(newHighScoreObject, Vector3.zero, Quaternion.identity);
+        highScoreInstance.name = "NewHighScore";
+        highScoreInstance.GetComponent<RectTransform>().localPosition = newHighScorePos;
+        highScoreInstance.transform.SetParent(GameObject.Find("World Canvas").transform, false);
+        highScoreInstance.transform.localScale = startScale;
+
+        //adjust color
+        Color newColor = colorThemeScript.GetCurrentHighScoreColor();
+        highScoreInstance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = newColor;
+        highScoreInstance.transform.GetChild(1).GetComponent<Image>().color = newColor;
+
+        //animation;
+        highScoreInstance.transform.DOScale(endScale, scaleTime).SetEase(Ease.OutBounce);
+
+        Destroy(highScoreInstance, newHighScoreDuration);
+    }
+
+    void SetHighScore() {
+        if(possibleHighScore > (PlayerPrefs.GetInt("myHighScore"))) {
+            PlayerPrefs.SetInt("myHighScore", possibleHighScore);
+        }
+    }
+    #endregion
+
+        #region UI TUTORIAL
+
+    void PostTutorialMoveLimiter() {
+        if (phase >= 6) {
+            if (postTutorialMoveCounter < postTutorialMoveLimit) {
+                print("Incrementing Counter: " + postTutorialMoveCounter);
+                postTutorialMoveCounter++;
+            }else {
+                phase6.SetActive(false);
+                devsIcons.SetActive(false);
+                PlayerPrefs.SetInt("phase", phase); // might night be needed in 'game end/restart' methods
+            }
+        } // Can be optimized
+    }
+    #endregion
+
+    #endregion
+
+    #region AUDIO
 
     public void ToggleAudio() {
         audioSource.PlayOneShot(buttonPress, 0.2f);
@@ -1609,63 +1704,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RestartTutorial() {
-        audioSource.PlayOneShot(buttonPress, 0.2f);
-        PlayerPrefs.SetInt("phase", tutorialRestartPhase);
-        SetHighScore();
-        devsIcons.SetActive(true);
-        SceneManager.LoadScene(0);
-    }
+    #endregion
 
-    public void SkipTutorial() {
-        audioSource.PlayOneShot(buttonPress, 0.2f);
-        PlayerPrefs.SetInt("phase", 7);
-        SceneManager.LoadScene(0);
-    }
-
-    public void SubmitUsername(){
-        if(username.text.Length > 0){
-            phase = 0;
-            ChangeState(GameState.SpawningBlocks);
-            PlayerPrefs.SetString("PlayerID", username.text);
-            print(username.text);
-        }
-    }
-
-    public void UpdateUsername(){
-        if(username.text.Length > 0){
-            PlayerPrefs.SetString("PlayerID", username.text);
-            print(username.text);
-        }
-    }
-
-    
-
-    public void UpdateUsernameOnSettings(){
-        if(username.text.Length > 0){
-            PlayerPrefs.SetString("PlayerID", updateusername.text);
-            print(updateusername.text);
-        }
-        disableControl = false;
-    }
-
-    public void ToggleUsernameUpdate() {
-        audioSource.PlayOneShot(buttonPress, 0.2f);
-        print("WHATS GOING ON");
-        if (updateUsername.activeInHierarchy) {
-            updateUsername.SetActive(false);
-            disableControl = false;
-        }else {
-            updateUsername.SetActive(true);
-            disableControl = true;
-        }
-        backgroundDarken.SetActive(!backgroundDarken.activeInHierarchy);
-    }
-
-    public void ForceCloseUsernameUpdate() {
-        if (updateUsername.activeInHierarchy) ToggleUsernameUpdate();
-        backgroundDarken.SetActive(false);
-    }
 }
 
 [Serializable]
