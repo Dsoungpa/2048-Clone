@@ -1204,7 +1204,7 @@ public class GameManager : MonoBehaviour
 
     public void Cycle(String locationCheck)
     {
-        if(cycleMovesLeft > 0) udioSource.PlayOneShot(buttonPress, 0.2f);
+        if(cycleMovesLeft > 0) audioSource.PlayOneShot(buttonPress, 0.2f);
         if (Time.time - cycleTimer < cycleDelay) return;
 
         cycleTimer = Time.time;

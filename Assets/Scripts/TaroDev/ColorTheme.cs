@@ -236,6 +236,10 @@ public class ColorTheme : MonoBehaviour
 
         return new Color(r, g, b);
     }
+
+    public Color GetCurrentHighScoreColor() {
+        return highScoreColors[currentThemeIndex];
+    }
     #endregion
 
 
